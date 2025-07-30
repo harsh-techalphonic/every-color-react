@@ -1,0 +1,16 @@
+.verify_sec .login-box input {
+    font-size: 16px;
+    font-weight: 500;
+    color: #344054;
+    padding: 12px;
+}
+.verify_sec .login-box input:focus {
+    box-shadow: none;
+}
+.verify_sec .login-box input[type=submit] {
+    font-size: 14px;
+    font-weight: 500;
+    color: #344054;
+    padding: 16px;
+    width: 100%;
+}

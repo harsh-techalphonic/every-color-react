@@ -1,0 +1,17 @@
+.Shop_by_health.brands .Shop_by_health-card{
+    /* border-radius: 50% ; */
+    max-width: 214px !important;
+    margin: auto;
+    box-shadow: none;
+}
+.brands .Shop_by_health-card .card-img img {
+    width: 100%;
+    max-width: max-content;
+    height: initial;
+}
+.Shop_by_health.brands .slick-slider .slick-slide>div{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: auto;
+}

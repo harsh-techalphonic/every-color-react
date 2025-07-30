@@ -1,0 +1,55 @@
+.Shop_by_health h2{
+    font-size: 32px;
+    font-weight: 700;
+}
+.Shop_by_health{
+    background-color: #E2312B0A;
+    padding: 42px 0;
+}
+.Shop_by_health-card {
+    padding: 20px 16px 10px;
+    position: relative;
+    border-radius: 12px;
+    height: 100%;
+    /* box-shadow: 0px 0px 8px 0px #0071bc1a; */
+}
+.Shop_by_health-card .card-img{
+    width: 100%;
+    max-width: 220px;
+    margin: auto;
+    height: 220px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0px 8px 8px 0px #00000040;
+    outline: 4px solid #ffffff;
+
+}
+.Shop_by_health-card .card-img img{
+    width: 100%;
+    max-width: max-content;
+    height: 100%;
+ }
+ .Shop_by_health-card .product-detail{
+    text-align: center;
+    margin-top: 20px;
+    padding: 8px 24px 0;
+    
+}
+.Shop_by_health-card .product-detail h3 a{
+    font-size: 20px;
+    font-weight: 700;
+    color: #020A13;
+    font-family: "Nunito", serif;
+}
+   .xyzg-slider .slick-list {
+    margin: 0 -5px; 
+  }
+  .xyzg-slider .slick-slide {
+    padding: 0 10px; 
+  }
+  .xyzg-slider .slick-track {
+    padding: 11px 0;
+}
+  

@@ -1,0 +1,13 @@
+.login-sec .login-box select {
+    font-size: 14px;
+    font-weight: 500;
+    color: #344054;
+    padding: 16px;
+}
+.login-sec .login-box .form-check .form-check-label a {
+    color: #DB3030;
+    font-weight: 600;
+}
+.login-sec .login-box input[type=checkbox] {
+    padding: 10px;
+}

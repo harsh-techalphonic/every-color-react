@@ -1,0 +1,39 @@
+.return_refund .order-box_content{
+    width: 100%;
+    max-width: calc(100% - 170px);
+}
+.return_refund .order-box_content p.bold{
+    font-size: 16px;
+    font-weight: 600;
+    color: #191C1F;
+    margin-bottom: 0;
+}
+.return_refund .order-box_content p.pricing{
+    font-size: 18px;
+    font-weight: 600;
+    color: #191C1F;
+    margin-bottom: 0;
+}
+.return_refund .order-box_content p b{
+    color: #191C1F;
+}
+.Rerun_ref_btn .RETURN{
+background-color: #DB3030;
+font-size: 15px;
+font-weight: 600;
+color: #ffffff;
+padding: 8px 12px;
+letter-spacing: 1px;
+width: 100px;
+border: 1px solid #DB3030;
+} 
+.Rerun_ref_btn .Refund{
+    background-color: #ffffff;
+    font-size: 15px;
+    font-weight: 600;
+    color: #727272;
+    padding: 8px 12px;
+    letter-spacing: 1px;
+    width: 100px;
+    border: 1px solid #727272; 
+}

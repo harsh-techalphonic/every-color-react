@@ -1,0 +1,137 @@
+.DealOf_Day .feature-card {
+    padding: 32px 8px 32px;
+    position: relative;
+    box-shadow: 0px 4px 26px 0px #0071bc1a;
+    border-radius: 12px;
+    height: 100%;
+}
+.DealOf_Day .feature-product-tile .title-box h2{
+    font-size: 40px;
+    font-weight: 700;
+    color: #1A181E;
+}
+.DealOf_Day  .feature-product-tile .title-box h2 span{
+    color: #DB3030;
+}
+.DealOf_Day  .feature-product-tile .title-box a{
+    font-size: 16px;
+    font-weight: 700;
+    color: #DB3030;
+}
+.DealOf_Day .feature-card span.disco{
+    position: absolute;
+    top: 14px ;
+    left: 16px;
+    background-color: #DB3030;
+    padding: 6px 11px;
+    font-size: 10px;
+    color: #ffffff;
+    font-weight: 700;
+}
+.DealOf_Day .feature-card span.wishicon{
+    position: absolute;
+    z-index: 99;
+    top: 14px ;
+    right: 16px;
+    background-color: #ffffff;
+    box-shadow: 0px 4px 6px 0px #0000001A;
+    box-shadow: 0px 2px 4px 0px #0000001A;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+}
+.DealOf_Day .feature-card span.wishicon svg{
+    color: #DB3030  ;
+}
+.DealOf_Day .feature-card .card-img{
+    width: 100%;
+    height: 184px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.DealOf_Day .feature-card .card-img img{
+   height: 100%;
+   width: 100%;
+   max-width: max-content;
+}
+.DealOf_Day .feature-card .product-detail{
+    /* text-align: center; */
+    margin-top: 16px;
+    padding-top:16px ;
+    border-top: 1px solid #E8E8E8;
+    
+}
+.DealOf_Day .feature-card .product-detail h3 a{
+    font-size: 17px;
+    font-weight: 700;
+    color: #020A13;
+    font-family: "Nunito", serif;
+    height: 61px;
+    display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+}
+.DealOf_Day .feature-card .product-detail p{
+    font-size: 15px;
+    font-weight: 500;
+    color: #666666;
+    font-family: "Nunito", serif;
+    margin-bottom: 10px;
+}
+.DealOf_Day .feature-card .product-detail p b{
+    font-size: 15px;
+    font-weight: 700;
+    color: #000000;
+    font-family: "Nunito", serif;
+}
+.DealOf_Day .feature-card .product-detail .rating svg{
+    color: #FEB92D ;
+}
+.DealOf_Day .feature-card .product-detail .rating span{
+    font-size: 10px;
+    font-weight: 700;
+    color: #333333;
+    margin-left: 4px;
+}
+.DealOf_Day .feature-card .product-detail .Pricing{
+    margin: 12px 0;
+}
+.DealOf_Day .feature-card .product-detail .Pricing p{
+    margin-bottom: 0px;
+}
+.DealOf_Day .feature-card .product-detail .Pricing .price{
+    font-size: 24px;
+    font-weight: 700;
+    color: #333333;
+}
+.DealOf_Day .feature-card .product-detail .Pricing .slashPrice{
+    font-size: 16px;
+    font-weight: 500;
+    color: #333333;
+    text-decoration: line-through;
+    margin-left: 8px;
+}
+.DealOf_Day .cart-btn{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color:#DB3030;
+    padding: 8px 0;
+    border-radius: 0px 0px 12px 12px;
+    text-align: center;
+    color: #ffffff !important;
+    font-size: 16px;
+    font-weight: 700;
+    /* display: none; */
+
+}
+/* .Best_selling .feature-card:hover .cart-btn{
+    display: block;
+} */

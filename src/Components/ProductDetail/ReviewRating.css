@@ -1,0 +1,74 @@
+.reviewer-main-box {
+    border: 1px solid #D4D4D4;
+    border-radius: 10px;
+}
+.review-card{
+    padding: 24px;
+    border-top: 1px solid #D4D4D4 ;
+    border-top: 1px solid #D4D4D4 ;
+    position: relative;
+}
+.reviewer-sec .reviewer-main-box .tititle h3{
+    font-size: 24px;
+    font-weight: 700;
+    color: #020A13;
+    display: flex ;
+    align-items: center;
+    gap: 8px;
+}
+.reviewer-sec .reviewer-main-box .tititle h3 span{
+    font-size:32px ;
+    font-weight: 700;
+    color: #020A13;
+}
+.reviewer-sec .reviewer-main-box .tititle h3 span svg{
+    color: #FEB92D;
+}
+.reviewer-sec .reviewer-main-box .tititle a{
+    font-size: 16px;
+    font-weight: 500;
+    color: #ffffff;
+    background-color: #DB3030;
+    padding: 8px 16px;
+    border-radius: 20px;
+}
+.reviewer-sec .reviewer-main-box .review-card .reviewr-img img, .reviewer-sec .reviewer-main-box .review-card .reviewr-img span{
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    font-weight: 700;
+    color: #ffffff;
+    background-color: #AD54FF;
+    padding: 4px;
+}
+
+.reviewer-sec .reviewer-main-box .review-card .reviewer-content{
+    width: 100%;
+    max-width: 764px;
+}
+.reviewer-sec .reviewer-main-box .review-card .reviewer-content h4{
+    font-size: 24px;
+    font-weight: 700;
+    color:#020A13 ;
+}
+.reviewer-sec .reviewer-main-box .review-card .reviewer-content span.rating-reviwe{
+    font-size: 20px;
+}
+.reviewer-sec .reviewer-main-box .review-card .reviewer-content p{
+    font-size: 16px;
+    font-weight: 500;
+    color: #666666 ;
+    margin-bottom: 0;
+}
+.revicw-date{
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    font-size: 14px;
+    font-weight:500 ;
+    color:#616161 ;
+}

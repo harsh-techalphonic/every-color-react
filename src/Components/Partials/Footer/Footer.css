@@ -1,0 +1,103 @@
+.Footer{
+    background-color:#101010;
+    padding: 60px 0 30px;
+}
+.Footer .footer-content .footer-brand .brand-logo{
+    width: 100%;
+    max-width: 80px;
+}
+.Footer .footer-content .footer-brand p{
+    font-size:14px ;
+    font-weight: 400;
+    color:#FFFFFF ;
+}
+.Footer .footer-content .footer-brand .input-group{
+    border: 1px solid #0071bc1a;
+    border-radius: 40px;
+    overflow: hidden;
+    width: 100%;
+    max-width: 600px;
+}
+.Footer .footer-content .footer-brand .input-group input{
+    border: none;
+    font-size: 15px;
+    padding: 11px 16px;
+    width: calc(100% - 143px);
+}
+.Footer .footer-content .footer-brand .input-group .input-group-text{
+    border: none;
+    background-color: #DB3030;
+    color: #ffffff;
+    padding: 11px 16px;
+    width: 143px;
+}
+.Footer .footer-content .menubox-footer
+.menu-box h4{
+    font-size: 20px;
+    font-weight: 600;
+    color: #E0EEF9;
+    position: relative;
+}
+.Footer .footer-content .menubox-footer
+.menu-box h4::after{
+    position: absolute;
+    content: "";
+    bottom: -8px;
+    left: 0;
+    width: 100%;
+    max-width: 100px;
+    height: 2px;
+    background-color: #ffffff;
+}
+.Footer .footer-content .menubox-footer
+.menu-box ul li a{
+    font-size: 14px;
+    font-weight: 500;
+    color: #E0EEF9;
+}
+.Footer .footer-content .menubox-footer
+.menu-box ul li{
+    margin-bottom: 14px;
+}
+.Footer .footer-content .menubox-footer
+.menu-box ul li a:hover{
+    font-size: 14px;
+    font-weight: 500;
+    color: #ffffff;
+}
+.Footer .footer-content .menubox-footer
+.menu-box.menubox-two ul{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+.Footer .footer-content .menubox-footer
+.menu-box.menubox-two ul li{
+    width: 100%;
+    max-width: calc(100%/2 - 32px);
+    
+}
+.Footer  .social-links ul li a svg{
+    width: 32px;
+    height: 32px;
+    color: #DB3030;
+}
+ /* .Footer  .social-links ul li a i{
+
+ } */
+.copyright{
+    border-top:1px solid #264b68 ;
+    padding-top: 30px;
+}
+.copyright .copytext p{
+    color: #ffffff;
+}
+.copyright .Payemt-img{
+    /* width: 100%; */
+    /* max-width: 225px; */
+}   
+.footer-brand h3{
+    font-size: 24px;
+    font-weight: 600;
+    color: #FFFFFF;
+}

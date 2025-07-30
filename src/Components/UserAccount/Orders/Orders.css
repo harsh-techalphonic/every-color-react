@@ -1,0 +1,43 @@
+.orders__box .order-titel h2{
+    font-size: 40px;
+    font-weight: 500;
+    color: #000000;
+}
+.orders__box .order-titel select{
+    font-size: 14px;
+    font-weight: 400;
+    color: #000000;
+    border-radius: 0;
+    border: 1px solid #000000;
+    width: 100%;
+    max-width: max-content;
+}
+.orders__box .order-titel select:focus{
+    box-shadow: none;
+}
+.order-box_content .orderID{
+    font-size: 13px;
+    font-weight: 400;
+    color: #565656;
+    margin-bottom: 0;
+}
+.order-box-one{
+    border: 1px solid #D2D2D2;
+    padding: 20px 12px;
+}
+.order-box-one .order-box-img{
+    width: 100%;
+    max-width: 136px;
+}  
+.order-box_content .RtuenExchange_Date{
+    font-size: 14px;
+    font-weight: 600;
+    color: #343434;
+    margin-bottom: 0;
+}
+.order-box_content .RtuenExchange_Date{
+    font-size: 14px;
+    font-weight: 600;
+    color: #343434;
+    margin-bottom: 0;
+}

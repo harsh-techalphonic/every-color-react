@@ -1,0 +1,36 @@
+.Hot_offers{
+    background-color: #DB30300A;
+    padding: 16px 0;
+}
+.Hot_offers .Hot_offer-Content span{
+    font-size: 20px;
+    font-weight: 400;
+    color: #020A13;
+}
+.Hot_offers .Hot_offer-Content h2{
+    font-size: 48px;
+    font-weight:800 ;
+    color: #020A13;
+    margin-bottom: 24px;
+}
+.Hot_offers .Hot_offer-Content p{
+    font-size: 16px;
+    font-weight: 400;
+    color: #373D45;
+}
+.Hot_offers .Hot_offer-image{
+   width: 100%;
+   max-width: 556px;
+   align-items: end;
+}
+.Hot_offers .Hot_offer-image img{
+    width: 100%;
+ }
+ @media screen and (max-width:1240px) {
+    .Hot_offers .Hot_offer-Content h2 {
+        font-size: 38px;
+    }
+    .multibanner .banners-right .banner-right-content h3 {
+        font-size: 20px;
+    }
+ }

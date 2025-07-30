@@ -1,0 +1,68 @@
+.contact_sec .title h2 {
+    font-size: 40px;
+    font-weight: 700;
+    color: #1A181E;
+}
+.contact_sec .title h2 span {
+    color: #DB3030;
+}
+.contact_sec .contact_form h3{
+    font-size: 36px;
+    font-weight: 700;
+    color: #0F001A;
+    margin-bottom: 24px;
+}
+.contact_sec .contact_form label{
+    font-size: 20px;
+    font-weight: 500;
+    color: #0F001A;
+}
+.contact_sec .contact_form input, .contact_sec .contact_form textarea{
+    font-size: 16px;
+    font-weight: 500;
+    color: #0F001A;
+    padding: 12px 16px;
+}
+.contact_sec input.send_message{
+    background-color: #DB3030;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+ .contact_content h1 {
+    font-size: 40px;
+    font-weight: 700;
+    color: #1A181E;
+}
+ .contact_content h1 span {
+    color: #DB3030;
+}
+.contact_content p {
+    font-size: 20px;
+    font-weight: 500;
+    color: #1A181E;
+}
+.contact_box .conten_img{
+    width: 100%;
+    max-width: 30px;
+    min-width: 30px;
+    height: 30px;
+    padding: 4px;
+    margin-top: -4px;
+}
+.contact_box .contne-rignt h4{
+    font-size: 20px;
+    font-weight: 600;
+    color: #DB3030;
+}
+.contact_box .contne-rignt p{
+    font-size: 20px;
+    font-weight: 600;
+    color: #1A181E;
+}
+.contact_sec .container{
+    box-shadow: 2px 10px 28px 0px #4B00811F;
+    padding: 40px 32px 40px ;
+    border-radius: 10px;
+}

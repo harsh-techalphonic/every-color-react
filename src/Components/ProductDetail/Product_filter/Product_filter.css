@@ -1,0 +1,284 @@
+.askjdfcaksd{
+    position: sticky;
+    top: 20px;
+  }
+  .filter-contaienr .categories-card {
+    max-width: 400px;
+    /* margin: 50px auto; */
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .filter-contaienr .categories-header {
+    font-size: 16px;
+    font-weight: 600;
+    text-align: left;
+    padding: 8px 16px ;
+    /* border-bottom: 1px solid #eaeaea;
+    border-top: 1px solid #eaeaea; */
+  }
+  
+  .filter-contaienr .search-input {
+    border-radius: 8px;
+    padding: 8px;
+    margin: 16px;
+    border: 1px solid #ccc;
+    width: 100%;
+    max-width: -webkit-fill-available;
+  }
+  
+  .filter-contaienr .category-item .accordion-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+  }
+  .filter-contaienr .category-item .accordion-header:not(:last-child) {
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .filter-contaienr .category-item.active .accordion-header {
+    background-color: #DB3030;
+    color: #ffffff;
+  }
+  .filter-contaienr .category-item.active:hover .accordion-header {
+    background-color: #DB3030;
+  }
+  
+  .filter-contaienr .category-item:hover .accordion-header {
+    background-color: #ececec;
+  }
+  .filter-contaienr .category-item.active .accordion-body ul li:hover {
+    background-color: #ececec;
+  }
+  .filter-contaienr .category-item.active .accordion-body ul li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: 0.2s ease;
+  }
+  .filter-contaienr .category-item.active .accordion-body ul li a{
+    width: 100%;
+  }
+  .filter-contaienr .category-item.active .accordion-body ul li:not(:last-child) {
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .filter-contaienr .arrow-icon {
+    font-size: 20px;
+    color: #6c757d;
+  }
+  .All_Products .product-section .feature-product-tile .title-box h2 {
+    font-size: 40px;
+    font-weight: 700;
+    color: #1A181E;
+  }
+  .All_Products .product-section .feature-product-tile .title-box h2 span {
+    color: #DB3030;
+  }
+
+  .categories-card.brnads .list-group{
+    height: 100%;
+    max-height: 200px;
+    overflow-y: scroll;
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+  }
+  .categories-card.brnads .list-group ul li{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+  }
+  .categories-card.brnads .list-group ul li:hover{
+    background-color: #ececec;
+  }
+  .categories-card.brnads .list-group ul li a{
+    width: 100%;
+  }
+  .categories-card.brnads .list-group ul li:not(:last-child) {
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .fliterbox {
+    position: sticky;
+    top: 160px;
+    height: calc(100vh - 140px);
+    overflow-y: scroll;
+    scrollbar-width: none;
+  }
+
+  .filterrange_box .wrapper {
+    width: 100%;
+    background: #fff;
+    border-radius: 10px;
+    padding: 10px 15px 20px;
+    /* box-shadow: 0 12px 35px rgba(0, 0, 0, 0.1); */
+  }
+ 
+  .filterrange_box .price-input {
+    width: 100%;
+    display: flex;
+    margin: 0 0 20px;
+  }
+  .filterrange_box .price-input .field {
+    display: flex;
+    width: 100%;
+    height: 45px;
+    align-items: center;
+  }
+  .filterrange_box .field input {
+    width: 100%;
+    height: 100%;
+    outline: none;
+    font-size: 16px;
+    margin-left: 8px;
+    border-radius: 5px;
+    text-align: center;
+    border: 1px solid #999;
+    -moz-appearance: textfield;
+  }
+  .filterrange_box input[type="number"]::-webkit-outer-spin-button,
+  .filterrange_box input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+  }
+  .filterrange_box .price-input .separator {
+    width: 130px;
+    display: flex;
+    font-size: 16px;
+    align-items: center;
+    justify-content: center;
+  }
+  .filterrange_box .slider {
+    height: 5px;
+    position: relative;
+    background: #ddd;
+    border-radius: 5px;
+  }
+  .filterrange_box .slider .progress {
+    height: 100%;
+    left: 25%;
+    right: 25%;
+    position: absolute;
+    border-radius: 5px;
+    background: #DB3030;
+  }
+  .filterrange_box  .range-input {
+    position: relative;
+  }
+  .filterrange_box .range-input input {
+    position: absolute;
+    width: 100%;
+    height: 5px;
+    top: -5px;
+    background: none;
+    pointer-events: none;
+    -webkit-appearance: none; 
+    -moz-appearance: none;
+  }
+  .filterrange_box input[type="range"]::-webkit-slider-thumb {
+    height: 17px;
+    width: 17px;
+    border-radius: 50%;
+    background: #DB3030;
+    pointer-events: auto;
+    -webkit-appearance: none;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.05);
+  }
+  .filterrange_box input[type="range"]::-moz-range-thumb {
+    height: 17px;
+    width: 17px;
+    border: none;
+    border-radius: 50%;
+    background: #DB3030;
+    pointer-events: auto;
+    -moz-appearance: none;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.05);
+
+  }
+  .fliterbox .fliterbox-tile .title-box h2{
+    font-size: 24px;
+    color: #DB3030;
+    font-weight: 600;
+    margin-bottom: 0;
+  }
+  .fliterbox .fliterbox-tile .title-box a{
+    font-size: 14px;
+    color: #000000;
+    font-weight: 600;
+    text-decoration: underline;
+  }
+  .category-item {
+    cursor: pointer;
+  }
+  .category-item:not(:last-child) {
+    border-bottom: 1px solid #ccc;
+  }
+  .rating-check-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+  }
+  .rating-check-item:not(:last-child) {
+    border-bottom: 1px solid #ccc;
+  }
+  @media screen and (max-width:1200px) {
+    .filterrange_box .price-input {
+      flex-wrap: wrap;
+    }
+  }
+  @media screen and (max-width:768px) {
+    .filter-contaienr{
+      position: absolute;
+      top: 36px;
+      background-color: #ffffff;
+      z-index: 999;
+      display: none;
+    }
+    .fliterbox {
+      position: relative;
+      top: 0;
+      height: auto;
+      overflow-y: initial;
+      scrollbar-width: none;
+    }
+    .filter-categoy {
+      display: flex  ;
+      flex-wrap: wrap;
+      justify-content: space-between;
+  }
+    .filter-categoy.my-4 .card {
+      width: 100%;
+      max-width: calc(100% / 2 - 10px);
+  }
+  }
+  .filter-contaienr.show{
+    display: block !important;
+  }
+  .custom-select:focus {
+    box-shadow: none;
+    outline: none;
+  }
+  .fliterbox .filter-categoy .categories-card:nth-child(1) .list-group{
+    height: 100%;
+    max-height: 300px;
+    overflow-y: scroll;
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+  }
+  /* .filter-btn */

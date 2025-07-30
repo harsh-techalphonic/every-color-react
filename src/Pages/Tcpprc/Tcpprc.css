@@ -1,0 +1,40 @@
+.term-Conditons_sec .term_tiles h1{
+    font-size: 64px;
+    font-weight:600 ;
+    color: #000000;
+}
+.term-Conditons_sec .term_tiles h2{
+    font-size: 48px;
+    font-weight:600 ;
+    color: #000000;
+}
+.term-Conditons_sec .term_tiles h3{
+    font-size: 36px;
+    font-weight:600 ;
+    color: #000000;
+}
+.term-Conditons_sec .term_tiles h4{
+    font-size: 32px;
+    font-weight:600 ;
+    color: #000000;
+}
+.term-Conditons_sec .term_tiles h5{
+    font-size: 24px;
+    font-weight:600 ;
+    color: #000000;
+}
+.term-Conditons_sec .term_tiles h6{
+    font-size: 20px;
+    font-weight:600 ;
+    color: #000000;
+}
+.term-Conditons_sec .term_tiles p{
+    font-size: 17px;
+    font-weight:400 ;
+    color: #000000;
+}
+.term-Conditons_sec .term_tiles ol li, .term-Conditons_sec .term_tiles ul li{
+    font-size: 17px;
+    font-weight:400 ;
+    color: #000000;
+}

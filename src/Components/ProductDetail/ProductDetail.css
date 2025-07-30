@@ -1,0 +1,320 @@
+.product-detail-slider-content .main {
+  font-family: Arial;
+  width: calc(100% - 100px);
+  display: block;
+  margin: 0 auto;
+}
+.product-detail-slider-content h3 {
+  background: #fff;
+  color: #3498db;
+  font-size: 36px;
+  line-height: 100px;
+  margin: 10px;
+  padding: 2%;
+  position: relative;
+  text-align: center;
+}
+.product-detail-slider-content .action {
+  display: block;
+  margin: 100px auto;
+  width: 100%;
+  text-align: center;
+}
+.product-detail-slider-content .action a {
+  display: inline-block;
+  padding: 5px 10px;
+  background: #f30;
+  color: #fff;
+  text-decoration: none;
+}
+.product-detail-slider-content .action a:hover {
+  background: #000;
+}
+.wishlist-sec-prodet .whiashad i {
+  color: #067d62;
+}
+.placelogo input {
+  padding: 8px;
+  font-size: 14px;
+  font-weight: 400;
+  color: #888c8c;
+  border: 1px solid #888c8c;
+  border-radius: 3px;
+}
+.share-product p {
+  white-space: nowrap;
+  margin-bottom: 0;
+}
+
+.star-rating {
+  color: gold;
+}
+
+.review-images img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  margin-right: 10px;
+}
+.product-detail-slider-content h5 {
+  font-size: 24px;
+  font-weight: 500;
+  color: #0f1111;
+}
+.rating-stars {
+  font-size: 24px;
+  font-weight: 500;
+  color: #fa8232;
+}
+.rating-test {
+  font-size: 16px;
+  font-weight: 500;
+  color: #191c1f;
+  display: flex;
+  line-height: 24px;
+}
+.rating-test pre {
+  font-size: 15px;
+  font-weight: 400;
+  color: #5f6c72;
+  margin-bottom: 0;
+}
+.discount {
+  background-color: #ffcc00;
+  padding: 2px 5px;
+  border-radius: 4px;
+  font-weight: bold;
+}
+.Pricing {
+  color: #2da5f3;
+}
+
+.Guarantee_Checkout .paymetn-img {
+  width: 100%;
+  max-width: 312px;
+}
+.product-galler-slide .mainSliderRef {
+  margin-bottom: 24px;
+}
+.product-galler-slide .mainSliderRef .slick-slider .slick-list {
+  border: 1px solid #e4e7e9;
+}
+.product-galler-slide .mainSliderRef .slick-slider .slick-list .slick-slide {
+  padding: 60px;
+}
+.product-galler-slide
+  .navSliderRef
+  .slick-slider
+  .slick-list
+  .slick-slide
+  > div {
+  border: 1px solid #e4e7e9;
+  padding: 10px;
+  border-radius: 2px;
+}
+.product-galler-slide
+  .navSliderRef
+  .slick-slider
+  .slick-list
+  .slick-slide.slick-current
+  > div {
+  border: 2px solid #DB3030;
+}
+.navSliderRef .slick-list {
+  margin: 0 -5px;
+}
+.navSliderRef .slick-slide {
+  padding: 8px;
+}
+.product-galler-slide .mainSliderRef .slick-slider .slick-slide img{
+  height: 400px;
+  width: auto;
+  margin: auto;
+}
+.product-galler-slide .navSliderRef .slick-slider .slick-prev, .product-galler-slide .navSliderRef .slick-slider .slick-next {
+  background-color: #DB3030 !important;
+}
+.product-galler-slide .navSliderRef .slick-slider .slick-prev:before, .product-galler-slide .navSliderRef .slick-slider .slick-next:before{
+  color: #ffffff !important;
+}
+
+
+
+.product-description .nav.nav-tabs .nav-link{
+  font-size: 16px;
+  font-weight: 500;
+  color: #5F6C72;
+  border: none;
+  background-color: inherit;
+  padding: 16px ;
+}
+.product-description .nav.nav-tabs .nav-link.active{
+  font-size: 16px;
+  font-weight: 700;
+  color: #28a745;
+  border-bottom: 2px solid;
+  border-radius: 0;
+
+}
+.product-about .content-bout h4{
+  font-size: 16px;
+  font-weight: 700;
+  color: #0F1111;
+}
+.product-about .content-bout ul li{
+  font-size: 14px;
+  font-weight: 400;
+  color: #0F1111;
+}
+.contact-container {
+    max-width: 1200px;
+    margin: auto;
+    background: #fff;
+    padding: 60px 80px ;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+.info-box {
+    text-align: center;
+    padding: 20px;
+    border-radius: 8px;
+    background: #f8f9fa;
+    height: 100%;
+}
+.info-box p {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 0;
+}
+.info-box i {
+    font-size: 30px;
+    margin-bottom: 10px;
+}
+}
+.raefasdfasdf{
+  width: 100%;
+  max-width: 500px;
+  margin: auto;
+}
+.raefasdfasdf span{
+  white-space: nowrap;
+  margin-right: 8px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #2162A1;
+}
+.raefasdfasdf .progress{
+  height: 20px;
+}
+.product_rating-sec .display-4{
+  font-size: 48px;
+  font-weight: 500;
+  color: #000000;
+}
+.product_rating-sec .star-rating{
+  font-size: 40px;
+  font-weight: 500;
+  color: #FFCF47;
+}
+.product_rating-sec .lead{
+  font-size: 24px;
+  font-weight: 400;
+  color: #0F1111;
+}
+.product_rating-sec .col-lg-4{
+  border-right: 2px solid;
+}
+.custoomer-say h5{
+  font-size: 16px;
+  font-weight: 700;
+  color: #0F1111;
+}
+.custoomer-say p{
+  font-size: 14px;
+  font-weight: 400;
+  color: #0F1111;
+}
+.custoomer-say .selected-learn h5{
+  font-size: 14px;
+  font-weight: 700;
+  color: #0F1111;
+}
+.custoomer-say .selected-learn ul li{
+  font-size: 15px;
+  font-weight: 300;
+  color: #000000;
+  position: relative;
+}
+.custoomer-say .selected-learn ul li i{
+  font-size: 15px;
+  color: #067D62;
+  margin-right: 6px;
+}
+.custoomer-say .selected-learn ul li:not(:last-child)::after{
+  content: "";
+  position: absolute;
+  top: 0;
+  right: -12px;
+  width: 1px;
+  height: 100%;
+  background-color: #BBBFBF;  
+}
+.asdknc-desc .conte ul li img {
+  width: 100%;
+  max-width: 24px;
+  height: 24px;
+}
+.asdknc-desc .conte ul li {
+  font-size: 14px;
+  font-weight: 400;
+  color: #191C1F;
+}
+.descipt-box h4{
+  font-size: 16px;
+  font-weight:500 ;
+  color: #191C1F;
+  margin-bottom: 16px;
+}
+.descipt-box p{
+  font-size: 14px;
+  font-weight:400 ;
+  color: #5F6C72;
+  text-align: justify;
+}
+.asdknc-desc .conte{
+  padding-right: 24px;
+}
+.asdknc-desc .conte h5{
+  font-size: 16px;
+  font-weight:600;
+  color: #191C1F;
+  margin-bottom: 24px;
+}
+.asdknc-desc .conte ul li img{
+width: 100%;
+max-width:24px ;
+height: 24px;
+}
+.asdknc-desc .conte p{
+  font-size: 14px;
+  font-weight:400 ;
+  color: #5F6C72;
+}
+.asdknc-desc .conte ul li {
+  font-size:14px ;
+  font-weight:400;
+  color:#191C1F ;
+  }
+  .asdknc-desc .conte ul li span {
+    font-size:14px ;
+    font-weight:600;
+    color:#191C1F ;
+    }
+.descipt-box .description-imgaas .imgaone{
+  width: 100%;
+  max-width: 679px;
+  margin: auto;
+  background-color:#F5F5F5 ;
+  box-shadow: 0px 4px 4px 0px #00000040;
+  /* padding: 70px 60px 0 60px; */
+}

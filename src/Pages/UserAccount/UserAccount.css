@@ -1,0 +1,61 @@
+.User_dashboard .user_tabBoard{
+    gap: 16px;
+}
+.User_dashboard #justify-tab-Dashboard{
+    width: 100%;
+    max-width: 275px;
+    display: block;
+    border-bottom: none;
+    border: 1px solid #c7c7c7;
+    border-radius: 8px;
+    padding: 8px 0;
+    box-shadow: 0px 0px 4px 0px #c7c7c7;
+    height: 100%;
+}
+.User_dashboard #justify-tab-Dashboard li.nav-item  {
+    width: 100%;
+    margin-bottom: 2px;
+}
+.User_dashboard #justify-tab-Dashboard .nav-item .nav-link, .User_dashboard #justify-tab-Dashboard .nav-item .nav-link {
+    width: 100%;
+    text-align: left;
+}
+.User_dashboard #justify-tab-Dashboard .nav-item .nav-link{
+    color: #000000;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 0;
+    padding: 10px 24px;
+}
+.User_dashboard #justify-tab-Dashboard .nav-item .nav-link.active{
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    background-color: #DB3030;
+}
+.User_dashboard #justify-tab-Dashboard .nav-item .nav-link.active:hover{
+    background-color: #DB3030;
+    color: #ffffff;
+
+}
+.User_dashboard #justify-tab-Dashboard .nav-item .nav-link:hover{
+    color: #000000;
+    background-color: #b8b8b8;
+}
+.User_dashboard .tab-content{
+    width: 100%;
+}
+.edit_profile{
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    border: 1px solid #898989;
+    font-size: 10px;
+    font-weight: 500;
+    color: #000000;
+    padding: 8px 20px;
+}
+
+/* @media screen () {
+    
+} */

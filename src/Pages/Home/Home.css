@@ -1,0 +1,13 @@
+.gprscertified{
+    background-color: #e2ecee;
+    padding: 20px 0;
+}
+.gprscertified .gprscertified-box .gprscertified-icon{
+    width: 100%;
+    max-width: 60px;
+}
+.gprscertified .gprscertified-box .gprscertified-content h4{
+    font-size: 16px;
+    font-weight: 700;
+    color: #1A181E;
+}

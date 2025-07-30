@@ -1,0 +1,327 @@
+.Header .infobox{
+    padding: 4px 0;
+    border-bottom: 1px solid #EAEAEA;
+    background-color: #DB3030;
+}
+
+.Header .infobox ul li a{
+    font-size: 14px;
+    font-weight: 400;
+    color: #ffffff;
+}
+.Header .infobox ul li a i{
+    font-size: 14px;
+    color: #ffffff;
+}
+.Header .searchbar-category-barr button{
+    background-color: #ffffff;
+    border: 1px solid #0071bc1a;
+    border-radius: 40px;
+    font-size: 15px;
+    font-weight: 700;
+    color: #184363;
+    white-space: nowrap;
+    padding: 10px 16px;
+}
+.Header .searchbar-category-barr .input-group{
+    border: 1px solid #0071bc1a;
+    border-radius: 40px;
+    overflow: hidden;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 20px;
+}
+.Header .searchbar-category-barr .input-group input{
+    border: none;
+    font-size: 15px;
+    padding: 11px 16px;
+    width: calc(100% - 56px);
+}
+.searchbar-category-barr .input-group .input-group-text{
+    border: none;
+    background-color: #DB3030;
+    color: #ffffff;
+    padding: 11px 16px;
+    width: 56px;
+}
+.Header .logo-cartbox ul li a{
+    font-size: 16px;
+    color: #184363;
+}
+.Header .logo-serach .brand-name{
+    width: 100%;
+    max-width: 80px;
+}
+
+.Header .menu-box{
+    background-color: #EDF4F6;
+    padding: 17px;
+}
+.Header .menu-box ul li:not(:last-child){
+    margin-right: 48px;
+}
+.Header .menu-box ul li a.active{
+    color: #DB3030;
+}
+.Header .menu-box ul li a{
+    color: #184363;
+    font-size: 15px;
+    font-weight: 700;
+}
+.Header .searchbar-category-barr button.touggle-btn{
+    border-radius: 8px;
+    display: none;
+}
+.mobsideMenu .brand-name{
+    width: 100%;
+    max-width: 140px;
+}
+.mobsideMenu  .menu-box {
+    background-color: #EDF4F6;
+    padding: 17px;
+    height: 100%;
+}
+.mobsideMenu .menu-box ul li{
+    width: 100%;
+    margin-bottom: 8px;
+    background-color: #ffffff;
+    padding: 8px 16px;
+}
+
+.mobsideMenu .menu-box ul li a.active{
+    color: #ffffff;
+}
+.mobsideMenu .menu-box ul li:has(a.active) {
+    background-color: #DB3030;
+}
+.mobsideMenu .menu-box ul li:hover {
+    background-color: #DB3030;
+}
+.mobsideMenu .menu-box ul li:hover a {
+    color: #ffffff;
+}
+.mobsideMenu .menu-box ul li a{
+    color: #184363;
+    font-size: 15px;
+    font-weight: 700;
+    width: 100%;
+}
+.logo-cartbox li{
+    position: relative;
+}
+.wishlist-count{
+    width: 100%;
+    max-width:16px;
+    height: 16px;
+    background-color: #DB3030;
+    border-radius: 50%;
+    color: #ffffff;
+    font-size: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: -8px;
+    right: -8px;
+}
+
+@media screen and (max-width:991px) {
+    .logo-serach{
+        flex-wrap: wrap;
+    }
+    .searchbar-category-barr{
+        order: -1;
+        margin-bottom: 12px;
+    }
+    .Header .searchbar-category-barr button.touggle-btn{
+        display: block;
+    }
+    .Header .searchbar-category-barr.justify-content-center{
+       justify-content: space-between !important;
+    }
+    .Header .menu-box.desktop {
+       display: none;
+    }
+    .Header .infobox ul li a{
+        width: -webkit-fill-available;
+    }
+    .account-dropdown{
+        width: 100%;
+    }
+    
+}
+@media screen and (max-width:576px) {
+    .searchbar-category-barr{
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+}
+
+.custom-dropdown {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    width: 240px;
+    padding: 12px 0;
+    top: 40px;
+    right: 0;
+    z-index: 99;
+  }
+  .custom-dropdown.asdkom{
+      max-height: 400px;
+      overflow-y: scroll;
+      scroll-behavior: smooth;
+      scrollbar-width: thin;
+    
+  }
+  .custom-dropdown ul li a{
+    width: 100%;
+    height: 100%;
+  }
+  .custom-dropdown::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    right: 14px;
+    width: 20px;
+    height: 20px;
+    background: #fff;
+    transform: rotate(45deg);
+    z-index: -1;
+}
+
+  .custom-dropdown ul {
+    margin: 0;
+    padding: 0;
+  }
+
+  .custom-dropdown li {
+    /* padding: 12px 16px; */
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+  }
+
+  .custom-dropdown li:hover {
+    background-color: #f5f5f5;
+  }
+
+  .custom-dropdown a {
+    text-decoration: none;
+    color: #333;
+    font-size: 14px;
+    padding: 12px 16px;
+  }
+
+  .custom-dropdown i {
+    font-size: 16px;
+  }
+
+  .custom-dropdown2 {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    width: 240px;
+    padding: 12px 0;
+    top: 40px;
+    right: 0;
+    z-index: 99;
+  }
+
+
+  .custom-dropdown2 ul {
+    margin: 0;
+    padding: 0;
+  }
+
+  .custom-dropdown2 li {
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+  }
+
+  .custom-dropdown2 li:hover {
+    background-color: #f5f5f5;
+  }
+
+  .custom-dropdown2 a {
+    text-decoration: none;
+    color: #333;
+    font-size: 14px;
+  }
+
+  .custom-dropdown2 i {
+    font-size: 16px;
+  }
+  .adv_btn{
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background-color: #ececec;
+    box-shadow: 0px 0px 4px 0px #c7c7c7;
+}
+.asdcasdfasdfasdfasdf ul li a{
+  width: 100%;
+}
+.searchbarOUTPut{
+  position: absolute;
+  top: calc(100% );
+  left: 20px;
+  width: 100%;
+  border: 1px solid #e5f1f8;
+  /* height: 100%; */
+  max-height: 400px;
+  z-index: 9999;
+  background-color: #ffffff;
+  /* padding: 8px; */
+  border-radius: 0px 0px 8px 8px;
+  overflow-y: scroll;
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+}
+.Header .searchbar-category-barr .sraechbar-we{
+  border-radius: 40px;
+  width: 100%;
+  max-width: 600px;
+}
+ .sraechbar-we .searchbarOUTPut li{
+  width: 100%;
+  padding: 4px 8px;
+  width: 100%;
+}
+.sraechbar-we .searchbarOUTPut li a{
+  background-color: #f5f5f5;
+  display: block;
+  padding: 8px;
+}
+.sraechbar-we .searchbarOUTPut li a:hover{
+  background-color: #DB3030;
+  color: #ffffff;
+  font-weight: 600;
+}
+  .sticky {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    animation: slide 0.3s ;
+    box-shadow: 0 2px 4px 0 #c9c9c9;
+    background-color: #ffffff;
+    z-index: 9999;
+    }
+    @keyframes slide {
+        0% {
+          opacity: 0;
+          transform: translateY(-50px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0%);
+        }
+      }
+      .Header.sticky .infobox{
+        display: none;
+      }

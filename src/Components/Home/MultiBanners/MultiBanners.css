@@ -1,0 +1,94 @@
+.multibanner{
+    background-color: #E8E8E830;
+    padding: 40px 0;
+    margin: 80px 0;
+}
+.multibanner .banner-left {
+    background-color: #F1FAFE;
+    padding: 40px 40px;
+    border-radius: 14px;
+}
+.multibanner .banner-left .banner-left-content span {
+    background-color: #DB3030;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 20px;
+    font-weight: 500;
+    color: #FFFFFF;
+}
+.multibanner .banner-left .banner-left-content h2 {
+   font-size: 36px;
+   font-weight: 700;
+   color: #020A13;
+   margin: 16px 0;
+}
+.multibanner .banner-left .banner-left-content p {
+    font-size: 16px;
+    font-weight: 400;
+    color: #373D45;
+ }
+ .multibanner .banner-left .banner-left-content .Pricing .price {
+    font-size: 24px;
+    font-weight: 700;
+    color: #333333;
+}
+ .multibanner .banner-left .banner-left-content .Pricing .slashPrice {
+    font-size: 16px;
+    font-weight: 500;
+    color: #333333;
+    text-decoration: line-through;
+    margin-left: 8px;
+}
+.multibanner .banner-left .banner-left-img {
+    width: 100%;
+    max-width: 304px;
+}
+
+
+
+
+
+
+.multibanner .banners-right .banner-right-one {
+    background-color: #FDF7E8;
+    padding: 12px 20px 12px 30px;
+    border-radius: 14px;
+    margin-bottom: 20px;
+}
+.multibanner .banners-right .banner-right-one:nth-child(2) {
+    background-color: #E8FFE7;
+    padding: 12px 20px 12px 30px;
+    border-radius: 14px;
+    margin-bottom: 20px;
+}
+.multibanner .banners-right .banner-right-content span {
+    background-color: #DB3030;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 20px;
+    font-weight: 500;
+    color: #FFFFFF;
+}
+.multibanner .banners-right .banner-right-content h3 {
+   font-size: 24px;
+   font-weight: 700;
+   color: #020A13;
+   margin: 16px 0;
+}
+.multibanner .banners-right .banner-right-content p {
+    font-size: 16px;
+    font-weight: 400;
+    color: #373D45;
+ }
+ .multibanner .banners-right .banner-right-content .Pricing .price {
+    font-size: 24px;
+    font-weight: 700;
+    color: #333333;
+}
+ .multibanner .banners-right .banner-right-content .Pricing .slashPrice {
+    font-size: 16px;
+    font-weight: 500;
+    color: #333333;
+    text-decoration: line-through;
+    margin-left: 8px;
+}

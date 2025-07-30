@@ -1,0 +1,32 @@
+.field-icon {
+    float: right;
+    margin-right: 16px;
+    margin-top: 12px;
+    position: relative;
+    z-index: 2;
+  }
+  .login-sec .login-box {
+    box-shadow: 0px 8px 40px 0px #0000001f;
+    padding: 72px 93px;
+  }
+  .login-sec .login-box h2 {
+    font-size: 28px;
+    font-weight: 600;
+    color: #101828;
+  }
+  .login-sec .login-box input {
+    font-size: 14px;
+    font-weight: 500;
+    color: #344054;
+    padding: 16px;
+  }
+  .login-sec .login-box button[type="submit"] {
+    background-color: #DB3030;
+    color: #fcfcfd;
+    font-size: 18px;
+    font-weight: 600;
+  }
+  .dont-accnt a {
+    color: #DB3030;
+    font-weight: 600;
+  }

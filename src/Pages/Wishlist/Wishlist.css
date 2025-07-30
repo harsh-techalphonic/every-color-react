@@ -1,0 +1,112 @@
+
+
+  .wishlist-box .cart-title h2 {
+    font-size: 26px;
+    font-weight: 700;
+    color: #4b5966;
+}
+.wishlist-box .cart-title h2 span {
+    color: #DB3030;
+}
+.wishlistTitle_btn h3{
+    font-size: 26px;
+    font-weight: 700;
+    color: #4b5966;
+}
+.wishlistTitle_btn a{
+    font-size: 16px;
+    font-weight: 600;
+    color: #ffffff;
+    background-color: #DB3030;
+    padding: 8px 16px;
+    border-radius: 8px;
+}
+
+
+
+.Product_card .feature-card .card-img{
+  width: 100%;
+  height: 184px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.Product_card .feature-card .card-img img{
+ height: 100%;
+ width: 100%;
+ max-width: max-content;
+}
+.Product_card .feature-card {
+  /* text-align: center; */
+  margin-top: 16px;
+  padding-top:16px ;
+  border: 1px solid #E8E8E8;
+  
+}
+.Product_card .feature-card  h3 a{
+  font-size: 17px;
+  font-weight: 700;
+  color: #020A13;
+  font-family: "Nunito", serif;
+  height: 61px;
+  display: -webkit-box;
+-webkit-box-orient: vertical;
+-webkit-line-clamp: 3;
+overflow: hidden;
+}
+.Product_card .feature-card  p{
+  font-size: 15px;
+  font-weight: 500;
+  color: #666666;
+  font-family: "Nunito", serif;
+  margin-bottom: 10px;
+}
+.Product_card .feature-card  p b{
+  font-size: 15px;
+  font-weight: 700;
+  color: #000000;
+  font-family: "Nunito", serif;
+}
+.Product_card .feature-card  .rating svg{
+  color: #FEB92D ;
+}
+.Product_card .feature-card  .rating span{
+  font-size: 10px;
+  font-weight: 700;
+  color: #333333;
+  margin-left: 4px;
+}
+.Product_card .feature-card  .Pricing{
+  margin: 12px 0;
+}
+.Product_card .feature-card  .Pricing p{
+  margin-bottom: 0px;
+}
+.Product_card .feature-card  .Pricing .price{
+  font-size: 24px;
+  font-weight: 700;
+  color: #333333;
+}
+.Product_card .feature-card  .Pricing .slashPrice{
+  font-size: 16px;
+  font-weight: 500;
+  color: #333333;
+  text-decoration: line-through;
+  margin-left: 8px;
+}
+.Product_card .cart-btn{
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color:#DB3030;
+  padding: 8px 0;
+  border-radius: 0px 0px 12px 12px;
+  text-align: center;
+  color: #ffffff !important;
+  font-size: 16px;
+  font-weight: 700;
+  /* display: none; */
+
+}

@@ -1,32 +1,44 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-export const filtersSlice = createSlice({
+const initialState = {
+  sorted: "newest",          // sort key
+  priceRangeMin: 0,
+  priceRangeMax: 0,
+  ratingSorted: 0,           // your name for rating threshold
+  countProduct: 0,
+};
+
+const filtersSlice = createSlice({
   name: "filters",
-  initialState: {
-    sorted: "newest",
-    priceRangeMin: 0,
-    priceRangeMax: 0,
-    ratingSorted: 0,
-    countProduct: 0,
-  },
+  initialState,
   reducers: {
-    sorted: (store, action) => {
-      return { ...store, sorted: action.payload };
+    sorted: (state, action) => {
+      state.sorted = action.payload;
     },
-    ratingSorted: (store, action) => {
-      return { ...store, ratingSorted: action.payload };
+    ratingSorted: (state, action) => {
+      state.ratingSorted = action.payload;
     },
-    priceRangeMin: (store, action) => {
-      return { ...store, priceRangeMin: action.payload };
+    priceRangeMin: (state, action) => {
+      state.priceRangeMin = action.payload;
     },
-    priceRangeMax: (store, action) => {
-      return { ...store, priceRangeMax: action.payload };
+    priceRangeMax: (state, action) => {
+      state.priceRangeMax = action.payload;
     },
-    countProduct: (store, action) => {
-      return { ...store, countProduct: action.payload };
+    countProduct: (state, action) => {
+      state.countProduct = action.payload;
+    },
+    clearRating: (state) => {
+      state.ratingSorted = 0;
+    },
+    resetAll: (state) => {
+      state.sorted = "newest";
+      state.priceRangeMin = 0;
+      state.priceRangeMax = 0;
+      state.ratingSorted = 0;
+      state.countProduct = 0;
     },
   },
 });
-//dsdsdskdk
+
 export const filtersAction = filtersSlice.actions;
-export default filtersSlice;
+export default filtersSlice.reducer; // <-- important: export reducer, not slice object

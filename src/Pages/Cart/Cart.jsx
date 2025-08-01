@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { cartAction } from "../../store/Products/cartSlice";
 
 const CartItem = ({ item, onRemove, onQuantityChange }) => {
+  console.log("first", item)
   const [productAmount, setProductAmount] = useState(false);
   useEffect(() => {
     if (item.product_inventory_details.length == 0) return;

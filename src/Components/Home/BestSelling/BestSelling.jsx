@@ -1,23 +1,24 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import "./BestSelling.css";
 import Slider from "react-slick";
-
-import {faArrowRightLong, faL} from "@fortawesome/free-solid-svg-icons";
+import { faArrowRightLong } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
-import {useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import SingleProductSlide from "../../Product/SingleProductSlide";
 
 export default function BestSelling() {
   const fetch_products = useSelector((store) => store.products);
-  console.log("fetch_products",fetch_products)
-  // const [products, setProducts] = useState([]);
-  // useEffect(() => {
-  //   console.log('cccccc',fetch_products.data)
-  //   setProducts(fetch_products.data);
-  // }, [fetch_products.status]);
 
-  var settings = {
+  // defensive guard
+  const allProducts = Array.isArray(fetch_products?.data) ? fetch_products.data : [];
+
+  // filter new arrivals (and optionally only active status)
+  const newArrivals = allProducts.filter(
+    (p) => p.home_type === "new_arrivals" && String(p.status) === "1"
+  );
+
+  const settings = {
     dots: false,
     infinite: true,
     speed: 500,
@@ -54,6 +55,38 @@ export default function BestSelling() {
     ],
   };
 
+  if (!fetch_products?.status) {
+    return (
+      <section className="Best_selling my-5">
+        <div className="container">
+          <div>Loading products...</div>
+        </div>
+      </section>
+    );
+  }
+
+  if (newArrivals.length === 0) {
+    return (
+      <section className="Best_selling my-5">
+        <div className="container">
+          <div className="feature-product-tile d-flex align-items-center justify-content-between">
+            <div className="title-box">
+              <h2>
+                <span>Best</span> Selling
+              </h2>
+            </div>
+            <div className="title-box">
+              <Link to="/product">
+                View All <FontAwesomeIcon icon={faArrowRightLong} />
+              </Link>
+            </div>
+          </div>
+          <div className="my-4">No new arrivals available.</div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="Best_selling my-5">
       <div className="container">
@@ -64,7 +97,7 @@ export default function BestSelling() {
             </h2>
           </div>
           <div className="title-box">
-            <Link href="/product">
+            <Link to="/product">
               View All <FontAwesomeIcon icon={faArrowRightLong} />
             </Link>
           </div>
@@ -72,9 +105,8 @@ export default function BestSelling() {
 
         <div className="featureslider_one my-4">
           <Slider {...settings} className="xyzg-slider">
-            
-            {fetch_products.data.filter(e => e.type == 1).map((product, index) => (
-              <SingleProductSlide key={index} product={product}/>
+            {newArrivals.map((product, index) => (
+              <SingleProductSlide key={product.id || index} product={product} />
             ))}
           </Slider>
         </div>

@@ -52,7 +52,7 @@ export default function  SingleProductSlide({ product }) {
     } else {
       const newItem = { quantity: 1, prd_id: id };
       addTocart = [newItem, ...addTocart];
-      dispatch(cartAction.addCart(newItem)); // Dispatch add action
+      dispatch(cartAction.addCart(newItem)); 
     }
   
     setaddTocart(addTocart);
@@ -63,7 +63,7 @@ export default function  SingleProductSlide({ product }) {
     <div key={product.prd_id} className="feature-card">
       <span className="disco">
         {Math.round(
-          ((product.price - product.discount_price) / product.price) * 100
+          ((product.product_price - product.product_discount_price) / product.product_price) * 100
         )}
         %
       </span>
@@ -81,12 +81,12 @@ export default function  SingleProductSlide({ product }) {
       </span>
       <Link to={`/product/${product.slug}`}>
       <div className="card-img">
-        <img src={product.img_url} alt={product.title} />
+        <img src={product.product_image} alt={product.title} />
       </div>
       </Link>
       <div className="product-detail">
         <h3>
-          <Link to={`/product/${product.slug}`}>{product.title}</Link>
+          <Link to={`/product/${product.product_slug}`}>{product.product_name}</Link>
         </h3>
         <div className="rating d-flex align-items-center ">
           <FontAwesomeIcon key={0} icon={faStar} />
@@ -96,8 +96,8 @@ export default function  SingleProductSlide({ product }) {
           <span>({product.avg_ratting})</span>
         </div>
         <div className="Pricing d-flex align-items-center ">
-          <p className="price">₹ {product.discount_price} </p>
-          <p className="slashPrice">₹ {product.price} </p>
+          <p className="price">₹ {product.product_discount_price} </p>
+          <p className="slashPrice">₹ {product.product_price} </p>
         </div>
       </div>
       <a onClick={() => toggleCart(product.prd_id)} className={`cart-btn ${addTocart.some(item => item.prd_id === product.prd_id) ? "bg-dark" : ""}`}>

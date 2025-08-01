@@ -9,34 +9,43 @@ import { useDispatch, useSelector } from "react-redux";
 import { filtersAction } from "../../store/Products/filtersSlice";
 import ScrollToTop from "../ScrollToTop";
 
-export default function Product({category_type}) {
-  const fetch_products = useSelector((store) => store.products);
-fetch_products.data.forEach(product => {
-    // console.log(`"Product Image URL:", ${product.img_url} <br>  ${product.id}`);
-    console.log("product data", product)
-});
+export default function Product({ category_type }) {
+  const fetch_products = useSelector((store) => store.products) || { data: [], status: false };
+  const fetch_filter = useSelector((store) => store.filters) || {};
+  const dispatch = useDispatch();
 
-  const fetch_filter = useSelector((store) => store.filters);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 991);
   const [showFilter, setShowFilter] = useState(false);
-  // const [catProducts,setCatProducts] = useState([]);
-  const [products, setProducts] = useState([])
-  const {category, sub_category} = useParams();
+  const [products, setProducts] = useState([]);
 
-  useEffect(()=>{
-    setProducts(fetch_products.data)
-    if(!category_type) return;
-    console.log(category_type)
-    if(category_type == 'category'){
-      setProducts(fetch_products.data.filter((value) => value.category_slug == category))
-    }else{
-      setProducts(fetch_products.data.filter((value) => value.sub_category_slug == sub_category))
+  const { category, sub_category } = useParams();
+
+  // derive filtered-by-category products
+  useEffect(() => {
+    const all = Array.isArray(fetch_products.data) ? fetch_products.data : [];
+    let filtered = all;
+
+    if (category_type) {
+      if (category_type === "category") {
+        filtered = all.filter(
+          (value) => String(value.category?.slug || "").toLowerCase() === String(category || "").toLowerCase()
+        );
+      } else if (category_type === "sub_category") {
+        // note: your product object must have sub_category_slug or a nested subcategory. Adjust if different.
+        filtered = all.filter(
+          (value) => String(value.sub_category_slug || "").toLowerCase() === String(sub_category || "").toLowerCase()
+        );
+      }
     }
-  },[category_type,fetch_products.status,sub_category,category])
-  useEffect(()=>{
+
+    setProducts(filtered);
+  }, [category_type, fetch_products.status, fetch_products.data, category, sub_category]);
+
+  // update product count in filters slice
+  useEffect(() => {
     dispatch(filtersAction.countProduct(products.length));
-  },[products])
-  const dispatch = useDispatch();
+  }, [products.length, dispatch]);
+
   const handleSortChange = (event) => {
     dispatch(filtersAction.sorted(event.target.value));
   };
@@ -54,11 +63,19 @@ fetch_products.data.forEach(product => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const filters = ["Milk delivery bag", "5 Star Rating"];
+  // Placeholder active filters; ideally derive from fetch_filter state
+  const activeFilters = [];
+  if (fetch_filter.sorted && fetch_filter.sorted !== "newest") activeFilters.push(`Sort: ${fetch_filter.sorted}`);
+  if (fetch_filter.ratingSorted && fetch_filter.ratingSorted > 0) activeFilters.push(`${fetch_filter.ratingSorted}★ & above`);
+  if (
+    typeof fetch_filter.priceRangeMin !== "undefined" &&
+    typeof fetch_filter.priceRangeMax !== "undefined"
+  )
+    activeFilters.push(`₹${fetch_filter.priceRangeMin} - ₹${fetch_filter.priceRangeMax}`);
 
   return (
     <>
-    <ScrollToTop/>
+      <ScrollToTop />
       <Header />
 
       <section className="All_Products">
@@ -104,7 +121,7 @@ fetch_products.data.forEach(product => {
                     <Form.Select
                       className="custom-select"
                       aria-label="Sort by"
-                      value={fetch_filter.sorted}
+                      value={fetch_filter.sorted || "newest"}
                       onChange={handleSortChange}
                     >
                       <option value="newest">Newest</option>
@@ -120,22 +137,21 @@ fetch_products.data.forEach(product => {
                 <div className="d-flex justify-content-between align-items-center bg-light p-2 rounded mb-3">
                   <div className="d-flex align-items-center gap-2">
                     <span className="text-secondary">Active Filters:</span>
-                    {filters.map((filter, index) => (
+                    {activeFilters.length === 0 && <span className="text-muted">None</span>}
+                    {activeFilters.map((filter, index) => (
                       <div
                         key={index}
-                        className="d-flex align-items-center px-2 py-1 "
+                        className="d-flex align-items-center px-2 py-1"
                       >
                         <span className="me-1 fw-bold">{filter}</span>
-                        <button className="btn  p-0 text-secondary">
-                          <span size={12} className="fw-bold">
-                            X
-                          </span>
+                        <button className="btn p-0 text-secondary">
+                          <span className="fw-bold">X</span>
                         </button>
                       </div>
                     ))}
                   </div>
                   <div className="text-secondary">
-                    {fetch_filter.countProduct} Results found.
+                    {fetch_filter.countProduct ?? products.length} Results found.
                   </div>
                 </div>
 

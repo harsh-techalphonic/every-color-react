@@ -1,12 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react';
-import AllCategoriesAPi from '../../../API/AllCategoriesAPi';
+// import AllCategoriesAPi from '../../../API/AllCategoriesAPi';
 import { useSelector } from 'react-redux';
 import { Link, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBarsStaggered } from '@fortawesome/free-solid-svg-icons';
+import CategoriesApi from '../../../API/CategoriesAPi';
 
 export default function AllCatergory_Filter() {
-    const allCategories = useSelector((store) => store.allCategories);
+    const categories = useSelector((store) => store.categories);
+    // console.log("allCategories data", categories)
     const [showCategoriesDropdown, setshowCategoriesDropdown] = useState(false);
     const dropdownCategoriesRef = useRef(null);
     const location = useLocation(); 
@@ -36,14 +38,14 @@ export default function AllCatergory_Filter() {
 
     return (
         <>
-            <AllCategoriesAPi />
+            <CategoriesApi />
             <button className='ms-4' onClick={toggleCategoriesDropdown}>
                 <FontAwesomeIcon className='me-2' icon={faBarsStaggered} /> All Categories
             </button>
             {showCategoriesDropdown && (
                 <div className='dropdown-menu show position-absolute custom-dropdown asdkom' ref={dropdownCategoriesRef}>
                     <ul className='list-unstyled'>
-                        {allCategories.data?.map((category, index) => (
+                        {categories.data?.map((category, index) => (
                             <li key={index}>
                                 <Link to={`/category/${category.slug}`}>{category.name}</Link>
                             </li>

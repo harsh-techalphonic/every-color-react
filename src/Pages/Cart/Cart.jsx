@@ -24,19 +24,19 @@ const CartItem = ({ item, onRemove, onQuantityChange }) => {
   }, [item]);
 
   const handleIncrement = () =>
-    onQuantityChange(item.prd_id, item.quantity + 1);
+    onQuantityChange(item.id, item.quantity + 1);
   const handleDecrement = () =>
-    item.quantity > 1 && onQuantityChange(item.prd_id, item.quantity - 1);
+    item.quantity > 1 && onQuantityChange(item.id, item.quantity - 1);
 
   return (
     <div className="card mb-3 p-3">
       <div className="d-flex align-items-center gap-4">
         <div className="cartitem_img">
-          <img src={item.img_url} alt={item.title} className="img-fluid" />
+          <img src={item.product_image} alt={item.product_name} className="img-fluid" />
         </div>
         <div className="cartitem_content">
-          <h5>{item.title}</h5>
-          <div>
+          <h5>{item.product_name}</h5>
+          {/* <div>
             {item.variation
               ? Object.entries(item.variation).map(([key, value]) => (
                   <span key={key} className="badge text-bg-dark m-1">
@@ -44,7 +44,7 @@ const CartItem = ({ item, onRemove, onQuantityChange }) => {
                   </span>
                 ))
               : ""}
-          </div>
+          </div> */}
           <div className="price_ing d-flex align-items-center">
             {/* {item.product_inventory_details.length != 0 ? :''} */}
             {productAmount ? (
@@ -108,11 +108,11 @@ export default function Cart() {
       setProducts(
         fetch_products.data
           .filter((product) =>
-            cartIds.some((cartItem) => cartItem.prd_id === product.prd_id)
+            cartIds.some((cartItem) => cartItem.id === product.id)
           )
           .map((product) => {
             const cartItem = cartIds.find(
-              (cartItem) => cartItem.prd_id === product.prd_id
+              (cartItem) => cartItem.id === product.id
             );
             let variation = cartItem.variation
               ? { variation: cartItem.variation }
@@ -154,6 +154,7 @@ export default function Cart() {
     
     setCheckoutDetail(totals);
   }, [products])
+  console.log(products)
   useEffect(() => {
     if (products.length == 0) return;
     products.map((item, index) => {

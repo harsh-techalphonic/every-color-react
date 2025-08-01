@@ -12,7 +12,8 @@ import ScrollToTop from "../ScrollToTop";
 export default function Product({category_type}) {
   const fetch_products = useSelector((store) => store.products);
 fetch_products.data.forEach(product => {
-    console.log(`"Product Image URL:", ${product.img_url} <br>  ${product.id}`);
+    // console.log(`"Product Image URL:", ${product.img_url} <br>  ${product.id}`);
+    console.log("product data", product)
 });
 
   const fetch_filter = useSelector((store) => store.filters);

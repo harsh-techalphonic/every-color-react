@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import './Footer.css'
 import  logo from '../../../assets/every-color.png'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -9,9 +9,11 @@ import TcpprcApi from '../../../API/TcpprcApi'
 import ContactApi from '../../../API/ContactApi'
 import AboutApi from '../../../API/AboutApi'
 import BrandApi from '../../../API/BrandApi'
+import { useSelector } from 'react-redux'
 
 
 export default function Footer() {
+    const categories = useSelector((store) => store.categories);
   return (
     <section className="Footer">
                 <div className="container">
@@ -71,11 +73,11 @@ export default function Footer() {
                                 <div className='menu-box'>
                                     <h4>Categories</h4>
                                     <ul className='list-unstyled mt-4'>
-                                        <li><Link to="#!">Personal Care </Link></li>
-                                        <li><Link to="#!">Kitchen</Link></li>
-                                        <li><Link to="#!">Clothing</Link></li>
-                                        <li><Link to="#!">Electronic</Link></li>
-                                        <li><Link to="#!">Qorem</Link></li>
+                                        {categories.data?.map((category, index) => (
+                                            <li key={index}>
+                                                <Link to={`/category/${category.slug}`}>{category.name}</Link>
+                                            </li>
+                                        ))}
                                     </ul>
                                 </div>
                             </div>

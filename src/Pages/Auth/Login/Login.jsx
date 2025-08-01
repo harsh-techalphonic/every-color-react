@@ -12,12 +12,10 @@ import ScrollToTop from '../../ScrollToTop';
 
 export default function Login() {
     const [passwordVisible, setPasswordVisible] = useState(false);
-    const [username, setUsername] = useState('');
+    const [phone, setPhone] = useState('');
     const [password, setPassword] = useState('');
-    const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
-    const [verificationText, setVerificationText] = useState('');
-    const [message, setMessage] = useState(null); 
+    const [loginWithOTP, setLoginWithOTP] = useState(false);
     const navigate = useNavigate();
 
     const togglePasswordVisibility = () => {
@@ -26,46 +24,25 @@ export default function Login() {
 
     const handleLogin = async (e) => {
         e.preventDefault();
-        setError(null);
         setLoading(true);
-        setMessage(null);
 
         try {
-            const response = await axios.post(`${config.API_URL_POST}/login`, {
-                username,
-                password
-            });
+            const payload = {
+                phone,
+                ...(loginWithOTP ? { otp: password } : { password }),
+            };
 
-            console.log("Response Data:", response.data);
+            const response = await axios.post(`${config.API_URL}/auth/login`, payload);
 
-            localStorage.setItem('token', response.data.token);
+            const { token, user } = response.data;
 
-            const user = response.data.users;
+            // Save to localStorage
+            localStorage.setItem('token', token);
+            localStorage.setItem('user', JSON.stringify(user));
 
-            if (user.email_verified === "1") {
-                toast.success('Login successfully!');
-                setTimeout(() => navigate('/user-account'), 1500);
-            } else {
-                try {
-                    const otpResponse = await axios.post(
-                        `${config.API_URL_POST}/send-otp-in-mail`,
-                        { email: user.email }
-                    );
+            toast.success('Login successful!');
+            setTimeout(() => navigate('/user-account'), 1500);
 
-                    const { email, otp } = otpResponse.data;
-                    console.log("OTP sent to email:", email, "OTP:", otp);
-
-                    navigate("/verify", {
-                        state: { email, otp },
-                    });
-                } catch (otpError) {
-                    toast.error("Error sending OTP:", otpError.response?.data || otpError.message);
-                    toast.info({
-                        text: "Login successful, but OTP could not be sent.",
-                        type: "error",
-                    });
-                }
-            }
         } catch (err) {
             toast.error(err.response?.data?.message || 'Login failed');
         } finally {
@@ -75,9 +52,10 @@ export default function Login() {
 
     return (
         <>
-        <ScrollToTop/>
-        <ToastContainer />
+            <ScrollToTop />
+            <ToastContainer />
             <Header />
+
             <section className="login-sec">
                 <div className="container h-100">
                     <div className="row justify-content-center align-items-center h-100">
@@ -86,44 +64,71 @@ export default function Login() {
                                 <form onSubmit={handleLogin}>
                                     <h2 className="my-4">Login to your account</h2>
 
-                                    {error && <p className="text-danger">{error}</p>}
-                                    {message && <p className={`text-${message.type}`}>{message.text}</p>}
-                                    {verificationText && <p className="text-success">{verificationText}</p>}
-                                    
                                     <div className="mb-3">
-                                        <label htmlFor="username" className="form-label">Email / Username</label>
+                                        <label htmlFor="phone" className="form-label">Phone Number</label>
                                         <input
                                             type="text"
                                             className="form-control"
-                                            id="username"
-                                            placeholder="name@example.com"
-                                            value={username}
-                                            onChange={(e) => setUsername(e.target.value)}
+                                            id="phone"
+                                            placeholder="Enter phone number"
+                                            value={phone}
+                                            onChange={(e) => setPhone(e.target.value)}
                                             required
+                                            pattern="\d{10,12}"
+                                            maxLength="12"
                                         />
                                     </div>
 
-                                    <div className="mb-3 position-relative">
-                                        <label htmlFor="password" className="form-label">Password</label>
-                                        <input
-                                            type={passwordVisible ? 'text' : 'password'}
-                                            className="form-control password-field"
-                                            id="password"
-                                            placeholder="Password"
-                                            value={password}
-                                            onChange={(e) => setPassword(e.target.value)}
-                                            required
-                                        />
-                                        <span
-                                            className="fa field-icon toggle-password position-absolute"
-                                            onClick={togglePasswordVisibility}
-                                            style={{ top: '38px', right: '10px', cursor: 'pointer' }}
-                                        >
-                                            <FontAwesomeIcon icon={passwordVisible ? faEyeSlash : faEye} />
-                                        </span>
-                                        <p className="d-flex justify-content-end mt-2 mb-0">
-                                            <Link to="/forget-password">Forget Password?</Link>
-                                        </p>
+                                    {!loginWithOTP ? (
+                                        <div className="mb-3 position-relative">
+                                            <label htmlFor="password" className="form-label">Password</label>
+                                            <input
+                                                type={passwordVisible ? 'text' : 'password'}
+                                                className="form-control"
+                                                id="password"
+                                                placeholder="Password"
+                                                value={password}
+                                                onChange={(e) => setPassword(e.target.value)}
+                                                required
+                                            />
+                                            <span
+                                                className="fa field-icon toggle-password position-absolute"
+                                                onClick={togglePasswordVisibility}
+                                                style={{ top: '38px', right: '10px', cursor: 'pointer' }}
+                                            >
+                                                <FontAwesomeIcon icon={passwordVisible ? faEyeSlash : faEye} />
+                                            </span>
+                                        </div>
+                                    ) : (
+                                        <div className="mb-3">
+                                            <label htmlFor="otp" className="form-label">OTP</label>
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                id="otp"
+                                                placeholder="Enter OTP"
+                                                value={password}
+                                                onChange={(e) => setPassword(e.target.value)}
+                                                required
+                                            />
+                                        </div>
+                                    )}
+
+                                    <div className="d-flex justify-content-between align-items-center mb-3">
+                                        <div className="form-check form-switch align-items-center">
+                                            <input
+                                                className="form-check-input log_check"
+                                                type="checkbox"
+                                                role="switch"
+                                                id="switchCheckDefault"
+                                                checked={loginWithOTP}
+                                                onChange={(e) => setLoginWithOTP(e.target.checked)}
+                                            />
+                                            <label className="form-check-label mb-0" htmlFor="switchCheckDefault">
+                                                Login with OTP
+                                            </label>
+                                        </div>
+                                        <Link to="/forget-password">Forget Password?</Link>
                                     </div>
 
                                     <button className="form-control btn" type="submit" disabled={loading}>
@@ -141,6 +146,7 @@ export default function Login() {
                     </div>
                 </div>
             </section>
+
             <Footer />
         </>
     );

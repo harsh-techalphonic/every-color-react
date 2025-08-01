@@ -6,12 +6,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { filtersAction } from "../../../store/Products/filtersSlice";
 import AllCategoriesAPi from "../../../API/AllCategoriesAPi";
 import { Link } from "react-router-dom";
-import BrandApi from "../../../API/BrandApi";
+// import BrandApi from "../../../API/BrandApi";
 
 export default function ProductFilter({ products }) {
   const dispatch = useDispatch();
-  const allCategories = useSelector((store) => store.allCategories);
-  const { data } = useSelector((store) => store.brands);
+  // const allCategories = useSelector((store) => store.allCategories);
+   const categories = useSelector((store) => store.categories);
+  // const { data } = useSelector((store) => store.brands);
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(0);
   const [stepAmount, setStepAmount] = useState(300);
@@ -69,7 +70,7 @@ useEffect(()=>{
         <div className="categories-header">Categories</div>
         <div className="list-group">
           <AllCategoriesAPi/>
-          {allCategories.data.map((category, index) => (
+          {categories.data.map((category, index) => (
             <div
               key={index}
               className={`flex-wrap category-item ${
@@ -85,7 +86,7 @@ useEffect(()=>{
                   icon={activeIndex === index ? faAngleDown : faAngleRight}
                 />
               </div>
-              {activeIndex === index && category.sub_categories.length > 0 && (
+              {activeIndex === index && category.length > 0 && (
                 <div className="accordion-body mt-1">
                   <ul className="list-unstyled mb-0 ms-3">
                     {category.sub_categories.map((sub, subIndex) => (
@@ -99,7 +100,7 @@ useEffect(()=>{
         </div>
       </div>
           
-      <div className="card categories-card brnads mb-3">
+      {/* <div className="card categories-card brnads mb-3">
         <div className="categories-header">Brands</div>
         <div className="list-group">
           <BrandApi/>
@@ -109,7 +110,7 @@ useEffect(()=>{
             ))}
           </ul>
         </div>
-      </div>
+      </div> */}
 
       <div className="card categories-card mb-3">
         <div className="categories-header">Price Range</div>

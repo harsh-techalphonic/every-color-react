@@ -12,9 +12,9 @@ export default function SingleProductApi() {
   useEffect(() => {
     if(singleProduct.find((product) => product.slug === slug)) return;
     axios
-      .get(`${config.API_URL}/product/${slug}`)
+      .get(`${config.API_URL}/products/${slug}`)
       .then(function (response) {
-        // console.log(response.data.gallertImageUrl)
+        console.log("send dara", response.data)
         dispatch(singleProductAction.addProduct({
           ...response.data.product,
           product_attributes:response.data.product_attributes,

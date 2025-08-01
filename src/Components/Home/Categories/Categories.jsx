@@ -60,7 +60,7 @@ export default function Categories() {
         </div>
         <Slider {...settings} className="xyzg-slider">
           {categories.map((cat, idx) => (
-            <CategoryCard key={idx} data={cat}/>
+            <CategoryCard key={idx} data={cat} uri={"category"}/>
           ))}
         </Slider>
       </div>

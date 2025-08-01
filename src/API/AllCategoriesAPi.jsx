@@ -10,7 +10,7 @@ export default function AllCategoriesAPi() {
   useEffect(() => {
     if (allCategories.status) return;
     axios
-      .get(`${config.API_URL}/allCatWithSub`)
+      .get(`${config.API_URL}/category-with-sub-category`)
       .then(function (response) {
         dispatch(allCategoriesAction.getCategory(response.data.category));
       })

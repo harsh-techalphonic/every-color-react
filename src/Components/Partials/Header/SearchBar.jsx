@@ -6,6 +6,7 @@ import { Link, useLocation } from 'react-router-dom';
 
 export default function SearchBar() {
   const fetch_products = useSelector((store) => store.products);
+  // console.log("searchbar searchbar", fetch_products)
   const [searchTerm, setSearchTerm] = useState("");
   const [showsearchTerm, setshowsearchTerm] = useState(false);
   const wrapperRef = useRef(null);
@@ -14,7 +15,7 @@ export default function SearchBar() {
   const productList = fetch_products?.data || [];
 
   const filteredProducts = productList.filter((product) =>
-    product.title.toLowerCase().includes(searchTerm.toLowerCase())
+    product.product_name.toLowerCase().includes(searchTerm.toLowerCase())
   );
   // console.log("seacrhbar", filteredProducts)
   useEffect(() => {
@@ -73,7 +74,7 @@ export default function SearchBar() {
             {filteredProducts.length > 0 ? (
               filteredProducts.map((product) => (
                 <li key={product.prd_id}>
-                  <Link to={`/product/${product.slug}`}>{product.title}</Link>
+                  <Link to={`/product/${product.product_slug}`}>{product.product_name}</Link>
                 </li>
               ))
             ) : (

@@ -17,30 +17,31 @@ import { filtersAction } from "../../../store/Products/filtersSlice";
 export default function Product_card({products,filters}) {
   const [all_products, setProducts] = useState([]);
   const dispatch = useDispatch();
+  // console.log("asdlcnasldcnlasmdclml",products)
 
   useEffect(()=>{
     let sorted = [...products]
     switch (filters.sorted) {
       case "newest":
-        sorted.sort((a, b) => b.prd_id - a.prd_id);
+        sorted.sort((a, b) => b.id - a.id);
       break;
       case "a_to_z":
-        sorted.sort((a, b) => a.title.localeCompare(b.title));
+        sorted.sort((a, b) => a.product_name.localeCompare(b.product_name));
         break;
       case "z_to_a":
         sorted.sort((a, b) => b.title.localeCompare(a.title));
         break;
       case "low_to_high":
-        sorted.sort((a, b) => a.discount_price - b.discount_price);
+        sorted.sort((a, b) => a.product_discount_price - b.product_discount_price);
         break;
       case "high_to_low":
-        sorted.sort((a, b) => b.discount_price - a.discount_price);
+        sorted.sort((a, b) => b.product_discount_price - a.product_discount_price);
         break;
       default:
         break;
     }
     sorted = sorted.filter(product => 
-      product.discount_price >= filters.priceRangeMin && product.discount_price <= filters.priceRangeMax
+      product.product_discount_price >= filters.priceRangeMin && product.product_discount_price <= filters.priceRangeMax
   );
     setProducts(sorted)
   },[products,filters])
@@ -92,33 +93,34 @@ export default function Product_card({products,filters}) {
   
     setaddTocart(addTocart);
   };
+  console.log("product cartd page", products )
 
   return (
     <div className="row Product_card">
-      {all_products.map((product, index) => (
+      {products.map((product, index) => (
         <div key={index} className="col-lg-3 col-md-6 col-sm-6 mb-3">
           <div className="feature-card">
-            <span className="disco">{Math.round(((product.price - product.discount_price) / product.price) * 100)}%</span>
+            <span className="disco">{Math.round(((product.product_price - product.product_discount_price) / product.product_price) * 100)}%</span>
             <span
               className="wishicon"
-              onClick={() => toggleWishlist(product.prd_id)}
+              onClick={() => toggleWishlist(product.id)}
               style={{ cursor: "pointer", fontSize: "16px" }}
             >
               <FontAwesomeIcon
           icon={
-            wishlist.includes(product.prd_id) ? faSolidHeart : faRegularHeart
+            wishlist.includes(product.id) ? faSolidHeart : faRegularHeart
           }
-          color={wishlist.includes(product.prd_id) ? "red" : "black"}
+          color={wishlist.includes(product.id) ? "red" : "black"}
         />
             </span>
-            <Link to={`/product/${product.slug}`}>
+            <Link to={`/product/${product.product_slug}`}>
               <div className="card-img">
-              <img src={product.img_url} alt={product.title} />
+              <img src={product.product_image} alt={product.product_name} />
               </div>
             </Link>
             <div className="product-detail">
               <h3>
-              <Link to={`/product/${product.slug}`}>{product.title}</Link>
+              <Link to={`/product/${product.product_slug}`}>{product.product_name}</Link>
               </h3>
               <div className="rating d-flex align-items-center ">
                 <FontAwesomeIcon key={0} icon={faStar} />
@@ -128,12 +130,12 @@ export default function Product_card({products,filters}) {
                 <span>({product.avg_ratting})</span>
               </div>
               <div className="Pricing d-flex align-items-center">
-                <p className="price">₹ {product.discount_price}</p>
-                <p className="slashPrice">₹ {product.price}</p>
+                <p className="price">₹ {product.product_discount_price}</p>
+                <p className="slashPrice">₹ {product.product_price}</p>
               </div>
             </div>
-            <Link onClick={() => toggleCart(product.prd_id)} className={`cart-btn ${addTocart.some(item => item.prd_id === product.prd_id) ? "bg-dark" : ""}`}>
-            {addTocart.some(item => item.prd_id === product.prd_id) ? "Remove to Cart" : "Add to Cart"}
+            <Link onClick={() => toggleCart(product.id)} className={`cart-btn ${addTocart.some(item => item.id === product.id) ? "bg-dark" : ""}`}>
+            {addTocart.some(item => item.id === product.id) ? "Remove to Cart" : "Add to Cart"}
               <FontAwesomeIcon icon={faBagShopping} className="ms-2" />
             </Link>
           </div>

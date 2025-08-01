@@ -30,3 +30,9 @@
     color: #DB3030;
     font-weight: 600;
   }
+
+
+  .login-sec .login-box input[type=checkbox].log_check {
+    padding: 10px;
+    font-size: 18px;
+}

@@ -10,9 +10,13 @@ import WishlistMenu from './WishlistMenu';
 import CartMenu from './CartMenu';
 import AllCatergory_Filter from './AllCatergory_Filter';
 import SearchBar from './SearchBar';
+import CategoriesApi from '../../../API/CategoriesAPi';
+import { useSelector } from 'react-redux';
 
 
 export default function Header() {
+  const categories = useSelector((store) => store.categories);
+    // console.log("allCategories data", categories)
   const [show, setShow] = useState(false);
   const [isSticky, setIsSticky] = useState(false);
   const [wishlistCount, setWishlistCount] = useState(0);
@@ -115,6 +119,7 @@ useEffect(() => {
     <>
     <section className={`Header ${isSticky ? 'sticky' : ''}`}>
       <ProductsApi />
+      <CategoriesApi />
       <div className="infobox">
         <div className="container">
           <ul className="list-unstyled d-flex align-items-center justify-content-between mb-0">
@@ -167,11 +172,11 @@ useEffect(() => {
       <div className='menu-box desktop'>
         <ul className='d-flex align-items-center list-unstyled justify-content-center mb-0'>
           <li><Link to="/" className='active'>Home</Link></li>
-          <li><Link to="/product">Kids</Link></li>
-          <li><Link to="/product">Men</Link></li>
-          <li><Link to="/product">Women</Link></li>
-          <li><Link to="/product">Home Decor</Link></li>
-          <li><Link to="/product">Electronics</Link></li>          
+          {categories.data?.map((category, index) => (
+                                      <li key={index}>
+                                          <Link to={`/category/${category.slug}`}>{category.name}</Link>
+                                      </li>
+                                  ))}          
           <li><Link to="#!">Track Order</Link></li>
         </ul>
       </div>

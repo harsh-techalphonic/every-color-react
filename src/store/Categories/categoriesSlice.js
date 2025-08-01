@@ -12,7 +12,7 @@ export const categoriesSlice = createSlice({
     getCategory: (store, action) => {
       return {
         status: true,
-        data: [...action.payload.categories],
+        data: [...action.payload],
       };
     },
   },

@@ -22,8 +22,11 @@ import ReturnRefund from '../../Components/UserAccount/ReturnRefund/ReturnRefund
 // import Wishlist from '../../Components/UserAccount/Wishlist/Wishlist';
 import AccountDetails from '../../Components/UserAccount/AccountDetails/AccountDetails';
 import ScrollToTop from '../ScrollToTop';
+import { useSelector } from 'react-redux';
 
 export default function UserAccount() {
+  const authcheck = useSelector((store) => store.authcheck);
+  console.log(authcheck);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
 

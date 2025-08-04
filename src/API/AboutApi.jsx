@@ -7,6 +7,8 @@ import { AboutAction } from '../store/About/AboutSlice';
 
 export default function AboutApi() {
     const About = useSelector((store) => store.About);
+    const AuthCheck = useSelector((store) => store.AuthCheck);
+    console.log(AuthCheck);
     const dispatch = useDispatch();
   
     useEffect(() => {

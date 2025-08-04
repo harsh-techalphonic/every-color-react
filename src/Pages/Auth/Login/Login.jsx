@@ -9,6 +9,8 @@ import { Link, useNavigate } from "react-router-dom";
 import config from "../../../Config/config.json";
 import { toast, ToastContainer } from "react-toastify";
 import ScrollToTop from "../../ScrollToTop";
+import { useDispatch } from "react-redux";
+import { AuthCheckAction } from "../../../store/Auth/AuthCheckSlice";
 
 export default function Login() {
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -27,6 +29,7 @@ export default function Login() {
     cpassword: "",
     terms_conditions: 1,
   });
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const togglePasswordVisibility = () => {
@@ -82,8 +85,8 @@ export default function Login() {
       if (login.data.status == true) {
         const { token, user } = login.data;
 
+        dispatch(AuthCheckAction.addauth({ status: true }));
         localStorage.setItem("token", token);
-        localStorage.setItem("user", JSON.stringify(user));
 
         toast.success("Login successful!");
         setTimeout(() => navigate("/user-account"), 1000);

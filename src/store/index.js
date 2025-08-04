@@ -13,6 +13,7 @@ import TcpprcSlice from "./Tcpprc/TcpprcSlice";
 import ContactSlice from "./Contact/ContactSlice";
 import AboutSlice from "./About/AboutSlice";
 import brandsSlice from "./Brands/BrandSlice";
+import AuthCheckSlice from "./Auth/AuthCheckSlice";
 
 const ecommerceStore = configureStore({
   reducer: {
@@ -24,12 +25,13 @@ const ecommerceStore = configureStore({
     filters: filtersSlice.reducer,
     allCategories: allCategoriesSlice.reducer,
     singleProduct: singleProductSlice.reducer,
-    basicInfo:basicInfoSlice.reducer,
-    maxDicountProduct:maxDicountProductSlice.reducer,
-    Tcpprc:TcpprcSlice.reducer,
+    basicInfo: basicInfoSlice.reducer,
+    maxDicountProduct: maxDicountProductSlice.reducer,
+    Tcpprc: TcpprcSlice.reducer,
     Contact: ContactSlice.reducer,
     About: AboutSlice.reducer,
-    brands: brandsSlice.reducer
+    brands: brandsSlice.reducer,
+    authcheck: AuthCheckSlice.reducer,
   },
 });
 

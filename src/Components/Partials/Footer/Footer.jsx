@@ -10,6 +10,7 @@ import ContactApi from '../../../API/ContactApi'
 import AboutApi from '../../../API/AboutApi'
 import BrandApi from '../../../API/BrandApi'
 import { useSelector } from 'react-redux'
+import AuthCheck from '../../../API/AuthCheck'
 
 
 export default function Footer() {
@@ -100,7 +101,7 @@ export default function Footer() {
                         </div>
                     </div>
                 </div>
-                <TcpprcApi/><ContactApi/><AboutApi/><BrandApi/>
+                <TcpprcApi/><ContactApi/><AboutApi/><BrandApi/><AuthCheck/>
         </section>
   )
 }

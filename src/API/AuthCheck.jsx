@@ -6,14 +6,14 @@ import { AboutAction } from "../store/About/AboutSlice";
 import { AuthCheckAction } from "../store/Auth/AuthCheckSlice";
 
 export default function AuthCheck() {
-  const AuthCheck = useSelector((store) => store.AuthCheck);
+  const AuthCheck = useSelector((store) => store.authcheck);
   const token = localStorage.getItem("token");
 
   const dispatch = useDispatch();
 
   useEffect(() => {
     if (AuthCheck.status || !token) return;
-    
+
     try {
       const res = axios.get(`${config.API_URL}/auth/verify-token/${token}`);
       dispatch(AuthCheckAction.addauth({ status: true }));
@@ -21,5 +21,4 @@ export default function AuthCheck() {
       dispatch(AuthCheckAction.addauth({ status: false }));
     }
   }, [AuthCheck.status]);
-  
 }

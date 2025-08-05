@@ -93,7 +93,7 @@ export default function Product_card({products,filters}) {
   
     setaddTocart(addTocart);
   };
-  console.log("product cartd page", products )
+
 
   return (
     <div className="row Product_card">
@@ -134,8 +134,8 @@ export default function Product_card({products,filters}) {
                 <p className="slashPrice">₹ {product.product_price}</p>
               </div>
             </div>
-            <Link onClick={() => toggleCart(product.id)} className={`cart-btn ${addTocart.some(item => item.id === product.id) ? "bg-dark" : ""}`}>
-            {addTocart.some(item => item.id === product.id) ? "Remove to Cart" : "Add to Cart"}
+            <Link onClick={() => toggleCart(product.id)} className={`cart-btn ${addTocart.some(item => item.prd_id === product.id) ? "bg-dark" : ""}`}>
+            {addTocart.some(item => item.prd_id === product.id) ? "Remove to Cart" : "Add to Cart"}
               <FontAwesomeIcon icon={faBagShopping} className="ms-2" />
             </Link>
           </div>

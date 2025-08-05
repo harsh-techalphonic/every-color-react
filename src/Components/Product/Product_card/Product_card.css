@@ -23,10 +23,11 @@
     top: 14px ;
     left: 16px;
     background-color: #DB3030;
-    padding: 6px 11px;
+    padding: 6px 10px;
     font-size: 10px;
     color: #ffffff;
     font-weight: 700;
+    border-radius: 4px;
 }
 .Product_card .feature-card span.wishicon{
     position: absolute;

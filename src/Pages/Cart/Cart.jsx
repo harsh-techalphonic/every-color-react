@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { cartAction } from "../../store/Products/cartSlice";
 
 const CartItem = ({ item, onRemove, onQuantityChange }) => {
-  console.log("first", item)
+  console.log("first", item);
   const [productAmount, setProductAmount] = useState(false);
   useEffect(() => {
     if (item.product_inventory_details.length == 0) return;
@@ -24,8 +24,7 @@ const CartItem = ({ item, onRemove, onQuantityChange }) => {
     setProductAmount(match);
   }, [item]);
 
-  const handleIncrement = () =>
-    onQuantityChange(item.id, item.quantity + 1);
+  const handleIncrement = () => onQuantityChange(item.id, item.quantity + 1);
   const handleDecrement = () =>
     item.quantity > 1 && onQuantityChange(item.id, item.quantity - 1);
 
@@ -33,7 +32,11 @@ const CartItem = ({ item, onRemove, onQuantityChange }) => {
     <div className="card mb-3 p-3">
       <div className="d-flex align-items-center gap-4">
         <div className="cartitem_img">
-          <img src={item.product_image} alt={item.product_name} className="img-fluid" />
+          <img
+            src={item.product_image}
+            alt={item.product_name}
+            className="img-fluid"
+          />
         </div>
         <div className="cartitem_content">
           <h5>{item.product_name}</h5>
@@ -53,7 +56,9 @@ const CartItem = ({ item, onRemove, onQuantityChange }) => {
                 <h5>
                   ₹{(productAmount.sale_price * item.quantity).toFixed(2)}
                 </h5>
-                <p className="slashPrice">₹ {productAmount.reguler_price * item.quantity} </p>
+                <p className="slashPrice">
+                  ₹ {productAmount.reguler_price * item.quantity}{" "}
+                </p>
               </>
             ) : (
               <>
@@ -98,8 +103,12 @@ export default function Cart() {
   const fetch_products = useSelector((store) => store.products);
   const [products, setProducts] = useState([]);
   const [checkCart, setCheckCart] = useState(false);
-  const [checkoutDetail, setCheckoutDetail] = useState({subTotal:0,discount:0,total:0});
-  const [checkoutUrl,setCheckoutUrl] = useState('');
+  const [checkoutDetail, setCheckoutDetail] = useState({
+    subTotal: 0,
+    discount: 0,
+    total: 0,
+  });
+  const [checkoutUrl, setCheckoutUrl] = useState("");
   // console.log(checkoutDetail)
   const dispatch = useDispatch();
   useEffect(() => {
@@ -134,35 +143,43 @@ export default function Cart() {
     }
   }, [fetch_products.status]);
 
-  useEffect(()=>{
+  useEffect(() => {
     const cartIds = JSON.parse(localStorage.getItem("cart")) || [];
-    const url = JSON.stringify({...checkoutDetail,data:cartIds});
-    console.log(btoa(url), {...checkoutDetail,data:cartIds})
-    setCheckoutUrl(btoa(url))
-  },[checkoutDetail]);
+    const url = JSON.stringify({ ...checkoutDetail, data: cartIds });
+    console.log(btoa(url), { ...checkoutDetail, data: cartIds });
+    setCheckoutUrl(btoa(url));
+  }, [checkoutDetail]);
 
   let test = [];
 
-  const manager = useCallback((obj)=>{
-    test.push(obj);
-    if(products.length != test.length) return;
-    const totals = test.reduce((acc, item) => {
-      acc.subTotal += item.subTotal;
-      acc.discount += item.discount;
-      acc.total += item.total;
-      return acc;
-    }, { subTotal: 0, discount: 0, total: 0 });
-    
-    setCheckoutDetail(totals);
-  }, [products])
-  console.log(products)
+  const manager = useCallback(
+    (obj) => {
+      test.push(obj);
+      if (products.length != test.length) return;
+      const totals = test.reduce(
+        (acc, item) => {
+          acc.subTotal += item.subTotal;
+          acc.discount += item.discount;
+          acc.total += item.total;
+          return acc;
+        },
+        { subTotal: 0, discount: 0, total: 0 }
+      );
+
+      setCheckoutDetail(totals);
+    },
+    [products]
+  );
+  console.log(products);
   useEffect(() => {
     if (products.length == 0) return;
     products.map((item, index) => {
       if (item.product_inventory_details.length == 0) {
         manager({
           subTotal: Number(item.price) * item.quantity,
-          discount: Number(item.price * item.quantity) - Number(item.discount_price * item.quantity),
+          discount:
+            Number(item.price * item.quantity) -
+            Number(item.discount_price * item.quantity),
           total: Number(item.discount_price * item.quantity),
         });
         // localStorage.setItem(`tempsss`, JSON.stringify({subTotal : item.price,discount :(item.price - item.discount_price),total:item.discount_price}))
@@ -174,10 +191,12 @@ export default function Cart() {
           Object.entries(item.variation).every(([key, val]) => v[key] === val)
         );
         manager({
-            subTotal: Number(match.reguler_price * item.quantity),
-            discount: Number(match.reguler_price * item.quantity) - Number(match.sale_price * item.quantity),
-            total: Number(match.sale_price * item.quantity),
-          });
+          subTotal: Number(match.reguler_price * item.quantity),
+          discount:
+            Number(match.reguler_price * item.quantity) -
+            Number(match.sale_price * item.quantity),
+          total: Number(match.sale_price * item.quantity),
+        });
         // localStorage.setItem(`tempsss${index}`, JSON.stringify())
       }
     });
@@ -190,13 +209,13 @@ export default function Cart() {
   const [couponMessage, setCouponMessage] = useState("");
   const [couponMessageColor, setCouponMessageColor] = useState("");
 
-  const handleQuantityChange = (id, newQuantity) => {
+  const handleQuantityChange = (prd_id, newQuantity) => {
     setProducts((prevItems) =>
       prevItems.map((item) =>
-        item.prd_id === id ? { ...item, quantity: newQuantity } : item
+        item.prd_id === prd_id ? { ...item, quantity: newQuantity } : item
       )
     );
-    dispatch(cartAction.updateCart({ id, quantity: newQuantity }));
+    dispatch(cartAction.updateCart({ prd_id, quantity: newQuantity }));
   };
 
   const handleRemove = (id) => {

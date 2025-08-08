@@ -23,7 +23,7 @@ export default function SuperSaving() {
     infinite: true,
     speed: 500,
     slidesToShow: 5,
-    slidesToScroll: 1,
+    slidesToScroll: 2,
     arrows: false,
     autoplay: true,
     autoplaySpeed: 3000,
@@ -93,7 +93,7 @@ export default function SuperSaving() {
         <div className="feature-product-tile d-flex align-items-center justify-content-between">
           <div className="title-box">
             <h2>
-              <span>Best</span> Selling
+              <span>New Arrivals</span> Products
             </h2>
           </div>
           <div className="title-box">

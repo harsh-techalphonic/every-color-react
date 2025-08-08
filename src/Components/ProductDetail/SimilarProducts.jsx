@@ -10,7 +10,7 @@ import { Link } from 'react-router-dom';
 import SingleProductSlide from '../Product/SingleProductSlide';
 
 export default function SimilarProducts({singleProduct}) {
-    const products = singleProduct.related_products
+    const products = singleProduct
     console.log("operwtws", products)
     // const products = [
     //     {
@@ -89,7 +89,7 @@ export default function SimilarProducts({singleProduct}) {
         infinite: true,
         speed: 500,
         slidesToShow: 5,
-        slidesToScroll: 1,
+        slidesToScroll: 2,
         arrows: true,
         autoplay: true,
         autoplaySpeed: 3000,
@@ -116,6 +116,7 @@ export default function SimilarProducts({singleProduct}) {
             breakpoint: 480,
             settings: {
               slidesToShow: 1,
+              slidesToScroll: 1
             },
           },
         ],
@@ -135,9 +136,9 @@ export default function SimilarProducts({singleProduct}) {
 
             <div className='featureslider_one my-4'>
             <Slider {...settings} className="xyzg-slider">
-              {products.map((product, index) => (
-                            <SingleProductSlide key={index} product={product}/>
-                          ))}
+              {Array.isArray(products) && products.map((product) => (
+  <SingleProductSlide key={product.id} product={product} />
+))}
               {/* {products.map((product) => (
                 <div key={product.id} className="feature-card">
                   <span className="disco">{product.discount}</span>

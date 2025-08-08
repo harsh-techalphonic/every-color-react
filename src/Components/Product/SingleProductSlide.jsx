@@ -85,11 +85,11 @@ export default function SingleProductSlide({ product }) {
           color={wishlist.includes(product.prd_id) ? "red" : "black"}
         />
       </span> */}
-      <Link to={`/product/${product.product_slug}`}>
+      {/* <Link to={`/product/${product.product_slug}`}> */}
         <div className="card-img">
           <img src={product.product_image} alt={product.product_name} />
         </div>
-      </Link>
+      {/* </Link> */}
       <div className="product-detail">
         <h3>
           <Link to={`/product/${product.product_slug}`}>

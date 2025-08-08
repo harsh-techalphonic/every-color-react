@@ -1,3 +1,4 @@
+// IMPORTS
 import React, { useEffect, useRef, useState } from "react";
 import Slider from "react-slick";
 import "./ProductDetail.css";
@@ -17,6 +18,11 @@ import { Link } from "react-router-dom";
 import { cartAction } from "../../store/Products/cartSlice";
 import { useDispatch } from "react-redux";
 
+// IMAGE URL FUNCTION
+const getVariationImage = (filename) =>
+  `https://dimgrey-eel-688395.hostingersite.com/uploads/${filename}`;
+
+// MAIN COMPONENT
 export default function Product_detail({ singleProduct }) {
   const [quantity, setQuantity] = useState(1);
   const [productVar, setProductVar] = useState({});
@@ -43,26 +49,35 @@ export default function Product_detail({ singleProduct }) {
 
   useEffect(() => {
     if (!singleProduct.variations?.variation_json) return;
-
-    const variations = JSON.parse(singleProduct.variations.variation_json);
+    let variations;
+    try {
+      variations = JSON.parse(singleProduct.variations.variation_json);
+    } catch {
+      return;
+    }
 
     if (
       Object.keys(productVarSelected).length === 0 ||
       Object.keys(productVar).length !== Object.keys(productVarSelected).length
-    )
+    ) {
+      setProductAmount(false);
       return;
+    }
 
     const match = variations.find((v) =>
-      Object.entries(productVarSelected).every(
-        ([key, val]) => v[key] === val
-      )
+      Object.entries(productVarSelected).every(([key, val]) => v[key] === val)
     );
     setProductAmount(match);
   }, [productVarSelected]);
 
   useEffect(() => {
     if (!singleProduct.variations?.variation_json) return;
-    const variationArray = JSON.parse(singleProduct.variations.variation_json);
+    let variationArray;
+    try {
+      variationArray = JSON.parse(singleProduct.variations.variation_json);
+    } catch {
+      return;
+    }
 
     const removeKeys = [
       "sale_price",
@@ -92,84 +107,137 @@ export default function Product_detail({ singleProduct }) {
     setProductVar(createAttr);
   }, []);
 
- const handleVariation = (type, value) => {
-  const isSame = productVarSelected[type] === value;
+  const handleVariation = (type, value) => {
+    const isSame = productVarSelected[type] === value;
 
-  if (isSame) {
-    // Deselect if same value is clicked again
-    const updated = { ...productVarSelected };
-    delete updated[type];
-    setProductVarSelected(updated);
+    if (isSame) {
+      const updated = { ...productVarSelected };
+      delete updated[type];
+      setProductVarSelected(updated);
 
-    // If no variations are selected, show all data
-    if (Object.keys(updated).length === 0) {
-      const variationArray = JSON.parse(singleProduct.variations.variation_json);
-      const allAttr = {};
-
-      variationArray.forEach((item) => {
-        const filteredEntry = Object.fromEntries(
-          Object.entries(item).filter(
-            ([key]) =>
-              !["sale_price", "stock_status", "reguler_price", "image"].includes(key)
-          )
-        );
-
-        for (const [key, val] of Object.entries(filteredEntry)) {
-          if (!allAttr[key]) {
-            allAttr[key] = [];
-          }
-          allAttr[key].push(val);
+      if (Object.keys(updated).length === 0) {
+        let variationArray;
+        try {
+          variationArray = JSON.parse(singleProduct.variations.variation_json);
+        } catch {
+          return;
         }
-      });
 
-      for (const key in allAttr) {
-        allAttr[key] = [...new Set(allAttr[key])];
+        const allAttr = {};
+
+        variationArray.forEach((item) => {
+          const filteredEntry = Object.fromEntries(
+            Object.entries(item).filter(
+              ([key]) =>
+                !["sale_price", "stock_status", "reguler_price", "image"].includes(
+                  key
+                )
+            )
+          );
+
+          for (const [key, val] of Object.entries(filteredEntry)) {
+            if (!allAttr[key]) {
+              allAttr[key] = [];
+            }
+            allAttr[key].push(val);
+          }
+        });
+
+        for (const key in allAttr) {
+          allAttr[key] = [...new Set(allAttr[key])];
+        }
+
+        setProductVar(allAttr);
       }
 
-      setProductVar(allAttr);
+      return;
     }
 
-    return;
-  }
+    setProductVarSelected((prev) => ({
+      ...prev,
+      [type]: value,
+    }));
 
-  // Otherwise, select new value
-  setProductVarSelected((prev) => ({
-    ...prev,
-    [type]: value,
-  }));
+    let variationArray;
+    try {
+      variationArray = JSON.parse(singleProduct.variations.variation_json);
+    } catch {
+      return;
+    }
 
-  // Filter available options based on selection
-  const variationArray = JSON.parse(singleProduct.variations.variation_json);
-  const filtered = variationArray.filter((item) => item[type] === value);
+    const filtered = variationArray.filter((item) => item[type] === value);
 
-  const removeKeys = [
-    "sale_price",
-    "stock_status",
-    "reguler_price",
-    "image",
-    `${type}`,
-  ];
+    const removeKeys = [
+      "sale_price",
+      "stock_status",
+      "reguler_price",
+      "image",
+      `${type}`,
+    ];
 
-  const createAttr = {};
-  filtered.forEach((item) => {
-    const filteredEntry = Object.fromEntries(
-      Object.entries(item).filter(([key]) => !removeKeys.includes(key))
-    );
-    for (const [key, val] of Object.entries(filteredEntry)) {
-      if (!createAttr[key]) {
-        createAttr[key] = [];
+    const createAttr = {};
+    filtered.forEach((item) => {
+      const filteredEntry = Object.fromEntries(
+        Object.entries(item).filter(([key]) => !removeKeys.includes(key))
+      );
+      for (const [key, val] of Object.entries(filteredEntry)) {
+        if (!createAttr[key]) {
+          createAttr[key] = [];
+        }
+        createAttr[key].push(val);
       }
-      createAttr[key].push(val);
+    });
+
+    for (const key in createAttr) {
+      createAttr[key] = [...new Set(createAttr[key])];
     }
-  });
 
-  for (const key in createAttr) {
-    createAttr[key] = [...new Set(createAttr[key])];
-  }
+    setProductVar((prev) => ({ ...prev, ...createAttr }));
+  };
 
-  setProductVar((prev) => ({ ...prev, ...createAttr }));
-};
+  const getImageSlides = () => {
+    let variationArray = [];
 
+    if (singleProduct.variations?.variation_json) {
+      try {
+        variationArray = JSON.parse(singleProduct.variations.variation_json);
+      } catch {}
+    }
+
+    if (productVarSelected.color) {
+      const matchedColorVariation = variationArray.find(
+        (v) => v.color === productVarSelected.color && v.image
+      );
+
+      if (matchedColorVariation) {
+        return [
+          <div key="color-variation-image">
+            <img
+              src={getVariationImage(matchedColorVariation.image)}
+              alt="Color Variation"
+            />
+          </div>,
+        ];
+      }
+    }
+
+    if (productAmount?.image) {
+      return [
+        <div key="variation-image">
+          <img
+            src={getVariationImage(productAmount.image)}
+            alt="Selected Variation"
+          />
+        </div>,
+      ];
+    }
+
+    return singleProduct.galleries.map((item, index) => (
+      <div key={index}>
+        <img src={item.image} alt={`Product ${index}`} />
+      </div>
+    ));
+  };
 
   const sliderSettings = {
     slidesToShow: 1,
@@ -191,8 +259,8 @@ export default function Product_detail({ singleProduct }) {
 
   const toggleCart = (id, variation) => {
     let cartItems = JSON.parse(localStorage.getItem("cart")) || [];
-
     const isInCart = cartItems.some((item) => item.prd_id === id);
+
     if (isInCart) {
       cartItems = cartItems.filter((item) => item.prd_id !== id);
       dispatch(cartAction.removeCart(cartItems));
@@ -236,19 +304,10 @@ export default function Product_detail({ singleProduct }) {
           <div className="col-lg-6">
             <div className="product-galler-slide">
               <Slider {...sliderSettings} className="slider slider-for">
-                {singleProduct.galleries.map((item, index) => (
-                  <div key={index}>
-                    <img src={item.image} alt={`Product ${index}`} />
-                  </div>
-                ))}
+                {getImageSlides()}
               </Slider>
-
               <Slider {...sliderNavSettings} className="slider slider-nav">
-                {singleProduct.galleries.map((item, index) => (
-                  <div key={index}>
-                    <img src={item.image} alt={`Thumb ${index}`} />
-                  </div>
-                ))}
+                {getImageSlides()}
               </Slider>
             </div>
           </div>
@@ -269,6 +328,7 @@ export default function Product_detail({ singleProduct }) {
                 </div>
               </div>
 
+              {/* PRICING */}
               {productAmount ? (
                 <div className="mt-2">
                   <span className="fw-bold fs-4 Pricing">₹{productAmount.sale_price}</span>
@@ -280,15 +340,12 @@ export default function Product_detail({ singleProduct }) {
                       ((productAmount.reguler_price - productAmount.sale_price) /
                         productAmount.reguler_price) *
                       100
-                    ).toFixed(0)}
-                    % OFF
+                    ).toFixed(0)}% OFF
                   </span>
                 </div>
               ) : (
                 <div className="mt-2">
-                  <span className="fw-bold fs-4 Pricing">
-                    ₹{singleProduct.product_discount_price}
-                  </span>
+                  <span className="fw-bold fs-4 Pricing">₹{singleProduct.product_discount_price}</span>
                   <span className="text-decoration-line-through text-muted ms-2">
                     ₹{singleProduct.product_price}
                   </span>
@@ -297,13 +354,12 @@ export default function Product_detail({ singleProduct }) {
                       ((singleProduct.product_price - singleProduct.product_discount_price) /
                         singleProduct.product_price) *
                       100
-                    ).toFixed(0)}
-                    % OFF
+                    ).toFixed(0)}% OFF
                   </span>
                 </div>
               )}
 
-              {/* VARIATION BUTTONS */}
+              {/* VARIATIONS */}
               {Object.entries(productVar).map(([key, values]) => (
                 <div key={key} className="mb-3">
                   <label className="form-label fw-bold text-capitalize">Select {key}</label>
@@ -312,9 +368,7 @@ export default function Product_detail({ singleProduct }) {
                       <button
                         key={idx}
                         type="button"
-                        className={`btn ${
-                          productVarSelected[key] === option ? "btn-danger" : "btn-outline-secondary"
-                        }`}
+                        className={`btn ${productVarSelected[key] === option ? "btn-danger" : "btn-outline-secondary"}`}
                         onClick={() => handleVariation(key, option)}
                         name={`variation[][${key}]`}
                       >
@@ -325,7 +379,7 @@ export default function Product_detail({ singleProduct }) {
                 </div>
               ))}
 
-              {/* HIDDEN INPUTS */}
+              {/* HIDDEN VARIATION INPUTS */}
               {Object.entries(productVarSelected).map(([key, value]) => (
                 <input key={key} type="hidden" name={`variation[][${key}]`} value={value} />
               ))}
@@ -347,6 +401,7 @@ export default function Product_detail({ singleProduct }) {
 
               <hr className="my-5" />
 
+              {/* QUANTITY + CART BUTTONS */}
               <div className="purchase-btns mt-4 d-flex gap-3 align-items-center justify-content-between w-100">
                 <div className="d-flex">
                   <button type="button" className="btn btn-outline-secondary" onClick={decreaseQuantity}>-</button>
@@ -355,11 +410,7 @@ export default function Product_detail({ singleProduct }) {
                 </div>
 
                 <button
-                  type={
-                    addTocart.some((item) => item.prd_id === singleProduct.id)
-                      ? "button"
-                      : "submit"
-                  }
+                  type={addTocart.some((item) => item.prd_id === singleProduct.id) ? "button" : "submit"}
                   name="action_type"
                   value="add_to_cart"
                   onClick={() =>
@@ -367,11 +418,7 @@ export default function Product_detail({ singleProduct }) {
                       ? toggleCart(singleProduct.id)
                       : null
                   }
-                  className={`btn btn-success w-50 ${
-                    addTocart.some((item) => item.prd_id === singleProduct.id)
-                      ? "bg-dark"
-                      : ""
-                  }`}
+                  className={`btn btn-success w-50 ${addTocart.some((item) => item.prd_id === singleProduct.id) ? "bg-dark" : ""}`}
                 >
                   {addTocart.some((item) => item.prd_id === singleProduct.id)
                     ? "Remove from Cart"
@@ -384,6 +431,7 @@ export default function Product_detail({ singleProduct }) {
                 </button>
               </div>
 
+              {/* WISHLIST / SHARE */}
               <div className="mt-3 wishlist-sec-prodet d-flex align-items-center gap-3 justify-content-between">
                 <div className="whiashad d-flex align-items-center gap-2">
                   <FontAwesomeIcon icon={faHeart} />
@@ -400,6 +448,7 @@ export default function Product_detail({ singleProduct }) {
                 </div>
               </div>
 
+              {/* PAYMENT SECTION */}
               <div className="mt-3 Guarantee_Checkout border p-4 bg-light">
                 <span>100% Guarantee Safe Checkout</span>
                 <div className="paymetn-img mt-3">

@@ -1,4 +1,4 @@
-import { API_URL, RemoveCart } from "../Config/config";
+import { API_URL, PrivacyPolicyApi, RemoveCart } from "../Config/config";
 import config from "../Config/config.json";
 import axios from "axios";
 
@@ -38,7 +38,7 @@ export const deleteCartItem = async (id, setData) => {
           Authorization: `Bearer ${token}`,
           // 'Content-Type': 'application/json',
         },
-      },
+      }
     );
 
     console.log("response", response?.data);
@@ -49,5 +49,27 @@ export const deleteCartItem = async (id, setData) => {
   } catch (error) {
     console.error("Network Error:", error.message);
     alert("Error: Something went wrong");
+  }
+};
+
+export const getPrivacyPolicy = async (setData,apiPath) => {
+  const token = localStorage.getItem("token");
+  try {
+    const response = await axios.get(`${API_URL}${apiPath}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    console?.log("response?.data", response?.data);
+    if (response?.data) {
+      setData(response?.data);
+    } else if (response?.data?.errors) {
+      alert("Error: " + (response?.data?.errors?.message || "Login failed."));
+    } else {
+      alert("Error: Unexpected response from server.");
+    }
+  } catch (error) {
+    alert("Error: Something went wrong");
+    console.error("Network Error:", error);
   }
 };

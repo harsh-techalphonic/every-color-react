@@ -32,6 +32,7 @@ const ecommerceStore = configureStore({
     About: AboutSlice.reducer,
     brands: brandsSlice.reducer,
     authcheck: AuthCheckSlice.reducer,
+     wishlist: wishlistSlice.reducer,
   },
 });
 

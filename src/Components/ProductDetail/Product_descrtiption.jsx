@@ -15,7 +15,7 @@ export default function ProductDescription({singleProduct}) {
               <div className="col-lg-6">
                 <div className="conte">
                   {/* <h5>Description</h5> */}
-                  <div dangerouslySetInnerHTML={{ __html: singleProduct.description}} />
+                  <div dangerouslySetInnerHTML={{ __html: singleProduct.product_description}} />
                 </div>
               </div>
               <div className="col-lg-3">
@@ -51,7 +51,7 @@ export default function ProductDescription({singleProduct}) {
               <div className="col-lg-6">
                 <div className="conte">
                   {/* <h5>Description</h5> */}
-                  <div dangerouslySetInnerHTML={{ __html: singleProduct.additional_information
+                  <div dangerouslySetInnerHTML={{ __html: singleProduct.product_about
 }} />
                 </div>
               </div>

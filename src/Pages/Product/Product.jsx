@@ -72,6 +72,7 @@ export default function Product({ category_type }) {
     typeof fetch_filter.priceRangeMax !== "undefined"
   )
     activeFilters.push(`₹${fetch_filter.priceRangeMin} - ₹${fetch_filter.priceRangeMax}`);
+                console.log("product", products)
 
   return (
     <>

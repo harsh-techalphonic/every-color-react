@@ -46,7 +46,18 @@
 .AddressBox_one button{
     position: absolute;
     top: 16px;
-    right: 16px;
+    right: 50px;
+    background-color: #ffffff;
+    padding: 4px;
+    border: none;
+}
+.AddressBox_one button:hover{
+    color: #DB3030;
+}
+.delete_btn{
+    position: absolute;
+    top: 16px;
+    right: 16px !important;
     background-color: #ffffff;
     padding: 4px;
 }

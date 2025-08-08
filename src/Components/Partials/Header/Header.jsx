@@ -12,6 +12,7 @@ import AllCatergory_Filter from './AllCatergory_Filter';
 import SearchBar from './SearchBar';
 import CategoriesApi from '../../../API/CategoriesAPi';
 import { useSelector } from 'react-redux';
+import WishlistApi from '../../../API/WishlistApi';
 
 
 export default function Header() {
@@ -119,6 +120,7 @@ useEffect(() => {
     <>
     <section className={`Header ${isSticky ? 'sticky' : ''}`}>
       <ProductsApi />
+      <WishlistApi/>
       <CategoriesApi />
       <div className="infobox">
         <div className="container">

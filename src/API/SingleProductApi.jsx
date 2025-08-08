@@ -10,18 +10,12 @@ export default function SingleProductApi() {
   const dispatch = useDispatch();
   const { slug } = useParams();
   useEffect(() => {
-    if(singleProduct.find((product) => product.slug === slug)) return;
+    if(singleProduct.find((product) => product.product_slug === slug)) return;
     axios
       .get(`${config.API_URL}/products/${slug}`)
       .then(function (response) {
         console.log("send dara", response.data)
-        dispatch(singleProductAction.addProduct({
-          ...response.data.product,
-          product_attributes:response.data.product_attributes,
-          product_inventory_details:response.data.product_inventory_details,
-          related_products:response.data.related_products,
-          gallertImageUrl : response.data.gallertImageUrl
-        }));
+        dispatch(singleProductAction.addProduct(response.data));
       })
       .catch(function (error) {
         console.log(error);

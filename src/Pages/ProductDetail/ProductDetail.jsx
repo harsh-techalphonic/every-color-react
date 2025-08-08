@@ -16,11 +16,12 @@ export default function ProductDetail() {
     const fetch_singleProduct = useSelector((store) => store.singleProduct);
     const [singleProduct, setSingleProduct] = useState(false);
     const { slug } = useParams();
+    console.log("slug", slug)
     
     useEffect(() => {
       if(fetch_singleProduct.length == 0) return;
       const existingProduct = fetch_singleProduct.find(
-        (product) => product.slug === slug
+        (product) => product.product_slug === slug
       );
   
       if (existingProduct) {
@@ -37,7 +38,7 @@ export default function ProductDetail() {
       <Product_detail singleProduct={singleProduct}/>
     <Product_descrtiption singleProduct={singleProduct}/>
     <ReviewRating singleProduct={singleProduct}/>
-    <SimilarProducts singleProduct={singleProduct}/>
+    {/* <SimilarProducts singleProduct={singleProduct}/> */}
     {/* <RecentlyViewed singleProduct={singleProduct}/> */}
     </> : <>Hello</>}
     <Footer/>

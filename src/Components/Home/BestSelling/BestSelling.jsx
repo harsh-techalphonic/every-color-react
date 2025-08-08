@@ -23,7 +23,7 @@ export default function BestSelling() {
     infinite: true,
     speed: 500,
     slidesToShow: 5,
-    slidesToScroll: 1,
+    slidesToScroll: 4,
     arrows: false,
     autoplay: true,
     autoplaySpeed: 3000,

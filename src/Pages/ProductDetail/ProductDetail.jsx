@@ -39,7 +39,7 @@ export default function ProductDetail() {
     <Product_descrtiption singleProduct={singleProduct}/>
     <ReviewRating singleProduct={singleProduct}/>
     <SimilarProducts singleProduct={singleProduct}/>
-    {/* <RecentlyViewed singleProduct={singleProduct}/> */}
+    <RecentlyViewed singleProduct={singleProduct}/>
     </> : <>Hello</>}
     <Footer/>
     </>

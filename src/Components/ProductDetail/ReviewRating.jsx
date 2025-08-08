@@ -27,6 +27,7 @@ export default function ReviewRating({ singleProduct }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     const token = localStorage.getItem('token');
 
     if (!token) {
@@ -36,14 +37,14 @@ export default function ReviewRating({ singleProduct }) {
     }
 
     const reviewData = {
-      product_id: singleProduct.id,
-      star: selectedRating,
-      description: formData.comment,
+      id: singleProduct.id,
+      rating: selectedRating,
+      comment: formData.comment,
     };
 
     try {
       const response = await axios.post(
-        `${config.API_URL_POST}/review/add-review`,
+        `${config.API_URL_POST}/product-review`,
         reviewData,
         {
           headers: {
@@ -53,21 +54,19 @@ export default function ReviewRating({ singleProduct }) {
         }
       );
 
-      if (response.status === 200 && response.data.status) {
-        const apiReview = response.data.data;
-
+      if (response.status === 200) {
         const newReview = {
-          id: apiReview.id,
-          rating: parseInt(apiReview.star),
-          review_msg: apiReview.description,
-          created_at: apiReview.created_at,
+          id: Date.now(), // Ideally use response.data.id
+          rating: selectedRating,
+          review_msg: formData.comment,
+          created_at: new Date().toISOString(),
           user: {
-            name: apiReview.user?.name || "User",
+            name: "You", // Ideally get from logged-in user
           },
-          img: apiReview.user?.img || null,
+          img: null,
         };
 
-        setReviews([newReview, ...reviews]);
+        setReviews([newReview, ...reviews]); // Real-time update
         toast.success("Thank you! Your review was submitted.");
         setShowModal(false);
         setFormData({ comment: '' });
@@ -77,11 +76,7 @@ export default function ReviewRating({ singleProduct }) {
       }
     } catch (error) {
       console.error("Network error details:", error);
-      if (error.response?.data?.errors) {
-        toast.error("Validation error: " + JSON.stringify(error.response.data.errors));
-      } else {
-        toast.error("Network error. Please try again.");
-      }
+      toast.error("Network error. Please try again.");
     }
   };
 
@@ -120,11 +115,9 @@ export default function ReviewRating({ singleProduct }) {
                 <div className='d-flex align-items-top gap-4'>
                   <div className='reviewr-img'>
                     {review.img ? (
-                      <img src={review.img} alt={`${review.user.name}'s review`} className="reviewer-avatar" />
+                      <img src={review.img} alt={`${review.user.name}'s review`} />
                     ) : (
-                      <span className="reviewer-avatar-text">
-                        {review.user?.name?.slice(0, 2).toUpperCase()}
-                      </span>
+                      <span>{review.user.name.slice(0, 2).toUpperCase()}</span>
                     )}
                   </div>
                   <div className='reviewer-content'>

@@ -18,6 +18,7 @@ import { Link } from "react-router-dom";
 import { cartAction } from "../../store/Products/cartSlice";
 import { useDispatch } from "react-redux";
 
+import { AddOrRemoveCart, API_URL, GetCartList } from "../../Config/config";
 // IMAGE URL FUNCTION
 const getVariationImage = (filename) =>
   `https://dimgrey-eel-688395.hostingersite.com/uploads/${filename}`;
@@ -35,8 +36,7 @@ export default function Product_detail({ singleProduct }) {
   const dispatch = useDispatch();
 
   const increaseQuantity = () => setQuantity(quantity + 1);
-  const decreaseQuantity = () =>
-    setQuantity(quantity > 1 ? quantity - 1 : 1);
+  const decreaseQuantity = () => setQuantity(quantity > 1 ? quantity - 1 : 1);
 
   useEffect(() => {
     if (localStorage.getItem("wishlist")) {
@@ -79,12 +79,7 @@ export default function Product_detail({ singleProduct }) {
       return;
     }
 
-    const removeKeys = [
-      "sale_price",
-      "stock_status",
-      "reguler_price",
-      "image",
-    ];
+    const removeKeys = ["sale_price", "stock_status", "reguler_price", "image"];
     const createAttr = {};
 
     variationArray.forEach((item) => {
@@ -129,9 +124,12 @@ export default function Product_detail({ singleProduct }) {
           const filteredEntry = Object.fromEntries(
             Object.entries(item).filter(
               ([key]) =>
-                !["sale_price", "stock_status", "reguler_price", "image"].includes(
-                  key
-                )
+                ![
+                  "sale_price",
+                  "stock_status",
+                  "reguler_price",
+                  "image",
+                ].includes(key)
             )
           );
 
@@ -257,21 +255,57 @@ export default function Product_detail({ singleProduct }) {
     ref: navSliderRef,
   };
 
-  const toggleCart = (id, variation) => {
-    let cartItems = JSON.parse(localStorage.getItem("cart")) || [];
-    const isInCart = cartItems.some((item) => item.prd_id === id);
+  // const toggleCart = (id, variation) => {
+  //   let cartItems = JSON.parse(localStorage.getItem("cart")) || [];
+  //   const isInCart = cartItems.some((item) => item.prd_id === id);
 
-    if (isInCart) {
-      cartItems = cartItems.filter((item) => item.prd_id !== id);
-      dispatch(cartAction.removeCart(cartItems));
-    } else {
-      const newItem = { quantity, prd_id: id, variation };
-      cartItems = [newItem, ...cartItems];
-      dispatch(cartAction.addCart(newItem));
+  //   if (isInCart) {
+  //     cartItems = cartItems.filter((item) => item.prd_id !== id);
+  //     dispatch(cartAction.removeCart(cartItems));
+  //   } else {
+  //     const newItem = { quantity, prd_id: id, variation };
+  //     cartItems = [newItem, ...cartItems];
+  //     dispatch(cartAction.addCart(newItem));
+  //   }
+
+  //   setaddTocart(cartItems);
+  //   localStorage.setItem("cart", JSON.stringify(cartItems));
+  // };
+
+  const toggleCart = async (item) => {
+    const token = localStorage.getItem("token");
+
+    console?.log(
+      "`${API_URL}${AddOrRemoveCart}`",
+      `${API_URL}${AddOrRemoveCart}`
+    );
+    console?.log("item", item);
+    try {
+      const response = await fetch(`${API_URL}${AddOrRemoveCart}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ product_id: item?.id }),
+      });
+
+      if (!response.ok) throw new Error("Failed to update cart.");
+
+      const data = await response.json();
+      console?.log("`${API_URL}${AddOrRemoveCart}`", data);
+
+      if (data.message === "Product added to cart") {
+        dispatch(cartAction.addCart(item)); // ✅ send single item
+        setaddTocart((prev) => [item, ...prev]);
+      } else if (data.message === "Product removed from cart") {
+        dispatch(cartAction.removeCart(item)); // ✅ send single item
+        setaddTocart((prev) => prev.filter((i) => i.id !== item.id));
+      }
+    } catch (error) {
+      console.error("Cart update failed:", error);
+      alert("Something went wrong while updating the cart.");
     }
-
-    setaddTocart(cartItems);
-    localStorage.setItem("cart", JSON.stringify(cartItems));
   };
 
   const submitAction = (formData) => {
@@ -319,9 +353,16 @@ export default function Product_detail({ singleProduct }) {
               <div className="my-3">
                 <div className="rating d-flex align-items-center">
                   {[...Array(4)].map((_, i) => (
-                    <FontAwesomeIcon key={i} icon={faStar} className="star-rating" />
+                    <FontAwesomeIcon
+                      key={i}
+                      icon={faStar}
+                      className="star-rating"
+                    />
                   ))}
-                  <FontAwesomeIcon icon={faStarHalfAlt} className="star-rating" />
+                  <FontAwesomeIcon
+                    icon={faStarHalfAlt}
+                    className="star-rating"
+                  />
                   <span className="ms-2 rating-test d-flex align-items-center">
                     4.7 Star Rating <pre className="mb-0">(1,671 Users)</pre>
                   </span>
@@ -331,30 +372,38 @@ export default function Product_detail({ singleProduct }) {
               {/* PRICING */}
               {productAmount ? (
                 <div className="mt-2">
-                  <span className="fw-bold fs-4 Pricing">₹{productAmount.sale_price}</span>
+                  <span className="fw-bold fs-4 Pricing">
+                    ₹{productAmount.sale_price}
+                  </span>
                   <span className="text-decoration-line-through text-muted ms-2">
                     ₹{productAmount.reguler_price}
                   </span>
                   <span className="discount ms-2">
                     {(
-                      ((productAmount.reguler_price - productAmount.sale_price) /
+                      ((productAmount.reguler_price -
+                        productAmount.sale_price) /
                         productAmount.reguler_price) *
                       100
-                    ).toFixed(0)}% OFF
+                    ).toFixed(0)}
+                    % OFF
                   </span>
                 </div>
               ) : (
                 <div className="mt-2">
-                  <span className="fw-bold fs-4 Pricing">₹{singleProduct.product_discount_price}</span>
+                  <span className="fw-bold fs-4 Pricing">
+                    ₹{singleProduct.product_discount_price}
+                  </span>
                   <span className="text-decoration-line-through text-muted ms-2">
                     ₹{singleProduct.product_price}
                   </span>
                   <span className="discount ms-2">
                     {(
-                      ((singleProduct.product_price - singleProduct.product_discount_price) /
+                      ((singleProduct.product_price -
+                        singleProduct.product_discount_price) /
                         singleProduct.product_price) *
                       100
-                    ).toFixed(0)}% OFF
+                    ).toFixed(0)}
+                    % OFF
                   </span>
                 </div>
               )}
@@ -362,13 +411,19 @@ export default function Product_detail({ singleProduct }) {
               {/* VARIATIONS */}
               {Object.entries(productVar).map(([key, values]) => (
                 <div key={key} className="mb-3">
-                  <label className="form-label fw-bold text-capitalize">Select {key}</label>
+                  <label className="form-label fw-bold text-capitalize">
+                    Select {key}
+                  </label>
                   <div className="d-flex gap-2 mt-1 flex-wrap">
                     {values.map((option, idx) => (
                       <button
                         key={idx}
                         type="button"
-                        className={`btn ${productVarSelected[key] === option ? "btn-danger" : "btn-outline-secondary"}`}
+                        className={`btn ${
+                          productVarSelected[key] === option
+                            ? "btn-danger"
+                            : "btn-outline-secondary"
+                        }`}
                         onClick={() => handleVariation(key, option)}
                         name={`variation[][${key}]`}
                       >
@@ -381,7 +436,12 @@ export default function Product_detail({ singleProduct }) {
 
               {/* HIDDEN VARIATION INPUTS */}
               {Object.entries(productVarSelected).map(([key, value]) => (
-                <input key={key} type="hidden" name={`variation[][${key}]`} value={value} />
+                <input
+                  key={key}
+                  type="hidden"
+                  name={`variation[][${key}]`}
+                  value={value}
+                />
               ))}
 
               <div className="cate-text mt-3">
@@ -393,7 +453,10 @@ export default function Product_detail({ singleProduct }) {
               <div className="cate-text mt-3">
                 <span className="text-success fw-bold">
                   <b className="text-dark">Category:</b>{" "}
-                  <Link className="fw-bold" to={`/category/${singleProduct.category.slug}`}>
+                  <Link
+                    className="fw-bold"
+                    to={`/category/${singleProduct.category.slug}`}
+                  >
                     {singleProduct.category.name}
                   </Link>
                 </span>
@@ -404,29 +467,61 @@ export default function Product_detail({ singleProduct }) {
               {/* QUANTITY + CART BUTTONS */}
               <div className="purchase-btns mt-4 d-flex gap-3 align-items-center justify-content-between w-100">
                 <div className="d-flex">
-                  <button type="button" className="btn btn-outline-secondary" onClick={decreaseQuantity}>-</button>
-                  <input type="number" className="form-control text-center mx-2" style={{ width: "50px" }} value={quantity} name="quantity" readOnly />
-                  <button type="button" className="btn btn-outline-secondary" onClick={increaseQuantity}>+</button>
+                  <button
+                    type="button"
+                    className="btn btn-outline-secondary"
+                    onClick={decreaseQuantity}
+                  >
+                    -
+                  </button>
+                  <input
+                    type="number"
+                    className="form-control text-center mx-2"
+                    style={{ width: "50px" }}
+                    value={quantity}
+                    name="quantity"
+                    readOnly
+                  />
+                  <button
+                    type="button"
+                    className="btn btn-outline-secondary"
+                    onClick={increaseQuantity}
+                  >
+                    +
+                  </button>
                 </div>
 
                 <button
-                  type={addTocart.some((item) => item.prd_id === singleProduct.id) ? "button" : "submit"}
+                  type={
+                    addTocart.some((item) => item?.id === singleProduct.id)
+                      ? "button"
+                      : "submit"
+                  }
                   name="action_type"
                   value="add_to_cart"
                   onClick={() =>
-                    addTocart.some((item) => item.prd_id === singleProduct.id)
-                      ? toggleCart(singleProduct.id)
+                    addTocart.some((item) => item?.id === singleProduct.id)
+                      ? toggleCart(singleProduct)
                       : null
                   }
-                  className={`btn btn-success w-50 ${addTocart.some((item) => item.prd_id === singleProduct.id) ? "bg-dark" : ""}`}
+                  className={`btn btn-success w-50 ${
+                    addTocart.some((item) => item?.id === singleProduct.id)
+                      ? "bg-dark"
+                      : ""
+                  }`}
                 >
-                  {addTocart.some((item) => item.prd_id === singleProduct.id)
+                  {addTocart.some((item) => item?.id === singleProduct.id)
                     ? "Remove from Cart"
                     : "Add to Cart"}
                   <FontAwesomeIcon icon={faCartShopping} className="ms-2" />
                 </button>
 
-                <button type="submit" name="action_type" value="buy_now" className="btn btn-outline-dark w-50">
+                <button
+                  type="submit"
+                  name="action_type"
+                  value="buy_now"
+                  className="btn btn-outline-dark w-50"
+                >
                   BUY NOW
                 </button>
               </div>
@@ -440,10 +535,18 @@ export default function Product_detail({ singleProduct }) {
                 <div className="share-product d-flex align-items-center">
                   <p>Share product: </p>
                   <ul className="d-flex align-items-center gap-2 list-unstyled mb-0 ms-2">
-                    <li><FontAwesomeIcon icon={faCopy} /></li>
-                    <li><FontAwesomeIcon icon={faFacebook} /></li>
-                    <li><FontAwesomeIcon icon={faXTwitter} /></li>
-                    <li><FontAwesomeIcon icon={faPinterest} /></li>
+                    <li>
+                      <FontAwesomeIcon icon={faCopy} />
+                    </li>
+                    <li>
+                      <FontAwesomeIcon icon={faFacebook} />
+                    </li>
+                    <li>
+                      <FontAwesomeIcon icon={faXTwitter} />
+                    </li>
+                    <li>
+                      <FontAwesomeIcon icon={faPinterest} />
+                    </li>
                   </ul>
                 </div>
               </div>

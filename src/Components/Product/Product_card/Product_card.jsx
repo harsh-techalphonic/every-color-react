@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
 import "./Product_card.css";
 import { Link } from "react-router-dom";
@@ -9,22 +10,23 @@ import {
   faHeart as faSolidHeart,
 } from "@fortawesome/free-solid-svg-icons";
 import { faHeart as faRegularHeart } from "@fortawesome/free-regular-svg-icons";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { wishlistAction } from "../../../store/Products/wishlistSlice";
 import { cartAction } from "../../../store/Products/cartSlice";
 import { filtersAction } from "../../../store/Products/filtersSlice";
 
-export default function Product_card({products,filters}) {
+import { AddOrRemoveCart, API_URL, GetCartList } from "../../../Config/config";
+
+export default function Product_card({ products, filters }) {
   const [all_products, setProducts] = useState([]);
   const dispatch = useDispatch();
-  // console.log("asdlcnasldcnlasmdclml",products)
 
-  useEffect(()=>{
-    let sorted = [...products]
+  useEffect(() => {
+    let sorted = [...products];
     switch (filters.sorted) {
       case "newest":
         sorted.sort((a, b) => b.id - a.id);
-      break;
+        break;
       case "a_to_z":
         sorted.sort((a, b) => a.product_name.localeCompare(b.product_name));
         break;
@@ -32,19 +34,25 @@ export default function Product_card({products,filters}) {
         sorted.sort((a, b) => b.title.localeCompare(a.title));
         break;
       case "low_to_high":
-        sorted.sort((a, b) => a.product_discount_price - b.product_discount_price);
+        sorted.sort(
+          (a, b) => a.product_discount_price - b.product_discount_price
+        );
         break;
       case "high_to_low":
-        sorted.sort((a, b) => b.product_discount_price - a.product_discount_price);
+        sorted.sort(
+          (a, b) => b.product_discount_price - a.product_discount_price
+        );
         break;
       default:
         break;
     }
-    sorted = sorted.filter(product => 
-      product.product_discount_price >= filters.priceRangeMin && product.product_discount_price <= filters.priceRangeMax
-  );
-    setProducts(sorted)
-  },[products,filters])
+    sorted = sorted.filter(
+      (product) =>
+        product.product_discount_price >= filters.priceRangeMin &&
+        product.product_discount_price <= filters.priceRangeMax
+    );
+    setProducts(sorted);
+  }, [products, filters]);
 
   useEffect(() => {
     if (products.length == 0) return;
@@ -73,54 +81,77 @@ export default function Product_card({products,filters}) {
     dispatch(wishlistAction.addWishlist(wishlist.length));
   };
 
-  const toggleCart = (id) => {
-    let addTocart = JSON.parse(localStorage.getItem("cart")) || [];
-  
-    // Check if product is already in cart
-    const isInCart = addTocart.some((item) => item.prd_id === id);
-  
-    if (isInCart) {
-      // Remove from cart
-      addTocart = addTocart.filter((item) => item.prd_id !== id);
-      // console.log(addTocart)
-      dispatch(cartAction.removeCart(addTocart));
-    } else {
-      const newItem = { quantity: 1, prd_id: id };
-      console.log(newItem)
-      addTocart = [newItem, ...addTocart];
-      dispatch(cartAction.addCart(newItem)); // Dispatch add action
-    }
-  
-    setaddTocart(addTocart);
-  };
+  const toggleCart = async (item) => {
+    const token = localStorage.getItem("token");
 
+    console?.log(
+      "`${API_URL}${AddOrRemoveCart}`",
+      `${API_URL}${AddOrRemoveCart}`
+    );
+    console?.log("item", item);
+    try {
+      const response = await fetch(`${API_URL}${AddOrRemoveCart}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ product_id: item?.id }),
+      });
+
+      if (!response.ok) throw new Error("Failed to update cart.");
+
+      const data = await response.json();
+      console?.log("`${API_URL}${AddOrRemoveCart}`", data);
+
+      if (data.message === "Product added to cart") {
+        dispatch(cartAction.addCart(item)); // ✅ send single item
+        setaddTocart((prev) => [item, ...prev]);
+      } else if (data.message === "Product removed from cart") {
+        dispatch(cartAction.removeCart(item)); // ✅ send single item
+        setaddTocart((prev) => prev.filter((i) => i.id !== item.id));
+      }
+    } catch (error) {
+      console.error("Cart update failed:", error);
+      alert("Something went wrong while updating the cart.");
+    }
+  };
 
   return (
     <div className="row Product_card">
       {products.map((product, index) => (
         <div key={index} className="col-lg-3 col-md-6 col-sm-6 mb-3">
           <div className="feature-card">
-            <span className="disco">{Math.round(((product.product_price - product.product_discount_price) / product.product_price) * 100)}%</span>
+            <span className="disco">
+              {Math.round(
+                ((product.product_price - product.product_discount_price) /
+                  product.product_price) *
+                  100
+              )}
+              %
+            </span>
             <span
               className="wishicon"
               onClick={() => toggleWishlist(product.id)}
               style={{ cursor: "pointer", fontSize: "16px" }}
             >
               <FontAwesomeIcon
-          icon={
-            wishlist.includes(product.id) ? faSolidHeart : faRegularHeart
-          }
-          color={wishlist.includes(product.id) ? "red" : "black"}
-        />
+                icon={
+                  wishlist.includes(product.id) ? faSolidHeart : faRegularHeart
+                }
+                color={wishlist.includes(product.id) ? "red" : "black"}
+              />
             </span>
             <Link to={`/product/${product.product_slug}`}>
               <div className="card-img">
-              <img src={product.product_image} alt={product.product_name} />
+                <img src={product.product_image} alt={product.product_name} />
               </div>
             </Link>
             <div className="product-detail">
               <h3>
-              <Link to={`/product/${product.product_slug}`}>{product.product_name}</Link>
+                <Link to={`/product/${product.product_slug}`}>
+                  {product.product_name}
+                </Link>
               </h3>
               <div className="rating d-flex align-items-center ">
                 <FontAwesomeIcon key={0} icon={faStar} />
@@ -134,8 +165,17 @@ export default function Product_card({products,filters}) {
                 <p className="slashPrice">₹ {product.product_price}</p>
               </div>
             </div>
-            <Link onClick={() => toggleCart(product.id)} className={`cart-btn ${addTocart.some(item => item.prd_id === product.id) ? "bg-dark" : ""}`}>
-            {addTocart.some(item => item.prd_id === product.id) ? "Remove to Cart" : "Add to Cart"}
+            <Link
+              onClick={() => toggleCart(product)}
+              className={`cart-btn ${
+                addTocart.some((item) => item?.id === product?.id)
+                  ? "bg-dark"
+                  : ""
+              }`}
+            >
+              {addTocart.some((item) => item?.id === product?.id)
+                ? "Remove to Cart"
+                : "Add to Cart"}
               <FontAwesomeIcon icon={faBagShopping} className="ms-2" />
             </Link>
           </div>

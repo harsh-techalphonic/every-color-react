@@ -19,11 +19,50 @@ import Category from "../Category/Category";
 import Press from "../../Components/Home/Press/Press";
 import TestimonialSlider from "../../Components/Home/Testimonial/Testimonial";
 import ExploreBestSeller from "../../Components/Home/ExploreBestSeller/ExploreBestSeller";
-
+import { useDispatch } from "react-redux";
+import { cartAction } from "../../store/Products/cartSlice";
+import {API_URL,GetCartList} from '../../Config/config.js'
+ 
 export default function Home() {
+  
+  const dispatch = useDispatch();
   useEffect(() => {
     AOS.init({ duration: 1000 });
   }, []);
+
+
+  useEffect(() => {
+      const fetchCart = async () => {
+        try {
+          const token = localStorage.getItem("token");
+  
+          const res = await fetch(`${API_URL}${GetCartList}`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          });
+  
+          const result = await res.json();
+  
+          if (result.status && result.data.length > 0) {
+            const cartData = result.data.map((cartItem) => {
+              const product = cartItem.product;
+  
+              dispatch(cartAction.addCart(product));
+              
+            });
+          }
+          
+        } catch (error) {
+          console.error("Error fetching cart:", error);
+          // setCheckCart(true);
+        }
+      };
+  
+      fetchCart();
+    }, []);
 
   return (
     <>

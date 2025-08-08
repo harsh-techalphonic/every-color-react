@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./Cart.css";
 import Header from "../../Components/Partials/Header/Header";
 import Footer from "../../Components/Partials/Footer/Footer";
@@ -7,26 +7,56 @@ import { faHouse, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { cartAction } from "../../store/Products/cartSlice";
+import config from "../../Config/config.json";
+import { deleteCartItem } from "../../API/AllApiCode";
 
-const CartItem = ({ item, onRemove, onQuantityChange }) => {
-  console.log("first", item);
-  const [productAmount, setProductAmount] = useState(false);
-  useEffect(() => {
-    if (item.product_inventory_details.length == 0) return;
-
+// Utility to calculate prices
+const getPriceDetails = (item) => {
+  if (
+    item.product_inventory_details.length > 0 &&
+    item.product_inventory_details[0].variation_json
+  ) {
     const variations = JSON.parse(
       item.product_inventory_details[0].variation_json
     );
-
-    const match = variations.find((v) =>
-      Object.entries(item.variation).every(([key, val]) => v[key] === val)
+    const match = variations?.find((v) =>
+      Object.entries(item.variation || {}).every(([key, val]) => v[key] === val)
     );
-    setProductAmount(match);
+    if (match) {
+      return {
+        salePrice: Number(match.sale_price),
+        regularPrice: Number(match.reguler_price),
+        total: Number(match.sale_price) * item.quantity,
+        subTotal: Number(match.reguler_price) * item.quantity,
+        discount:
+          (Number(match.reguler_price) - Number(match.sale_price)) *
+          item.quantity,
+      };
+    }
+  }
+
+  // Fallback for simple products
+  return {
+    salePrice: Number(item.discount_price),
+    regularPrice: Number(item.price),
+    total: Number(item.discount_price) * item.quantity,
+    subTotal: Number(item.price) * item.quantity,
+    discount:
+      (Number(item.price) - Number(item.discount_price)) * item.quantity,
+  };
+};
+
+const CartItem = ({ item, onRemove, onQuantityChange }) => {
+  const [priceData, setPriceData] = useState(null);
+
+  useEffect(() => {
+    setPriceData(getPriceDetails(item));
   }, [item]);
 
-  const handleIncrement = () => onQuantityChange(item.id, item.quantity + 1);
+  const handleIncrement = () =>
+    onQuantityChange(item?.prd_id, item.quantity + 1);
   const handleDecrement = () =>
-    item.quantity > 1 && onQuantityChange(item.id, item.quantity - 1);
+    item.quantity > 1 && onQuantityChange(item?.prd_id, item.quantity - 1);
 
   return (
     <div className="card mb-3 p-3">
@@ -40,33 +70,12 @@ const CartItem = ({ item, onRemove, onQuantityChange }) => {
         </div>
         <div className="cartitem_content">
           <h5>{item.product_name}</h5>
-          {/* <div>
-            {item.variation
-              ? Object.entries(item.variation).map(([key, value]) => (
-                  <span key={key} className="badge text-bg-dark m-1">
-                    {key} : {value}
-                  </span>
-                ))
-              : ""}
-          </div> */}
-          <div className="price_ing d-flex align-items-center">
-            {/* {item.product_inventory_details.length != 0 ? :''} */}
-            {productAmount ? (
-              <>
-                <h5>
-                  ₹{(productAmount.sale_price * item.quantity).toFixed(2)}
-                </h5>
-                <p className="slashPrice">
-                  ₹ {productAmount.reguler_price * item.quantity}{" "}
-                </p>
-              </>
-            ) : (
-              <>
-                <h5>₹{(item.discount_price * item.quantity).toFixed(2)}</h5>
-                <p className="slashPrice">₹ {item.price} </p>
-              </>
-            )}
-          </div>
+          {priceData && (
+            <div className="price_ing d-flex align-items-center">
+              <h5>₹{priceData.total.toFixed(2)}</h5>
+              <p className="slashPrice">₹{priceData.subTotal.toFixed(2)}</p>
+            </div>
+          )}
           <div className="d-flex align-items-center">
             <button
               className="btn btn-outline-secondary btn-sm"
@@ -102,6 +111,7 @@ const CartItem = ({ item, onRemove, onQuantityChange }) => {
 export default function Cart() {
   const fetch_products = useSelector((store) => store.products);
   const [products, setProducts] = useState([]);
+
   const [checkCart, setCheckCart] = useState(false);
   const [checkoutDetail, setCheckoutDetail] = useState({
     subTotal: 0,
@@ -109,137 +119,129 @@ export default function Cart() {
     total: 0,
   });
   const [checkoutUrl, setCheckoutUrl] = useState("");
-  // console.log(checkoutDetail)
   const dispatch = useDispatch();
+
+  // 1. Fetch Cart from API
   useEffect(() => {
-    if (fetch_products.status && localStorage.getItem("cart")) {
-      const cartIds = JSON.parse(localStorage.getItem("cart"));
+    
 
-      setProducts(
-        fetch_products.data
-          .filter((product) =>
-            cartIds.some((cartItem) => cartItem.id === product.id)
-          )
-          .map((product) => {
-            const cartItem = cartIds.find(
-              (cartItem) => cartItem.id === product.id
-            );
-            let variation = cartItem.variation
-              ? { variation: cartItem.variation }
-              : {};
-            return {
-              ...product,
-              quantity: cartItem ? cartItem.quantity : 1,
-              ...variation,
-            };
-          })
-      );
+    fetchCart();
+  }, []);
 
-      if (cartIds.length == 0) {
+  const fetchCart = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const res = await fetch(`${config.API_URL}${config.GetCartList}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const result = await res.json();
+
+      if (result.status && result.data.length > 0) {
+        const cartData = result.data.map((cartItem) => {
+          const product = cartItem.product;
+
+          dispatch(cartAction.addCart(product));
+          const variation = cartItem.variation || {};
+          return {
+            ...product,
+            prd_id: product?.id,
+            quantity: 1,
+            variation,
+            product_inventory_details: product?.variations
+              ? [product?.variations]
+              : [],
+            price: Number(product?.product_price),
+            discount_price: Number(product?.product_discount_price),
+          };
+        });
+
+        setProducts(cartData);
+        setCheckCart(false);
+      } else {
         setCheckCart(true);
       }
-    } else {
+    } catch (error) {
+      console.error("Error fetching cart:", error);
       setCheckCart(true);
     }
-  }, [fetch_products.status]);
+  };
+
+  const handleDelete = async (item) => {
+    console?.log('handleDelete ---->>',item)
+    // await deleteCartItem(id, (success) => {
+    //   if (success) {
+    //     fetchCart()
+    //     // setCart((prev) => prev.filter((item) => item.id !== id));
+    //   }
+    // });
+  };
+
+  // 2. Update Checkout URL when totals change
+  // useEffect(() => {
+  //   const cartIds = JSON.parse(localStorage.getItem("cart")) || [];
+  //   const url = JSON.stringify({ ...checkoutDetail, data: cartIds });
+  //   setCheckoutUrl(btoa(url));
+  // }, [checkoutDetail]);
 
   useEffect(() => {
     const cartIds = JSON.parse(localStorage.getItem("cart")) || [];
     const url = JSON.stringify({ ...checkoutDetail, data: cartIds });
-    console.log(btoa(url), { ...checkoutDetail, data: cartIds });
-    setCheckoutUrl(btoa(url));
+    const encodedUrl = btoa(encodeURIComponent(url));
+    setCheckoutUrl(encodedUrl);
   }, [checkoutDetail]);
 
-  let test = [];
-
-  const manager = useCallback(
-    (obj) => {
-      test.push(obj);
-      if (products.length != test.length) return;
-      const totals = test.reduce(
-        (acc, item) => {
-          acc.subTotal += item.subTotal;
-          acc.discount += item.discount;
-          acc.total += item.total;
-          return acc;
-        },
-        { subTotal: 0, discount: 0, total: 0 }
-      );
-
-      setCheckoutDetail(totals);
-    },
-    [products]
-  );
-  console.log(products);
+  // 3. Recalculate total when products change
   useEffect(() => {
-    if (products.length == 0) return;
-    products.map((item, index) => {
-      if (item.product_inventory_details.length == 0) {
-        manager({
-          subTotal: Number(item.price) * item.quantity,
-          discount:
-            Number(item.price * item.quantity) -
-            Number(item.discount_price * item.quantity),
-          total: Number(item.discount_price * item.quantity),
-        });
-        // localStorage.setItem(`tempsss`, JSON.stringify({subTotal : item.price,discount :(item.price - item.discount_price),total:item.discount_price}))
-      } else {
-        const variations = JSON.parse(
-          item.product_inventory_details[0].variation_json
-        );
-        const match = variations.find((v) =>
-          Object.entries(item.variation).every(([key, val]) => v[key] === val)
-        );
-        manager({
-          subTotal: Number(match.reguler_price * item.quantity),
-          discount:
-            Number(match.reguler_price * item.quantity) -
-            Number(match.sale_price * item.quantity),
-          total: Number(match.sale_price * item.quantity),
-        });
-        // localStorage.setItem(`tempsss${index}`, JSON.stringify())
-      }
+    if (products.length === 0) return;
+
+    let totalSub = 0;
+    let totalDiscount = 0;
+    let totalFinal = 0;
+
+    products.forEach((item) => {
+      const { subTotal, discount, total } = getPriceDetails(item);
+      totalSub += subTotal;
+      totalDiscount += discount;
+      totalFinal += total;
+    });
+
+    setCheckoutDetail({
+      subTotal: totalSub,
+      discount: totalDiscount,
+      total: totalFinal,
     });
   }, [products]);
 
-  useEffect(() => {}, []);
-
-  const [coupon, setCoupon] = useState("");
-  const [isCouponApplied, setIsCouponApplied] = useState(false);
-  const [couponMessage, setCouponMessage] = useState("");
-  const [couponMessageColor, setCouponMessageColor] = useState("");
-
+  // Quantity change
   const handleQuantityChange = (prd_id, newQuantity) => {
     setProducts((prevItems) =>
       prevItems.map((item) =>
-        item.prd_id === prd_id ? { ...item, quantity: newQuantity } : item
+        item?.prd_id === prd_id ? { ...item, quantity: newQuantity } : item
       )
     );
     dispatch(cartAction.updateCart({ prd_id, quantity: newQuantity }));
   };
 
+  // Remove item
   const handleRemove = (id) => {
     let cartIds = JSON.parse(localStorage.getItem("cart")) || [];
-    cartIds = cartIds.filter((item) => item.prd_id !== id);
-    // console.log(cartIds)
+    cartIds = cartIds.filter((item) => item?.prd_id !== id);
     localStorage.setItem("cart", JSON.stringify(cartIds));
-    setProducts(products.filter((item) => item.prd_id !== id));
-    dispatch(
-      cartAction.removeCart(products.filter((item) => item.prd_id !== id))
-    );
+    const updatedProducts = products.filter((item) => item?.prd_id !== id);
+    setProducts(updatedProducts);
+    dispatch(cartAction.removeCart(updatedProducts));
   };
-  const subTotal = products.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
-  );
-  const subTotalDiscount = products.reduce(
-    (sum, item) => sum + item.discount_price * item.quantity,
-    0
-  );
-  const shipping = 0;
-  const discount = subTotal - subTotalDiscount;
-  const tax = subTotalDiscount * 0.18;
-  const total = subTotalDiscount + shipping + tax - discount;
+
+  const [coupon, setCoupon] = useState("");
+  const [isCouponApplied, setIsCouponApplied] = useState(false);
+  const [couponMessage, setCouponMessage] = useState("");
+  const [couponMessageColor, setCouponMessageColor] = useState("");
 
   const applyCoupon = () => {
     if (coupon === "DISCOUNT180") {
@@ -264,7 +266,7 @@ export default function Cart() {
                   <FontAwesomeIcon
                     icon={faHouse}
                     style={{ fontSize: "14px", marginTop: "-4px" }}
-                  />{" "}
+                  />
                   Home
                 </Link>
               </li>
@@ -275,20 +277,15 @@ export default function Cart() {
           </div>
         </nav>
       </div>
+
       <section className="cart_section mt-5">
         <div className="container">
           <div className="row justify-content-center">
-            {checkCart == false && products.length == 0 ? (
+            {checkCart === false && products.length === 0 ? (
               <div className="col-12 text-center">
-                <div className="spinner-grow text-dark me-3" role="status">
-                  <span className="visually-hidden">Loading...</span>
-                </div>
-                <div className="spinner-grow text-dark me-3" role="status">
-                  <span className="visually-hidden">Loading...</span>
-                </div>
-                <div className="spinner-grow text-dark me-3" role="status">
-                  <span className="visually-hidden">Loading...</span>
-                </div>
+                <div className="spinner-grow text-dark me-3" role="status" />
+                <div className="spinner-grow text-dark me-3" role="status" />
+                <div className="spinner-grow text-dark me-3" role="status" />
               </div>
             ) : products.length > 0 ? (
               <>
@@ -297,14 +294,15 @@ export default function Cart() {
                     <h4 className="mb-3">Cart ({products.length} items)</h4>
                     {products.map((item) => (
                       <CartItem
-                        key={item.prd_id}
+                        key={item?.prd_id}
                         item={item}
-                        onRemove={() => handleRemove(item.prd_id)}
+                        onRemove={() => handleDelete(item)}
                         onQuantityChange={handleQuantityChange}
                       />
                     ))}
                   </div>
                 </div>
+
                 <div className="col-lg-4 col-md-4">
                   <div
                     className="Checkout_box p-4 mt-5"
@@ -317,7 +315,7 @@ export default function Cart() {
                     <h5 className="mb-4">The total amount of</h5>
                     <div className="list-box d-flex justify-content-between mb-2">
                       <span>Sub-total</span>
-                      <span>₹{checkoutDetail.subTotal}</span>
+                      <span>₹{checkoutDetail.subTotal.toFixed(2)}</span>
                     </div>
                     <div className="list-box d-flex justify-content-between mb-2">
                       <span>Shipping</span>
@@ -325,7 +323,7 @@ export default function Cart() {
                     </div>
                     <div className="list-box d-flex justify-content-between mb-2">
                       <span>Discount</span>
-                      <span>- ₹{checkoutDetail.discount}</span>
+                      <span>- ₹{checkoutDetail.discount.toFixed(2)}</span>
                     </div>
                     <div className="list-box d-flex justify-content-between mb-3">
                       <span>Tax (18%)</span>
@@ -334,11 +332,8 @@ export default function Cart() {
                     <hr />
                     <div className="list-box d-flex justify-content-between mb-4">
                       <h5>Total</h5>
-                      <h5>₹{checkoutDetail.total}</h5>
+                      <h5>₹{checkoutDetail.total.toFixed(2)}</h5>
                     </div>
-                    {/* <button className="btn btn-primary w-100 rounded-0 py-2">
-                      PROCEED TO CHECKOUT →
-                    </button> */}
                     <Link
                       to={`/checkout/${checkoutUrl}`}
                       className="btn btn-primary w-100 rounded-0 py-2"
@@ -346,7 +341,8 @@ export default function Cart() {
                       PROCEED TO CHECKOUT →
                     </Link>
                   </div>
-                  <div className="discount_box">
+
+                  <div className="discount_box mt-4">
                     <h5>Have a Coupon?</h5>
                     <div className="mb-3">
                       <input
@@ -373,6 +369,7 @@ export default function Cart() {
               <h2 className="text-center">Your cart is empty..!</h2>
             )}
           </div>
+
           <div className="continueshop_btn my-5">
             <div className="row">
               <div className="offset-lg-1 col-lg-11 col-md-12">
@@ -382,6 +379,7 @@ export default function Cart() {
           </div>
         </div>
       </section>
+
       <Footer />
     </>
   );

@@ -15,7 +15,7 @@ export default function BestSelling() {
 
   // filter new arrivals (and optionally only active status)
   const newArrivals = allProducts.filter(
-    (p) => p.home_type === "best_seller" && String(p.status) === "1"
+    (p) => p.home_type === "new_arrivals" && String(p.status) === "1"
   );
 
   const settings = {
@@ -23,7 +23,7 @@ export default function BestSelling() {
     infinite: true,
     speed: 500,
     slidesToShow: 5,
-    slidesToScroll: 2,
+    slidesToScroll: 1,
     arrows: false,
     autoplay: true,
     autoplaySpeed: 3000,
@@ -50,7 +50,6 @@ export default function BestSelling() {
         breakpoint: 480,
         settings: {
           slidesToShow: 1,
-            slidesToScroll: 1,
         },
       },
     ],

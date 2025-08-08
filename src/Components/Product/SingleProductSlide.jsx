@@ -1,5 +1,6 @@
+/* eslint-disable no-unused-vars */
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { wishlistAction } from "../../store/Products/wishlistSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -7,17 +8,23 @@ import {
   faStar,
   faStarHalfAlt,
 } from "@fortawesome/free-solid-svg-icons";
-import { faHeart as faRegularHeart } from "@fortawesome/free-regular-svg-icons";
-import { faHeart as faSolidHeart } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import { cartAction } from "../../store/Products/cartSlice";
+import { AddOrRemoveCart, API_URL, GetCartList } from "../../Config/config";
 
-export default function  SingleProductSlide({ product }) {
-
+export default function SingleProductSlide({ product }) {
   const [wishlist, setWishlist] = useState([]);
   const [addTocart, setaddTocart] = useState([]);
+  const [gettoken, setGettoken] = useState(null);
+
+  const addToCart = useSelector((store) => store.cart);
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setGettoken(token);
+  }, []);
 
   useEffect(() => {
     if (localStorage.getItem("wishlist")) {
@@ -28,46 +35,45 @@ export default function  SingleProductSlide({ product }) {
     }
   }, []);
 
-  const toggleWishlist = (id) => {
-    let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
-    wishlist = wishlist.includes(id)
-      ? wishlist.filter((num) => num !== id)
-      : [id, ...wishlist];
-    setWishlist(wishlist);
-    localStorage.setItem("wishlist", JSON.stringify(wishlist));
-    dispatch(wishlistAction.addWishlist(wishlist.length));
-  };
+  const toggleCart = async (item) => {
+    try {
+      const response = await fetch(`${API_URL}${AddOrRemoveCart}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${gettoken}`,
+        },
+        body: JSON.stringify({ product_id: item?.id }),
+      });
 
-  const toggleCart = (id) => {
-    let addTocart = JSON.parse(localStorage.getItem("cart")) || [];
-  
-    // Check if product is already in cart
-    const isInCart = addTocart.some((item) => item.prd_id === id);
-  
-    if (isInCart) {
-      // Remove from cart
-      addTocart = addTocart.filter((item) => item.prd_id !== id);
-      // console.log(addTocart)
-      dispatch(cartAction.removeCart(addTocart));
-    } else {
-      const newItem = { quantity: 1, prd_id: id };
-      addTocart = [newItem, ...addTocart];
-      dispatch(cartAction.addCart(newItem)); 
+      if (!response.ok) throw new Error("Failed to update cart.");
+
+      const data = await response.json();
+
+      if (data.message === "Product added to cart") {
+        dispatch(cartAction.addCart(item)); // ✅ send single item
+        setaddTocart((prev) => [item, ...prev]);
+      } else if (data.message === "Product removed from cart") {
+        dispatch(cartAction.removeCart(item)); // ✅ send single item
+        setaddTocart((prev) => prev.filter((i) => i.id !== item.id));
+      }
+    } catch (error) {
+      console.error("Cart update failed:", error);
+      alert("Something went wrong while updating the cart.");
     }
-  
-    setaddTocart(addTocart);
   };
-  
 
   return (
-    <div key={product.prd_id} className="feature-card">
+    <div key={product.id} className="feature-card">
       <span className="disco">
         {Math.round(
-          ((product.product_price - product.product_discount_price) / product.product_price) * 100
+          ((product.product_price - product.product_discount_price) /
+            product.product_price) *
+            100
         )}
         %
       </span>
-      <span
+      {/* <span
         className="wishicon"
         onClick={() => toggleWishlist(product.prd_id)}
         style={{ cursor: "pointer", fontSize: "16px" }}
@@ -78,15 +84,17 @@ export default function  SingleProductSlide({ product }) {
           }
           color={wishlist.includes(product.prd_id) ? "red" : "black"}
         />
-      </span>
-      {/* <Link to={`/product/${product.product_slug}`}> */}
-      <div className="card-img">
-        <img src={product.product_image} alt={product.product_name} />
-      </div>
-      {/* </Link> */}
+      </span> */}
+      <Link to={`/product/${product.product_slug}`}>
+        <div className="card-img">
+          <img src={product.product_image} alt={product.product_name} />
+        </div>
+      </Link>
       <div className="product-detail">
         <h3>
-          <Link to={`/product/${product.product_slug}`}>{product.product_name}</Link>
+          <Link to={`/product/${product.product_slug}`}>
+            {product.product_name}
+          </Link>
         </h3>
         <div className="rating d-flex align-items-center ">
           <FontAwesomeIcon key={0} icon={faStar} />
@@ -100,8 +108,15 @@ export default function  SingleProductSlide({ product }) {
           <p className="slashPrice">₹ {product.product_price} </p>
         </div>
       </div>
-      <a onClick={() => toggleCart(product.prd_id)} className={`cart-btn ${addTocart.some(item => item.prd_id === product.prd_id) ? "bg-dark" : ""}`}>
-        {addTocart.some(item => item.prd_id === product.prd_id) ? "Remove to Cart" : "Add to Cart"}
+      <a
+        onClick={() => toggleCart(product)}
+        className={`cart-btn ${
+          addTocart.some((item) => item?.id === product?.id) ? "bg-dark" : ""
+        }`}
+      >
+        {addTocart.some((item) => item?.id === product?.id)
+          ? "Remove to Cart"
+          : "Add to Cart"}
         <FontAwesomeIcon icon={faBagShopping} className="ms-2" />
       </a>
     </div>

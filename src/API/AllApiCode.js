@@ -41,7 +41,7 @@ export const deleteCartItem = async (id, setData) => {
       },
     );
 
-    console.log("response", response?.data);
+    // console.log("response", response?.data);
 
     if (response?.data?.status === true) {
       setData(response?.data?.status);

@@ -14,6 +14,7 @@ import ContactSlice from "./Contact/ContactSlice";
 import AboutSlice from "./About/AboutSlice";
 import brandsSlice from "./Brands/BrandSlice";
 import AuthCheckSlice from "./Auth/AuthCheckSlice";
+import RecentViewSlice from "./RecentViewSlice/RecentViewSlice"
 
 const ecommerceStore = configureStore({
   reducer: {
@@ -32,6 +33,7 @@ const ecommerceStore = configureStore({
     About: AboutSlice.reducer,
     brands: brandsSlice.reducer,
     authcheck: AuthCheckSlice.reducer,
+    recentView: RecentViewSlice.reducer
   },
 });
 

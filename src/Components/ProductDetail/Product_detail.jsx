@@ -502,8 +502,9 @@ export default function Product_detail({ singleProduct }) {
                   name="action_type"
                   value="add_to_cart"
                   onClick={() =>
-                    // addTocart.some((item) => item?.id === singleProduct.id)
-                      toggleCart(singleProduct)
+                    addTocart.some((item) => item?.id === singleProduct.id)
+                      ? toggleCart(singleProduct)
+                      : null
                   }
                   className={`btn btn-success w-50 ${
                     addTocart.some((item) => item?.id === singleProduct.id)

@@ -11,6 +11,7 @@ import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import ScrollToTop from '../ScrollToTop';
 import axios from 'axios';
+import config from '../../Config/config.json';
 
 export default function ProductDetail() {
   const fetch_singleProduct = useSelector((store) => store.singleProduct);
@@ -41,15 +42,13 @@ export default function ProductDetail() {
           return;
         }
 
+        // POST request with product_id in query params
         const response = await axios.post(
-          'https://dimgrey-eel-688395.hostingersite.com/api/add-recent-view',
-          {
-            product_id: singleProduct.id,
-          },
+          `${config.API_URL}/add-recent-view?product_id=${singleProduct.id}`,
+          {}, // No body needed since product_id is in query params
           {
             headers: {
-              Authorization: `Bearer ${token}`, // Bearer token
-              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
             },
           }
         );
@@ -74,7 +73,7 @@ export default function ProductDetail() {
           <Product_descrtiption singleProduct={singleProduct} />
           <ReviewRating singleProduct={singleProduct} />
           <SimilarProducts singleProduct={singleProduct} />
-          <RecentlyViewed singleProduct={singleProduct} />
+          <RecentlyViewed  />
         </>
       ) : (
         <>Hello</>
@@ -83,4 +82,3 @@ export default function ProductDetail() {
     </>
   );
 }
-  

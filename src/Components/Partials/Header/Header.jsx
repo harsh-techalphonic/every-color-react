@@ -16,10 +16,12 @@ import CartMenu from "./CartMenu";
 import AllCatergory_Filter from "./AllCatergory_Filter";
 import SearchBar from "./SearchBar";
 import CategoriesApi from "../../../API/CategoriesAPi";
-import { useSelector } from "react-redux";
+import RecentViewApi from "../../../API/RecentViewApi";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function Header() {
   const categories = useSelector((store) => store.categories);
+  const dispatch = useDispatch();
   // console.log("allCategories data", categories)
   const [show, setShow] = useState(false);
   const [isSticky, setIsSticky] = useState(false);
@@ -119,11 +121,16 @@ export default function Header() {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
+   useEffect(() => {
+    RecentViewApi(dispatch);
+  }, [dispatch]);
   return (
     <>
       <section className={`Header ${isSticky ? "sticky" : ""}`}>
         <ProductsApi />
         <CategoriesApi />
+        <RecentViewApi/>
         <div className="infobox">
           <div className="container">
             <ul className="list-unstyled d-flex align-items-center justify-content-between mb-0">

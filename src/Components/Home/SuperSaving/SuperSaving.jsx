@@ -72,7 +72,7 @@ export default function SuperSaving() {
           <div className="feature-product-tile d-flex align-items-center justify-content-between">
             <div className="title-box">
               <h2>
-                <span>new Arrivals </span> Products
+                <span>New Arrivals </span> Products
               </h2>
             </div>
             <div className="title-box">

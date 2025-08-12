@@ -143,7 +143,7 @@ export default function SingleProductSlide({ product }) {
 
   const addToCart = useSelector((store) => store.cart);
   const dispatch = useDispatch();
-  const navigate = useNavigate(); // ✅ Initialize navigate
+  const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -185,7 +185,7 @@ export default function SingleProductSlide({ product }) {
         setaddTocart((prev) => [item, ...prev]);
       } else if (data.message === "Product removed from cart") {
         dispatch(cartAction.removeCart(item));
-        setaddTocart((prev) => prev.filter((i) => i.id !== item.id));
+        setaddTocart((prev) => prev.filter((i) => i?.id !== item?.id));
       } else {
         console?.log("AddOrRemoveCart ---->>", data);
       }
@@ -196,7 +196,7 @@ export default function SingleProductSlide({ product }) {
   };
 
   return (
-    <div key={product.id} className="feature-card">
+    <div key={product?.id} className="feature-card">
       <span className="disco">
         {Math.round(
           ((product?.product_price - product?.product_discount_price) /
@@ -207,13 +207,13 @@ export default function SingleProductSlide({ product }) {
       </span>
 
       <div className="card-img">
-        <img src={product.product_image} alt={product.product_name} />
+        <img src={product?.product_image} alt={product?.product_name} />
       </div>
 
       <div className="product-detail">
         <h3>
-          <Link to={`/product/${product.product_slug}`}>
-            {product.product_name}
+          <Link to={`/product/${product?.product_slug}`}>
+            {product?.product_name}
           </Link>
         </h3>
         <div className="rating d-flex align-items-center ">
@@ -221,11 +221,11 @@ export default function SingleProductSlide({ product }) {
           <FontAwesomeIcon icon={faStar} />
           <FontAwesomeIcon icon={faStar} />
           <FontAwesomeIcon icon={faStarHalfAlt} />
-          <span>({product.avg_ratting})</span>
+          <span>({product?.avg_ratting})</span>
         </div>
         <div className="Pricing d-flex align-items-center ">
-          <p className="price">₹ {product.product_discount_price} </p>
-          <p className="slashPrice">₹ {product.product_price} </p>
+          <p className="price">₹ {product?.product_discount_price} </p>
+          <p className="slashPrice">₹ {product?.product_price} </p>
         </div>
       </div>
 

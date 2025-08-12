@@ -111,6 +111,7 @@ const CartItem = ({ item, onRemove, onQuantityChange }) => {
 export default function Cart() {
   const fetch_products = useSelector((store) => store.products);
   const [products, setProducts] = useState([]);
+  // console?.log("products cart ----->>>", products);
 
   const [checkCart, setCheckCart] = useState(false);
   const [checkoutDetail, setCheckoutDetail] = useState({
@@ -121,10 +122,7 @@ export default function Cart() {
   const [checkoutUrl, setCheckoutUrl] = useState("");
   const dispatch = useDispatch();
 
-  // 1. Fetch Cart from API
   useEffect(() => {
-    
-
     fetchCart();
   }, []);
 
@@ -145,11 +143,11 @@ export default function Cart() {
       if (result.status && result.data.length > 0) {
         const cartData = result.data.map((cartItem) => {
           const product = cartItem.product;
-
-          dispatch(cartAction.addCart(product));
           const variation = cartItem.variation || {};
+
           return {
             ...product,
+            cart_id: cartItem.id,
             prd_id: product?.id,
             quantity: 1,
             variation,
@@ -161,10 +159,12 @@ export default function Cart() {
           };
         });
 
+        dispatch(cartAction.setCart(cartData)); // ✅ Update Redux in one go
         setProducts(cartData);
         setCheckCart(false);
       } else {
         setCheckCart(true);
+        dispatch(cartAction.setCart([])); // ✅ Clear Redux if no cart
       }
     } catch (error) {
       console.error("Error fetching cart:", error);
@@ -173,13 +173,25 @@ export default function Cart() {
   };
 
   const handleDelete = async (item) => {
-    console?.log('handleDelete ---->>',item)
-    // await deleteCartItem(id, (success) => {
-    //   if (success) {
-    //     fetchCart()
-    //     // setCart((prev) => prev.filter((item) => item.id !== id));
-    //   }
-    // });
+    const confirmDelete = window.confirm(
+      `Are you sure you want to remove product from your cart?`
+    );
+
+    if (!confirmDelete) return; // User cancelled
+
+    try {
+      const success = await deleteCartItem(item.cart_id);
+      if (success) {
+        fetchCart();
+        setProducts((prev) => prev.filter((p) => p?.id !== item?.id));
+
+        console.log("Item removed successfully!");
+      } else {
+        console.error("Failed to delete item from cart.");
+      }
+    } catch (error) {
+      console.error("Error deleting item:", error);
+    }
   };
 
   // 2. Update Checkout URL when totals change
@@ -229,14 +241,14 @@ export default function Cart() {
   };
 
   // Remove item
-  const handleRemove = (id) => {
-    let cartIds = JSON.parse(localStorage.getItem("cart")) || [];
-    cartIds = cartIds.filter((item) => item?.prd_id !== id);
-    localStorage.setItem("cart", JSON.stringify(cartIds));
-    const updatedProducts = products.filter((item) => item?.prd_id !== id);
-    setProducts(updatedProducts);
-    dispatch(cartAction.removeCart(updatedProducts));
-  };
+  // const handleRemove = (id) => {
+  //   let cartIds = JSON.parse(localStorage.getItem("cart")) || [];
+  //   cartIds = cartIds.filter((item) => item?.prd_id !== id);
+  //   localStorage.setItem("cart", JSON.stringify(cartIds));
+  //   const updatedProducts = products.filter((item) => item?.prd_id !== id);
+  //   setProducts(updatedProducts);
+  //   dispatch(cartAction.removeCart(updatedProducts));
+  // };
 
   const [coupon, setCoupon] = useState("");
   const [isCouponApplied, setIsCouponApplied] = useState(false);
@@ -287,11 +299,11 @@ export default function Cart() {
                 <div className="spinner-grow text-dark me-3" role="status" />
                 <div className="spinner-grow text-dark me-3" role="status" />
               </div>
-            ) : products.length > 0 ? (
+            ) : products?.length > 0 ? (
               <>
                 <div className="col-lg-6 col-md-8">
                   <div className="Cart_sect-box">
-                    <h4 className="mb-3">Cart ({products.length} items)</h4>
+                    <h4 className="mb-3">Cart ({products?.length} items)</h4>
                     {products.map((item) => (
                       <CartItem
                         key={item?.prd_id}

@@ -22,35 +22,56 @@ export const fetchCartAPI = async () => {
   }
 };
 
-export const deleteCartItem = async (id, setData) => {
+// export const deleteCartItem = async (id, setData) => {
+//   const token = localStorage.getItem("token");
+//   console.log("`${API_URL}${RemoveCart}`", `${API_URL}${RemoveCart}`);
+//   console?.log("handleDelete ---->>", id);
+
+//   try {
+//     const response = await axios.post(
+//       `${API_URL}${RemoveCart}`,
+//       {
+//         id: id,
+//       },
+//       {
+//         headers: {
+//           Authorization: `Bearer ${token}`,
+//         },
+//       }
+//     );
+
+//     console.log("handleDelete 1111", response?.data);
+
+//     if (response?.data?.status === true) {
+//       setData(response?.data?.status);
+//     }
+//   } catch (error) {
+//     console.error("Network Error:", error.message);
+//     alert("Error: Something went wrong");
+//   }
+// };
+
+export const deleteCartItem = async (id) => {
   const token = localStorage.getItem("token");
   console.log("`${API_URL}${RemoveCart}`", `${API_URL}${RemoveCart}`);
-  console?.log("handleDelete ---->>", id);
+  console.log("handleDelete ---->>", id);
 
   try {
     const response = await axios.post(
       `${API_URL}${RemoveCart}`,
-      {
-        id: id,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          // 'Content-Type': 'application/json',
-        },
-      }
+      { id },
+      { headers: { Authorization: `Bearer ${token}` } }
     );
 
-    // console.log("response", response?.data);
-
-    if (response?.data?.status === true) {
-      setData(response?.data?.status);
-    }
+    console.log("handleDelete 1111", response?.data);
+    return response?.data?.status === true; // Return true/false
   } catch (error) {
     console.error("Network Error:", error.message);
     alert("Error: Something went wrong");
+    return false;
   }
 };
+
 
 export const getPrivacyPolicy = async (setData,apiPath) => {
   const token = localStorage.getItem("token");

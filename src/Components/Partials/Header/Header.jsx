@@ -129,10 +129,10 @@ export default function Header() {
   return (
     <>
       <section className={`Header ${isSticky ? "sticky" : ""}`}>
-        <ProductsApi />
+        {/* <ProductsApi />
         <CategoriesApi />
         <RecentViewApi />
-        <OrderApi />
+        <OrderApi /> */}
         <div className="infobox">
           <div className="container">
             <ul className="list-unstyled d-flex align-items-center justify-content-between mb-0">

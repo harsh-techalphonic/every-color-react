@@ -1,4 +1,3 @@
-
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = localStorage.getItem("cart")
@@ -9,29 +8,27 @@ export const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
-    // addCart: (store, action) => {
-    //   const newItem = action.payload;
 
-    //   // Check if item already exists in the cart based on prd_id
-    //   const exists = store.some((item) => item?.id === newItem?.id);
-
-    //   if (!exists) {
-    //     const updatedCart = [newItem, ...store];
-    //     localStorage.setItem("cart", JSON.stringify(updatedCart));
-    //     return updatedCart;
-    //   }
-
-    //   // If it already exists, do not add again
-    //   return store;
+    setCart: (store, action) => {
+      localStorage.setItem("cart", JSON.stringify(action.payload));
+      return action.payload;
+    },
+    // removeCart: (store, action) => {
+    //   const updatedCart = store.filter(
+    //     (item) => item?.id !== action.payload?.id
+    //   );
+    //   localStorage.setItem("cart", JSON.stringify(updatedCart));
+    //   return updatedCart;
     // },
 
     removeCart: (store, action) => {
       const updatedCart = store.filter(
-        (item) => item?.id !== action.payload?.id
+        (item) => item?.id !== action.payload
       );
       localStorage.setItem("cart", JSON.stringify(updatedCart));
       return updatedCart;
     },
+    
 
     addCart: (store, action) => {
       const newItem = action.payload;

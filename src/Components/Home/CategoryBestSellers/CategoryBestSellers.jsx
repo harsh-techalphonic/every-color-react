@@ -16,6 +16,7 @@ export default function CategoryBestSellers() {
         speed: 500,
         slidesToShow: 5,
         slidesToScroll: 1,
+        swipeToSlide: true,
         arrows: false,
         autoplay: true,
         autoplaySpeed: 3000,

@@ -17,6 +17,7 @@ import AllCatergory_Filter from "./AllCatergory_Filter";
 import SearchBar from "./SearchBar";
 import CategoriesApi from "../../../API/CategoriesAPi";
 import RecentViewApi from "../../../API/RecentViewApi";
+import OrderApi from "../../../API/OrderApi";
 import { useDispatch, useSelector } from "react-redux";
 
 export default function Header() {
@@ -108,7 +109,7 @@ export default function Header() {
 
   // Sticky header functionality
   const handleScroll = () => {
-    if (window.scrollY > 0) {
+    if (window.scrollY > 180) {
       setIsSticky(true);
     } else {
       setIsSticky(false);
@@ -131,6 +132,7 @@ export default function Header() {
         <ProductsApi />
         <CategoriesApi />
         <RecentViewApi/>
+        <OrderApi/>
         <div className="infobox">
           <div className="container">
             <ul className="list-unstyled d-flex align-items-center justify-content-between mb-0">

@@ -100,28 +100,6 @@ export default function Footer() {
             </div>
             <div className="col-lg-3 col-md-4 mt-5">
               <div className="menu-box">
-                <h4>Our Brand</h4>
-                <ul className="list-unstyled mt-4">
-                  <li>
-                    <Link to="#!">Apple</Link>
-                  </li>
-                  <li>
-                    <Link to="#!">Samsung</Link>
-                  </li>
-                  <li>
-                    <Link to="#!">Amazon</Link>
-                  </li>
-                  <li>
-                    <Link to="#!">Coca-Cola</Link>
-                  </li>
-                  <li>
-                    <Link to="#!">Nike</Link>
-                  </li>
-                </ul>
-              </div>
-            </div>
-            <div className="col-lg-3 col-md-4 mt-5">
-              <div className="menu-box">
                 <h4>Categories</h4>
                 <ul className="list-unstyled mt-4">
                   {categories.data?.map((category, index) => (
@@ -131,6 +109,28 @@ export default function Footer() {
                       </Link>
                     </li>
                   ))}
+                </ul>
+              </div>
+            </div>
+            <div className="col-lg-3 col-md-4 mt-5">
+              <div className="menu-box">
+                <h4>Blogs</h4>
+                <ul className="list-unstyled mt-4">
+                  <li className="d-flex gap-3">
+                   <img src="/DealDay1.png"  alt="" style={{ width: "100px", height: "80px", borderRadius: "8px" }}/>
+                    <div>
+                      <p className="mb-0"><Link to="#!"  className="mb-0 fs-lg-5 fs-md-6">The Future of AI: What You Need to Know Today</Link></p>
+                      <p className="text-white">{new Date().toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}</p>
+                    </div>
+                  </li>
+                  <li className="d-flex gap-3">
+                   <img src="/DealDay1.png"  alt="" style={{ width: "100px", height: "80px", borderRadius: "8px" }}/>
+                    <div>
+                      <p className="mb-0"><Link to="#!"  className="mb-0 fs-lg-5 fs-md-6">The Future of AI: What You Need to Know Today</Link></p>
+                      <p className="text-white">{new Date().toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}</p>
+                    </div>
+                  </li>
+                  
                 </ul>
               </div>
             </div>

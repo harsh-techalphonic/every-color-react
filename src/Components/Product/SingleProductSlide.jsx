@@ -67,8 +67,8 @@ export default function SingleProductSlide({ product }) {
     <div key={product.id} className="feature-card">
       <span className="disco">
         {Math.round(
-          ((product.product_price - product.product_discount_price) /
-            product.product_price) *
+          ((product?.product_price - product?.product_discount_price) /
+            product?.product_price) *
             100
         )}
         %

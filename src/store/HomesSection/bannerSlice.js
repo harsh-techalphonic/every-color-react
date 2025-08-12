@@ -1,21 +1,21 @@
+// bannerSlice.js
 import { createSlice } from "@reduxjs/toolkit";
-import axios from "axios";
-import { useSelector } from "react-redux";
+
+const initialState = {
+  status: false,
+  data: [],
+};
 
 export const bannersSlice = createSlice({
   name: "banners",
-  initialState: {
-    status: false,
-    data: [],
-  },
+  initialState,
   reducers: {
-    getCategory: (store, action) => {
-      return {
-        status: true,
-        data: [...action.payload.data],
-      };
+    getCategory: (state, action) => {
+      state.status = true;
+      state.data = action.payload;  // Adjust if your API returns nested data like action.payload.data
     },
   },
 });
+
 export const bannersAction = bannersSlice.actions;
 export default bannersSlice;

@@ -10,6 +10,7 @@ export const AddOrRemoveCart = "/bag/add-remove-cart";
 // Privacy or Policy
 export const PrivacyPolicyApi = "/web/privacy-policy";
 export const TermsCondition = "/web/terms-and-condition";
+export const ReturnCancelation = "/web/return-and-cancellation-policy";
 
 
 

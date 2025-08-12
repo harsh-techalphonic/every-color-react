@@ -113,7 +113,7 @@ export default function Footer() {
               </div>
             </div>
             <div className="col-lg-3 col-md-4 mt-5">
-              <div className="menu-box">
+              {/* <div className="menu-box">
                 <h4>Blogs</h4>
                 <ul className="list-unstyled mt-4">
                   <li className="d-flex gap-3">
@@ -132,7 +132,28 @@ export default function Footer() {
                   </li>
                   
                 </ul>
-              </div>
+              </div> */}
+              <section className="bg-gray-900 menu-box text-white py-10 px-5">
+                <div className="max-w-3xl mx-auto">
+                  <h4 className="text-3xl font-bold mb-3">Subscribe to Our Newsletter</h4>
+                  <p className="text-gray-400 mb-6">
+                    Get the latest blogs, news, and updates straight to your inbox.
+                  </p>
+                  <form className="d-flex flex-col sm:flex-row items-center justify-center" method="post" action={""}> 
+                    <input
+                      type="email"
+                      placeholder="Enter your email"
+                      className="px-4 py-3 rounded-md text-black w-full sm:w-auto flex-1 focus:outline-none"
+                    />
+                    <button
+                      type="submit"
+                      className="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-md font-semibold"
+                    >
+                      Subscribe
+                    </button>
+                  </form>
+                </div>
+              </section>
             </div>
           </div>
         </div>

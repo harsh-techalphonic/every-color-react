@@ -12,6 +12,7 @@ import { useParams } from 'react-router-dom';
 import ScrollToTop from '../ScrollToTop';
 import axios from 'axios';
 import config from '../../Config/config.json';
+import RecentViewApi from '../../API/RecentViewApi';
 
 export default function ProductDetail() {
   const fetch_singleProduct = useSelector((store) => store.singleProduct);
@@ -67,6 +68,7 @@ export default function ProductDetail() {
       <ScrollToTop />
       <Header />
       <SingleProductApi />
+      <RecentViewApi />
       {singleProduct ? (
         <>
           <Product_detail singleProduct={singleProduct} />

@@ -51,7 +51,7 @@ export default function ExploreBestSellerCard({ product }) {
       <div className="card-img">
         <video
           ref={videoRef}
-          src={product.video_url}
+          src={product.video}
           poster={product.img_url}
           className="w-100 rounded"
           preload="metadata"

@@ -16,7 +16,6 @@ import CartMenu from "./CartMenu";
 import AllCatergory_Filter from "./AllCatergory_Filter";
 import SearchBar from "./SearchBar";
 import CategoriesApi from "../../../API/CategoriesAPi";
-import RecentViewApi from "../../../API/RecentViewApi";
 import OrderApi from "../../../API/OrderApi";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -123,15 +122,12 @@ export default function Header() {
     };
   }, []);
 
-   useEffect(() => {
-    RecentViewApi(dispatch);
-  }, [dispatch]);
+
   return (
     <>
       <section className={`Header ${isSticky ? "sticky" : ""}`}>
         <ProductsApi />
         <CategoriesApi />
-        <RecentViewApi/>
         <OrderApi/>
         <div className="infobox">
           <div className="container">

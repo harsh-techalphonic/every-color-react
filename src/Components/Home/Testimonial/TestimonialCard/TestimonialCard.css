@@ -10,6 +10,10 @@
     width: 100%;
     max-width: 120px;
     min-width: 120px;
+    height: 120px;
+    overflow: hidden;
+    background-color: #f0e7e1;
+    border-radius: 50%;
 }
 .username h6{
     font-size: 18px;
@@ -17,6 +21,30 @@
 }
 .testimonial-description p{
     text-align: justify;
+}
+@media screen and (min-width:991px) and (max-width:1400px) {
+  .testimonnial-card {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .testimonial-card .card {
+        padding: 8px 12px;
+    }
+    .user-img{
+        margin: auto;
+    }
+}
+@media screen and (min-width:767px) and (max-width:991px) {
+  .testimonnial-card {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .testimonial-card .card {
+        padding: 8px 12px;
+    }
+    .user-img{
+        margin: auto;
+    }
 }
 @media screen and (max-width:576px) {
     .testimonnial-card{

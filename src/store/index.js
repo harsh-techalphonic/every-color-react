@@ -16,6 +16,8 @@ import brandsSlice from "./Brands/BrandSlice";
 import AuthCheckSlice from "./Auth/AuthCheckSlice";
 import RecentViewSlice from "./RecentViewSlice/RecentViewSlice"
 import ordersSlice from "./Orders/OrdersSlice";
+import testimonialSlice from "./HomesSection/TestimonialSlice";
+import pressSlice from "./HomesSection/PressSlice";
 
 
 const ecommerceStore = configureStore({
@@ -36,7 +38,9 @@ const ecommerceStore = configureStore({
     brands: brandsSlice.reducer,
     authcheck: AuthCheckSlice.reducer,
     recentView: RecentViewSlice.reducer,
-    orders: ordersSlice.reducer
+    orders: ordersSlice.reducer,
+    testimonials: testimonialSlice.reducer,
+    press: pressSlice.reducer
   },
 });
 

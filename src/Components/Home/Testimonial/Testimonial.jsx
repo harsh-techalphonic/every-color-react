@@ -1,24 +1,42 @@
 import React from 'react';
 import Slider from "react-slick";
-import './Testimonial.css'
+import './Testimonial.css';
 import { TestimonialCard } from './TestimonialCard/TestimonialCard';
+import TestimonialApi from '../../../API/TestimonialApi';
+import { useSelector } from "react-redux";
 
 const TestimonialSlider = () => {
+  const testimonials = useSelector((store) => store.testimonials);
+  // console.log("Redux testimonials:", testimonials);
+
+  // Convert testimonials object to array if data exists
+  const testimonialsArray = testimonials?.data
+    ? Object.values(testimonials.data)
+    : [];
+
   const settings = {
     dots: true,
     infinite: true,
     speed: 500,
     slidesToShow: 3,
     slidesToScroll: 1,
+    swipeToSlide: true,
     arrows: false,
-      autoplay: true,
-       autoplaySpeed: 1000,
+    autoplay: true,
+    autoplaySpeed: 3000,
     centerMode: true,
-    centerPadding: "100px",
+    centerPadding: "180px",
     responsive: [
-      
       {
-        breakpoint: 1600,
+        breakpoint: 1740,
+        settings: {
+          slidesToShow: 2,
+          centerMode: true,
+          centerPadding: "60px",
+        }
+      },
+      {
+        breakpoint: 1640,
         settings: {
           slidesToShow: 2,
           centerMode: true,
@@ -32,57 +50,46 @@ const TestimonialSlider = () => {
           centerMode: true,
           centerPadding: "60px",
         }
+      },
+      {
+        breakpoint: 767,
+        settings: {
+          slidesToShow: 1,
+          centerMode: true,
+          centerPadding: "0px",
+        }
       }
     ],
   };
-  const testimonialsData =[
-  {
-    "Image":"https://randomuser.me/api/portraits/men/14.jpg",
-    "TestimonialContent": "Working with Bytewave has been an absolute game-changer for our online presence. Their innovative strategies and creative approach have taken our brand to new heights!",
-    "Username": "Benjamin Parker",
-    "Rating": 5
-  },
-  { 
-    "Image":"https://randomuser.me/api/portraits/men/14.jpg",
-    "TestimonialContent": "I'm truly impressed by the results delivered by Bytewave. Their team's professionalism and dedication shine through in every project.",
-    "Username": "Sophia Martinez",
-    "Rating": 4
-  },
-  {
-     "Image":"https://randomuser.me/api/portraits/men/14.jpg",
-    "TestimonialContent": "I can't thank Bytewave enough for their exceptional service. From web design to social media management, they've exceeded our expectations every step of the way.",
-    "Username": "James Chen",
-    "Rating": 5
-  },
-  {
-     "Image":"https://randomuser.me/api/portraits/men/14.jpg",
-    "TestimonialContent": "Choosing Bytewave was the best decision we made for our business. Their expertise in SEO and digital marketing has significantly boosted our traffic and conversions.",
-    "Username": "Aarav Sharma",
-    "Rating": 3
-  }
-]
 
   return (
-    <div className='testmonial my-5 py-lg-5 py-md-4 py-2'>
-      <div className="container-fluid">
-        <div className="text-center mb-5">
-          <h2 className="fw-bold mb-2">Testimonials</h2>
-          <p className="text-muted mb-0">
-            Discover exceptional experiences through testimonials from our satisfied customers.
-          </p>
+    <>
+      <TestimonialApi />
+      <div className='testmonial my-5 py-lg-5 py-md-4 py-2'>
+        <div className="container-fluid">
+          <div className="text-center mb-5">
+            <h2 className="fw-bold mb-2">Testimonials</h2>
+            <p className="text-muted mb-0">
+              Discover exceptional experiences through testimonials from our satisfied customers.
+            </p>
+          </div>
+
+          {testimonialsArray.length > 0 && (
+            <Slider {...settings}>
+              {testimonialsArray.map((testimonial, idx) => (
+                <TestimonialCard
+                  key={idx}
+                  TestimonialContent={testimonial.content}
+                  Username={testimonial.heading}
+                  Rating={testimonial.star}
+                  Image={testimonial.image}
+                />
+              ))}
+            </Slider>
+          )}
         </div>
-        
-          <Slider {...settings}>
-            {testimonialsData.map((testimonial, idx) => (
-            <TestimonialCard key={idx}
-                TestimonialContent={testimonial.TestimonialContent}
-                Username={testimonial.Username}
-                Rating={testimonial.Rating}
-                Image={testimonial.Image} />
-            ))}
-          </Slider>
       </div>
-    </div>
+    </>
   );
 };
 

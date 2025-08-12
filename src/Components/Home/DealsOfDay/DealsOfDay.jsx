@@ -5,12 +5,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRightLong, faBagShopping } from "@fortawesome/free-solid-svg-icons";
 import { Link, useParams } from "react-router-dom";
 import SingleProductSlide from "../../Product/SingleProductSlide";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import RecentViewApi from "../../../API/RecentViewApi";
 
 export default function DealsOfDay() {
     const fetch_singleProduct = useSelector((store) => store.singleProduct?.data || []);
   const products = useSelector((store) => store.recentView?.products || []);
-
+ const dispatch = useDispatch();  
   const [singleProduct, setSingleProduct] = useState(null);
   const { slug } = useParams();
 
@@ -63,30 +64,40 @@ export default function DealsOfDay() {
       },
     ],
   };
+     useEffect(() => {
+    RecentViewApi(dispatch);
+  }, [dispatch]);
+  console.log("products deal of the day", products)
   return (
-    <section className="DealOf_Day my-5">
-      <div className="container">
-        <div className="feature-product-tile d-flex align-items-center justify-content-between">
-          <div className="title-box">
-            <h2>
-              <span>Recently</span> Viewed
-            </h2>
+  <>
+    {products && products.length > 0 && (
+      <section className="DealOf_Day my-5">
+        <div className="container">
+          <div className="feature-product-tile d-flex align-items-center justify-content-between">
+            <div className="title-box">
+              <RecentViewApi />
+              <h2>
+                <span>Recently</span> Viewed
+              </h2>
+            </div>
+            {/* <div className="title-box">
+              <Link to="/product">
+                View All <FontAwesomeIcon icon={faArrowRightLong} />
+              </Link>
+            </div> */}
           </div>
-          <div className="title-box">
-            <Link to="/product">
-              View All <FontAwesomeIcon icon={faArrowRightLong} />
-            </Link>
-          </div>
-        </div>
 
-        <div className="featureslider_one my-4">
-          <Slider {...settings} className="xyzg-slider">
-          {products.map((product, index) => (
-                        <SingleProductSlide key={product.id || index} product={product} />
-                      ))}
-                      </Slider>
+          <div className="featureslider_one my-4">
+            <Slider {...settings} className="xyzg-slider">
+              {products.map((product, index) => (
+                <SingleProductSlide key={product.id || index} product={product} />
+              ))}
+            </Slider>
+          </div>
         </div>
-      </div>
-    </section>
-  );
+      </section>
+    )}
+  </>
+);
+
 }

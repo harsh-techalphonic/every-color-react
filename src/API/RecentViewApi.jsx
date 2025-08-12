@@ -18,7 +18,7 @@ export default function RecentViewApi(dispatch) {
       },
     })
     .then((res) => {
-      console.log("recentview", res.data.data); // Log data here
+      // console.log("recentview", res.data.data); 
 
       if (res.data.status && Array.isArray(res.data.data)) {
         dispatch(setRecentViews(res.data.data));

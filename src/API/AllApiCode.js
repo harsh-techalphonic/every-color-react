@@ -1,4 +1,4 @@
-import { API_URL, PrivacyPolicyApi, RemoveCart } from "../Config/config";
+import { API_URL, PrivacyPolicyApi, RemoveCart, WishlistApi } from "../Config/config";
 import config from "../Config/config.json";
 import axios from "axios";
 
@@ -22,34 +22,26 @@ export const fetchCartAPI = async () => {
   }
 };
 
-// export const deleteCartItem = async (id, setData) => {
-//   const token = localStorage.getItem("token");
-//   console.log("`${API_URL}${RemoveCart}`", `${API_URL}${RemoveCart}`);
-//   console?.log("handleDelete ---->>", id);
 
-//   try {
-//     const response = await axios.post(
-//       `${API_URL}${RemoveCart}`,
-//       {
-//         id: id,
-//       },
-//       {
-//         headers: {
-//           Authorization: `Bearer ${token}`,
-//         },
-//       }
-//     );
+export const fetchWishListApi = async () => {
+  try {
+    const token = localStorage.getItem("token");
 
-//     console.log("handleDelete 1111", response?.data);
+    const response = await fetch(`${API_URL}${WishlistApi}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
-//     if (response?.data?.status === true) {
-//       setData(response?.data?.status);
-//     }
-//   } catch (error) {
-//     console.error("Network Error:", error.message);
-//     alert("Error: Something went wrong");
-//   }
-// };
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error("Error fetching wishlist:", error);
+    return { status: false, data: [], error };
+  }
+};
 
 export const deleteCartItem = async (id) => {
   const token = localStorage.getItem("token");
@@ -71,9 +63,7 @@ export const deleteCartItem = async (id) => {
     return false;
   }
 };
-
-
-export const getPrivacyPolicy = async (setData,apiPath) => {
+export const getPrivacyPolicy = async (setData, apiPath) => {
   const token = localStorage.getItem("token");
   try {
     const response = await axios.get(`${API_URL}${apiPath}`, {
@@ -94,18 +84,17 @@ export const getPrivacyPolicy = async (setData,apiPath) => {
     console.error("Network Error:", error);
   }
 };
-
-
-
-
-export const getReturnCancelation = async (setData,apiPath) => {
+export const getReturnCancelation = async (setData, apiPath) => {
   const token = localStorage.getItem("token");
   try {
-    const response = await axios.get(`${API_URL}/web/return-and-cancellation-policy`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await axios.get(
+      `${API_URL}/web/return-and-cancellation-policy`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
     console?.log("response?.data", response?.data);
     if (response?.data) {
       setData(response?.data);

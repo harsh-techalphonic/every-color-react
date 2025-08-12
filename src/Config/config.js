@@ -12,6 +12,7 @@ export const PrivacyPolicyApi = "/web/privacy-policy";
 export const TermsCondition = "/web/terms-and-condition";
 export const ReturnCancelation = "/web/return-and-cancellation-policy";
 
-
+// WishList
+export const WishlistApi = "/bag/get-wishlist";
 
 export const GetRecentView = "get-recent-view";

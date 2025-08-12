@@ -136,6 +136,10 @@ import { Link, useNavigate } from "react-router-dom"; // ✅ Added useNavigate
 import { cartAction } from "../../store/Products/cartSlice";
 import { AddOrRemoveCart, API_URL } from "../../Config/config";
 
+
+import { faHeart as faRegularHeart } from "@fortawesome/free-regular-svg-icons";
+import { faHeart as faSolidHeart } from "@fortawesome/free-solid-svg-icons";
+
 export default function SingleProductSlide({ product }) {
   const [wishlist, setWishlist] = useState([]);
   const [addTocart, setaddTocart] = useState([]);
@@ -204,6 +208,18 @@ export default function SingleProductSlide({ product }) {
             100
         )}
         %
+      </span>
+      <span
+        className="wishicon"
+        // onClick={() => toggleWishlist(product.prd_id)}
+        style={{ cursor: "pointer", fontSize: "16px" }}
+      >
+        <FontAwesomeIcon
+          icon={
+            wishlist.includes(product.prd_id) ? faSolidHeart : faRegularHeart
+          }
+          color={wishlist.includes(product.prd_id) ? "red" : "black"}
+        />
       </span>
 
       <div className="card-img">

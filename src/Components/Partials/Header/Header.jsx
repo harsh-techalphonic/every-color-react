@@ -122,17 +122,11 @@ export default function Header() {
     };
   }, []);
 
-  useEffect(() => {
-    RecentViewApi(dispatch);
-  }, [dispatch]);
-
   return (
     <>
       <section className={`Header ${isSticky ? "sticky" : ""}`}>
-        {/* <ProductsApi />
+        <ProductsApi />
         <CategoriesApi />
-        <RecentViewApi />
-        <OrderApi /> */}
         <OrderApi />
         <div className="infobox">
           <div className="container">

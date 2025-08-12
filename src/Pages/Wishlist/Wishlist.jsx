@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
 import "./Wishlist.css";
 import Header from "../../Components/Partials/Header/Header";
@@ -15,29 +16,56 @@ import { useDispatch, useSelector } from "react-redux";
 import ProductsApi from "../../API/ProductsApi";
 import { wishlistAction } from "../../store/Products/wishlistSlice";
 import ScrollToTop from "../ScrollToTop";
+import { fetchWishListApi } from "../../API/AllApiCode";
 
 export default function Wishlist() {
   const AuthCheck = useSelector((store) => store.authcheck);
-  // console.log('AuthCheck', );
   const fetch_products = useSelector((store) => store.products);
   const [products, setProducts] = useState([]);
+  console?.log("products ----->>>>", products);
   const dispatch = useDispatch();
-  useEffect(() => {
-    if (fetch_products.status && localStorage.getItem("wishlist")) {
-      const wishlistIds = new Set(JSON.parse(localStorage.getItem("wishlist"))); // Use Set for faster lookup
-      setProducts(
-        fetch_products.data.filter((product) => wishlistIds.has(product.prd_id))
-      ); // Use `.has()` for O(1) lookup
-    }
-  }, [fetch_products.status]);
+  // useEffect(() => {
+  //   if (fetch_products.status && localStorage.getItem("wishlist")) {
+  //     const wishlistIds = new Set(JSON.parse(localStorage.getItem("wishlist"))); // Use Set for faster lookup
+  //     setProducts(
+  //       fetch_products.data.filter((product) => wishlistIds.has(product.prd_id))
+  //     ); // Use `.has()` for O(1) lookup
+  //   }
+  // }, [fetch_products.status]);
 
-  const removeWishlist = (id) => {
-    let wishlist = JSON.parse(localStorage.getItem("wishlist"));
-    wishlist = wishlist.filter((num) => num !== id);
-    localStorage.setItem("wishlist", JSON.stringify(wishlist));
-    dispatch(wishlistAction.addWishlist(wishlist.length));
-    setProducts(products.filter((product) => product.prd_id !== id));
-  };
+  // const removeWishlist = (id) => {
+  //   let wishlist = JSON.parse(localStorage.getItem("wishlist"));
+  //   wishlist = wishlist.filter((num) => num !== id);
+  //   localStorage.setItem("wishlist", JSON.stringify(wishlist));
+  //   dispatch(wishlistAction.addWishlist(wishlist.length));
+  //   setProducts(products.filter((product) => product.prd_id !== id));
+  // };
+
+  useEffect(() => {
+    const getWishlist = async () => {
+      if (!AuthCheck.status) return; // only fetch if logged in
+
+      try {
+        const wishlistResponse = await fetchWishListApi();
+
+        if (wishlistResponse?.status && wishlistResponse?.data?.length > 0) {
+          // If API returns product IDs and you already have product data in Redux
+
+          // If API returns full product objects
+          if (wishlistResponse.data) {
+            setProducts(wishlistResponse.data);
+            // console?.log('wishlistResponse.data' ,wishlistResponse.data?)
+          }
+        } else {
+          setProducts([]); // no products
+        }
+      } catch (err) {
+        console.error("Error loading wishlist:", err);
+      }
+    };
+
+    getWishlist();
+  }, [AuthCheck.status]);
 
   return (
     <>
@@ -77,6 +105,8 @@ export default function Wishlist() {
                 <h3 className="uppercase">Wishlist</h3>
                 <Link to="/product">Shop Now</Link>
               </div>
+
+              {/* wishlist api data  */}
               <div className="row Product_card">
                 {products.map((product) => (
                   <div
@@ -86,28 +116,32 @@ export default function Wishlist() {
                     <div className="feature-card">
                       <span className="disco">
                         {Math.round(
-                          ((product.price - product.discount_price) /
-                            product.price) *
+                          ((product?.product?.product_price -
+                            product?.product?.discount_price) /
+                            product?.product?.product_price) *
                             100
                         )}
                         %
                       </span>
                       <span
                         className="wishicon"
-                        onClick={() => removeWishlist(product.prd_id)}
+                        // onClick={() => removeWishlist(product.prd_id)}
                         style={{ cursor: "pointer" }}
                       >
                         <FontAwesomeIcon icon={faTrashAlt} />
                       </span>
                       <Link to={product.link}>
                         <div className="card-img">
-                          <img src={product.img_url} alt={product.title} />
+                          <img
+                            src={product?.product?.product_image}
+                            alt={product.title}
+                          />
                         </div>
                       </Link>
                       <div className="product-detail">
                         <h3>
                           <Link to={`/product/${product.slug}`}>
-                            {product.title}
+                            {product?.product?.product_name}
                           </Link>
                         </h3>
                         <div className="rating d-flex align-items-center ">
@@ -118,8 +152,12 @@ export default function Wishlist() {
                           <span>({product.avg_ratting})</span>
                         </div>
                         <div className="Pricing d-flex align-items-center">
-                          <p className="price">₹ {product.discount_price} </p>
-                          <p className="slashPrice">₹ {product.price} </p>
+                          <p className="price">
+                            ₹ {product?.product?.product_discount_price}{" "}
+                          </p>
+                          <p className="slashPrice">
+                            ₹ {product?.product?.product_price}{" "}
+                          </p>
                         </div>
                         <a href="/cart" className="cart-btn">
                           Add to Cart <FontAwesomeIcon icon={faBagShopping} />

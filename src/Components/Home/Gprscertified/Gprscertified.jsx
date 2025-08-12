@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 
 export default function Gprscertified() {
     const basicInfo = useSelector((store) => store.basicInfo);
-// console.log(basicInfo)
+console.log("basicInfo", basicInfo)
 
     useEffect(() => {
         AOS.init({ duration: 1000 });

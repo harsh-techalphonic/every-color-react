@@ -98,15 +98,15 @@ export default function UserAccount() {
                 <DashBoard />
               </Tab>
               <Tab
-                eventKey="Order"
+                eventKey="Return_Refund"
                 title={
                   <>
-                    <FontAwesomeIcon icon={faShoppingCart} className="me-2" />{" "}
-                    Order
+                    <FontAwesomeIcon icon={faUndo} className="me-2" />{" "}
+                    Return/Refund
                   </>
                 }
               >
-                <Orders />
+                <Orders/>
               </Tab>
               <Tab
                 eventKey="Addresses"
@@ -120,11 +120,11 @@ export default function UserAccount() {
                 <Addresses />
               </Tab>
               <Tab
-                eventKey="Return_Refund"
+                eventKey="Order"
                 title={
                   <>
-                    <FontAwesomeIcon icon={faUndo} className="me-2" />{" "}
-                    Return/Refund
+                    <FontAwesomeIcon icon={faShoppingCart} className="me-2" />{" "}
+                     Order
                   </>
                 }
               >

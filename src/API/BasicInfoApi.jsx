@@ -11,9 +11,10 @@ export default function BasicInfoApi() {
   useEffect(() => {
     if (basicInfo.status) return;
     axios
-      .get(`${config.API_URL}/basic-info`)
+      .get(`${config.API_URL}/web/desktop/banner-bottom`)
       .then(function (response) {
-        dispatch(basicInfoAction.getInfo(response.data.data[0]));
+        console.log("basicInfo", response)
+        dispatch(basicInfoAction.getInfo(response.data));
       })
       .catch(function (error) {
         console.log(error);

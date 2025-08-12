@@ -73,3 +73,28 @@ export const getPrivacyPolicy = async (setData,apiPath) => {
     console.error("Network Error:", error);
   }
 };
+
+
+
+
+export const getReturnCancelation = async (setData,apiPath) => {
+  const token = localStorage.getItem("token");
+  try {
+    const response = await axios.get(`${API_URL}/web/return-and-cancellation-policy`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    console?.log("response?.data", response?.data);
+    if (response?.data) {
+      setData(response?.data);
+    } else if (response?.data?.errors) {
+      alert("Error: " + (response?.data?.errors?.message || "Login failed."));
+    } else {
+      alert("Error: Unexpected response from server.");
+    }
+  } catch (error) {
+    alert("Error: Something went wrong");
+    console.error("Network Error:", error);
+  }
+};

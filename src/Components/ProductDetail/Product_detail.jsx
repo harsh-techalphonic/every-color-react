@@ -459,7 +459,7 @@ export default function Product_detail({ singleProduct }) {
                     className="fw-bold"
                     to={`/category/${singleProduct.category.slug}`}
                   >
-                    {singleProduct.category.name}
+                    {singleProduct.category.name} 
                   </Link>
                 </span>
               </div>

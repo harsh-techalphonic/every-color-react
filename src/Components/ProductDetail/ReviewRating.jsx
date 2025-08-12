@@ -6,12 +6,15 @@ import { faStar as faRegularStar } from '@fortawesome/free-regular-svg-icons';
 import config from '../../Config/config.json';
 import { toast, ToastContainer } from 'react-toastify';
 import axios from 'axios';
+import { useSelector } from "react-redux";
 
 export default function ReviewRating({ singleProduct }) {
   const [showModal, setShowModal] = useState(false);
   const [selectedRating, setSelectedRating] = useState(0);
-  const [formData, setFormData] = useState({ comment: '' });
+  const [formData, setFormData] = useState({ comment: '', image: null });
   const [reviews, setReviews] = useState([]);
+
+  const orders = useSelector((store) => store.orders.orders);
 
   useEffect(() => {
     setReviews(singleProduct.reviews || []);
@@ -25,51 +28,54 @@ export default function ReviewRating({ singleProduct }) {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const handleImageChange = (e) => {
+    setFormData({ ...formData, image: e.target.files[0] });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const token = localStorage.getItem('token');
-
     if (!token) {
       toast.info("Please login first to submit a review.");
       window.location.href = '/login';
       return;
     }
 
-    const reviewData = {
-      id: singleProduct.id,
-      rating: selectedRating,
-      comment: formData.comment,
-    };
-
     try {
+      const formDataToSend = new FormData();
+      formDataToSend.append("product_id", singleProduct.id);
+      formDataToSend.append("star", selectedRating);
+      formDataToSend.append("description", formData.comment);
+      if (formData.image) {
+        formDataToSend.append("image", formData.image);
+      }
+
       const response = await axios.post(
-        `${config.API_URL_POST}/product-review`,
-        reviewData,
+        `${config.API_URL_POST}/review/add-review`,
+        formDataToSend,
         {
           headers: {
-            "Content-Type": "application/json",
             "Authorization": `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
           },
         }
       );
 
       if (response.status === 200) {
         const newReview = {
-          id: Date.now(), // Ideally use response.data.id
+          id: Date.now(),
           rating: selectedRating,
-          review_msg: formData.comment,
+          description: formData.comment,
           created_at: new Date().toISOString(),
-          user: {
-            name: "You", // Ideally get from logged-in user
-          },
-          img: null,
+          user: { name: "You" },
+          img: formData.image ? URL.createObjectURL(formData.image) : null,
         };
 
-        setReviews([newReview, ...reviews]); // Real-time update
+        setReviews([newReview, ...reviews]);
         toast.success("Thank you! Your review was submitted.");
         setShowModal(false);
-        setFormData({ comment: '' });
+        setFormData({ comment: '', image: null });
         setSelectedRating(0);
       } else {
         toast.error("Something went wrong: " + response.data.message);
@@ -81,7 +87,10 @@ export default function ReviewRating({ singleProduct }) {
   };
 
   const averageRating = reviews.length
-    ? (reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length).toFixed(1)
+    ? (
+        reviews.reduce((acc, review) => acc + (review.rating || review.star || 0), 0) 
+        / reviews.length
+      ).toFixed(1)
     : "0.0";
 
   const StarRating = ({ rating }) => (
@@ -96,6 +105,13 @@ export default function ReviewRating({ singleProduct }) {
     </span>
   );
 
+  const token = localStorage.getItem("token");
+  const isLoggedIn = !!token;
+
+  const hasPurchased = orders?.some(order =>
+    order.products?.some(p => p.product_id === singleProduct.id)
+  );
+
   return (
     <>
       <ToastContainer />
@@ -107,28 +123,54 @@ export default function ReviewRating({ singleProduct }) {
                 All Reviews ({reviews.length})
                 <span> {averageRating} <FontAwesomeIcon icon={faSolidStar} /></span>
               </h3>
-              <button className="btn btn-primary" onClick={() => setShowModal(true)}>Write a review</button>
+
+              {!isLoggedIn ? (
+                <button
+                  className="btn btn-primary"
+                  onClick={() => (window.location.href = "/login")}
+                >
+                  Login
+                </button>
+              ) : !hasPurchased ? (
+                <button
+                  className="btn btn-primary"
+                  onClick={() => (window.location.href = "/shop")}
+                >
+                  Order Now
+                </button>
+              ) : (
+                <button
+                  className="btn btn-primary"
+                  onClick={() => setShowModal(true)}
+                >
+                  Write a review
+                </button>
+              )}
             </div>
 
-            {reviews.map((review) => (
-              <div key={review.id} className="review-card">
-                <div className='d-flex align-items-top gap-4'>
-                  <div className='reviewr-img'>
-                    {review.img ? (
-                      <img src={review.img} alt={`${review.user.name}'s review`} />
-                    ) : (
-                      <span>{review.user.name.slice(0, 2).toUpperCase()}</span>
-                    )}
-                  </div>
-                  <div className='reviewer-content'>
-                    <h4>{review.user.name}</h4>
-                    <StarRating rating={review.rating} />
-                    <p className='revicw-date'>{new Date(review.created_at).toLocaleDateString()}</p>
-                    <p>{review.review_msg}</p>
+            {reviews.length === 0 ? (
+              <p className="text-center p-4">No reviews yet. Be the first to review!</p>
+            ) : (
+              reviews.map((review) => (
+                <div key={review.id} className="review-card">
+                  <div className='d-flex align-items-top gap-4'>
+                    <div className='reviewr-img'>
+                      {review.image ? (
+                        <img src={review.image} alt={`${review.user?.name || "User"}'s review`} />
+                      ) : (
+                        <span>{review.user?.name ? review.user.name.slice(0, 2).toUpperCase() : "AN"}</span>
+                      )}
+                    </div>
+                    <div className='reviewer-content'>
+                      <h4>{review.user?.name || "Anonymous"}</h4>
+                      <StarRating rating={review.rating || review.star || 0} />
+                      <p className='revicw-date'>{new Date(review.created_at).toLocaleDateString()}</p>
+                      <p>{review.description || review.review_msg}</p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </div>
       </div>
@@ -160,7 +202,8 @@ export default function ReviewRating({ singleProduct }) {
                       </svg>
                     ))}
                   </div>
-                  <div className="form-group">
+
+                  <div className="form-group mb-3">
                     <label>Your Review:</label>
                     <textarea
                       className="form-control"
@@ -174,6 +217,16 @@ export default function ReviewRating({ singleProduct }) {
                     <small className="form-text text-muted">
                       {999 - formData.comment.length} characters remaining
                     </small>
+                  </div>
+
+                  <div className="form-group mb-3">
+                    <label>Upload Image (optional):</label>
+                    <input
+                      type="file"
+                      className="form-control"
+                      accept="image/*"
+                      onChange={handleImageChange}
+                    />
                   </div>
                 </div>
                 <div className="modal-footer">

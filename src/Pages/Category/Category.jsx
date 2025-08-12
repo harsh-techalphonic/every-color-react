@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom"; // ✅ Added useNavigate
 
 import Header from "../../Components/Partials/Header/Header";
 import Footer from "../../Components/Partials/Footer/Footer";
@@ -10,6 +10,7 @@ import CategoryCard from "../../Components/Home/Categories/CategoryCard";
 
 export default function Category() {
   const { category } = useParams();
+  const navigate = useNavigate(); // ✅ Navigation hook
   const [subCategories, setSubCategories] = useState([]);
   const [categoryName, setCategoryName] = useState("");
 
@@ -18,7 +19,6 @@ export default function Category() {
   useEffect(() => {
     if (!fetch_categories.status) return;
 
-    // Find the category object using slug
     const currentCategory = fetch_categories.data.find(
       (cat) => cat.slug === category
     );
@@ -26,7 +26,6 @@ export default function Category() {
     if (currentCategory) {
       setCategoryName(currentCategory.name);
 
-      // Fetch sub-categories using the category ID
       axios
         .get(
           `https://dimgrey-eel-688395.hostingersite.com/api/category-with-sub-category/${currentCategory.id}`
@@ -40,8 +39,14 @@ export default function Category() {
     }
   }, [category, fetch_categories]);
 
-  // Capitalized title for display
-  const categoryTitle = categoryName || category?.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+  const categoryTitle =
+    categoryName ||
+    category?.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+
+  // ✅ Handle card click
+  const handleCardClick = (subCatSlug) => {
+    navigate(`/product/${subCatSlug}`);
+  };
 
   return (
     <>
@@ -58,7 +63,12 @@ export default function Category() {
 
           <div className="row">
             {subCategories.map((sub, idx) => (
-              <div key={idx} className="col-lg-3 col-md-4 col-sm-6 col-6">
+              <div
+                key={idx}
+                className="col-lg-3 col-md-4 col-sm-6 col-6"
+                onClick={() => handleCardClick(sub.slug)} // ✅ Click to navigate
+                style={{ cursor: "pointer" }}
+              >
                 <CategoryCard data={sub} uri={"product"} />
               </div>
             ))}

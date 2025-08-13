@@ -22,6 +22,7 @@ import ExploreBestSeller from "../../Components/Home/ExploreBestSeller/ExploreBe
 import { useDispatch } from "react-redux";
 import { cartAction } from "../../store/Products/cartSlice";
 import {API_URL,GetCartList} from '../../Config/config.js'
+import HotOfferHome from "../../Components/Home/HotOffer/HotOfferHome.jsx";
  
 export default function Home() {
   
@@ -73,7 +74,7 @@ export default function Home() {
       {/* <Brands /> */}
       <Categories />
       <BestSelling />
-      <HotOffer />
+      <HotOfferHome />
       <SuperSaving />
       <MultiBanners />
       <ExploreBestSeller/>

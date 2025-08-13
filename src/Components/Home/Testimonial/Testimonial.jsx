@@ -25,7 +25,7 @@ const TestimonialSlider = () => {
     autoplay: true,
     autoplaySpeed: 3000,
     centerMode: true,
-    centerPadding: "180px",
+    centerPadding: "120px",
     responsive: [
       {
         breakpoint: 1740,

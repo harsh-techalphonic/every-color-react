@@ -14,6 +14,7 @@ import AboutApi from "../../../API/AboutApi";
 import BrandApi from "../../../API/BrandApi";
 import { useSelector } from "react-redux";
 import AuthCheck from "../../../API/AuthCheck";
+import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 
 export default function Footer() {
   const categories = useSelector((store) => store.categories);
@@ -135,22 +136,24 @@ export default function Footer() {
               </div> */}
               <section className="bg-gray-900 menu-box text-white py-10 px-5">
                 <div className="max-w-3xl mx-auto">
-                  <h4 className="text-3xl font-bold mb-3">Subscribe to Our Newsletter</h4>
+                  <h4 className="text-3xl font-bold mb-3">
+                    Subscribe to Our Newsletter
+                  </h4>
                   <p className="text-gray-400 mb-6">
-                    Get the latest blogs, news, and updates straight to your inbox.
+                    Get the latest blogs, news, and updates straight to your
+                    inbox.
                   </p>
-                  <form className="d-flex flex-col sm:flex-row items-center justify-center" method="post" action={""}> 
+                  <form
+                    className="d-flex align-items-center position-relative"
+                    method="post"
+                    action=""
+                  >
                     <input
                       type="email"
                       placeholder="Enter your email"
-                      className="px-4 py-3 rounded-md text-black w-full sm:w-auto flex-1 focus:outline-none"
+                      className="form-control px-4 py-3 rounded-rounded text-black flex-grow-1"
                     />
-                    <button
-                      type="submit"
-                      className="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-md font-semibold"
-                    >
-                      Subscribe
-                    </button>
+                    <button type="submit" className=" px-4 py-3 border-0 font-semibold position-absolute top-0 end-0"><FontAwesomeIcon icon={faPaperPlane}/></button>
                   </form>
                 </div>
               </section>
@@ -170,7 +173,7 @@ export default function Footer() {
               <ul className="d-flex list-unstyled gap-3 text-white mb-0 align-items-center">
                 <li>
                   <Link to={`/term&conditons`}> Term & conditons</Link>{" "}
-                </li>   
+                </li>
                 <li>
                   <Link to={`/privacy-policy`}> Privacy & Policy</Link>{" "}
                 </li>

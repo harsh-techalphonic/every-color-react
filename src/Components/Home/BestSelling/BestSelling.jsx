@@ -9,11 +9,10 @@ import SingleProductSlide from "../../Product/SingleProductSlide";
 
 export default function BestSelling() {
   const fetch_products = useSelector((store) => store.products);
+  const allProducts = Array.isArray(fetch_products?.data)
+    ? fetch_products.data
+    : [];
 
-
-  const allProducts = Array.isArray(fetch_products?.data) ? fetch_products.data : [];
-// console.log(allProducts)
-  
   const newArrivals = allProducts.filter(
     (p) => p.home_type === "best_seller" && String(p.status) === "1"
   );
@@ -24,7 +23,7 @@ export default function BestSelling() {
     speed: 500,
     slidesToShow: 5,
     slidesToScroll: 1,
-     swipeToSlide: true,
+    swipeToSlide: true,
     arrows: false,
     autoplay: true,
     autoplaySpeed: 3000,

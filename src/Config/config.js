@@ -14,5 +14,8 @@ export const ReturnCancelation = "/web/return-and-cancellation-policy";
 
 // WishList
 export const WishlistApi = "/bag/get-wishlist";
+export const DeleteWishList = "/bag/remove-to-wishlist";
+export const AddOrDeleteWishlist = "/bag/add-remove-wishlist";
 
+//Recent View
 export const GetRecentView = "get-recent-view";

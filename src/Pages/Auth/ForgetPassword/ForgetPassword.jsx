@@ -132,7 +132,7 @@ export default function ForgetPassword() {
 
                   <div className="d-flex align-items-center justify-content-center text-center mt-3 dont-accnt">
                     <p className="mb-0">
-                      <Link to="/login" className="ms-3">Back to Sign in</Link>
+                      <Link to="/login" className="ms-3">Back to Login or Sign up</Link>
                     </p>
                   </div>
                 </form>

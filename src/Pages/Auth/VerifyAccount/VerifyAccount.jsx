@@ -175,7 +175,7 @@ export default function VerifyAccount() {
 
                   <div className="d-flex align-items-center justify-content-center text-center mt-3 dont-accnt">
                     <p className="mb-0">
-                      <a href="/signup" className="ms-3">Back to Sign Up</a>
+                      <a href="/login" className="ms-3">Back to Login or Sign Up</a>
                     </p>
                   </div>
                 </form>

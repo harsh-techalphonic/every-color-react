@@ -16,13 +16,11 @@ import CartMenu from "./CartMenu";
 import AllCatergory_Filter from "./AllCatergory_Filter";
 import SearchBar from "./SearchBar";
 import CategoriesApi from "../../../API/CategoriesAPi";
-import OrderApi from "../../../API/OrderApi";
 import { useDispatch, useSelector } from "react-redux";
 
 export default function Header() {
   const categories = useSelector((store) => store.categories);
   const dispatch = useDispatch();
-  // console.log("allCategories data", categories)
   const [show, setShow] = useState(false);
   const [isSticky, setIsSticky] = useState(false);
   const [wishlistCount, setWishlistCount] = useState(0);
@@ -41,7 +39,7 @@ export default function Header() {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    console.log("toekn" , token)
+    console.log("toekn", token);
     setIsLoggedIn(!!token);
   }, []);
 

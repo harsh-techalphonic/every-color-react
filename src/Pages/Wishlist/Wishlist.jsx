@@ -16,56 +16,67 @@ import { useDispatch, useSelector } from "react-redux";
 import ProductsApi from "../../API/ProductsApi";
 import { wishlistAction } from "../../store/Products/wishlistSlice";
 import ScrollToTop from "../ScrollToTop";
-import { fetchWishListApi } from "../../API/AllApiCode";
+import { deleteCartItem, fetchWishListApi } from "../../API/AllApiCode";
+import { DeleteWishList } from "../../Config/config";
 
 export default function Wishlist() {
   const AuthCheck = useSelector((store) => store.authcheck);
-  const fetch_products = useSelector((store) => store.products);
+  // const fetch_products = useSelector((store) => store.wishlist);
+  // console?.log("Wishlist _------<>>>>", fetch_products);
   const [products, setProducts] = useState([]);
-  console?.log("products ----->>>>", products);
   const dispatch = useDispatch();
-  // useEffect(() => {
-  //   if (fetch_products.status && localStorage.getItem("wishlist")) {
-  //     const wishlistIds = new Set(JSON.parse(localStorage.getItem("wishlist"))); // Use Set for faster lookup
-  //     setProducts(
-  //       fetch_products.data.filter((product) => wishlistIds.has(product.prd_id))
-  //     ); // Use `.has()` for O(1) lookup
-  //   }
-  // }, [fetch_products.status]);
-
-  // const removeWishlist = (id) => {
-  //   let wishlist = JSON.parse(localStorage.getItem("wishlist"));
-  //   wishlist = wishlist.filter((num) => num !== id);
-  //   localStorage.setItem("wishlist", JSON.stringify(wishlist));
-  //   dispatch(wishlistAction.addWishlist(wishlist.length));
-  //   setProducts(products.filter((product) => product.prd_id !== id));
-  // };
 
   useEffect(() => {
-    const getWishlist = async () => {
-      if (!AuthCheck.status) return; // only fetch if logged in
-
-      try {
-        const wishlistResponse = await fetchWishListApi();
-
-        if (wishlistResponse?.status && wishlistResponse?.data?.length > 0) {
-          // If API returns product IDs and you already have product data in Redux
-
-          // If API returns full product objects
-          if (wishlistResponse.data) {
-            setProducts(wishlistResponse.data);
-            // console?.log('wishlistResponse.data' ,wishlistResponse.data?)
-          }
-        } else {
-          setProducts([]); // no products
-        }
-      } catch (err) {
-        console.error("Error loading wishlist:", err);
-      }
-    };
-
     getWishlist();
   }, [AuthCheck.status]);
+
+  const getWishlist = async () => {
+    if (!AuthCheck.status) return;
+
+    try {
+      const wishlistResponse = await fetchWishListApi();
+
+      if (wishlistResponse?.status && wishlistResponse?.data?.length > 0) {
+        setProducts(wishlistResponse.data);
+        dispatch(wishlistAction.setWishlist(wishlistResponse.data));
+      } else {
+        setProducts([]);
+        dispatch(wishlistAction.setWishlist([]));
+      }
+    } catch (err) {
+      console.error("Error loading wishlist:", err);
+    }
+  };
+
+  // const handleRemove = (id) => {
+  //   // 1️⃣ Remove from UI
+  //   setProducts((prev) => prev.filter((item) => item.id !== id));
+
+  //   // 2️⃣ Remove from Redux
+  //   dispatch(wishlistAction.removeWishlistItem(id));
+  // };
+
+  const handleRemove = async (item) => {
+    console?.log('item ------->>>>>',item)
+    const confirmDelete = window.confirm(
+      `Are you sure you want to remove product from your cart?`
+    );
+
+    if (!confirmDelete) return; // User cancelled
+
+    try {
+      const success = await deleteCartItem(item, DeleteWishList);
+      if (success) {
+        getWishlist();
+        setProducts((prev) => prev.filter((p) => p?.id !== item?.id));
+        dispatch(wishlistAction.removeWishlistItem(item));
+
+        console.log("Item removed successfully!");
+      } 
+    } catch (error) {
+      console.error("Error deleting item:", error);
+    }
+  };
 
   return (
     <>
@@ -108,9 +119,9 @@ export default function Wishlist() {
 
               {/* wishlist api data  */}
               <div className="row Product_card">
-                {products.map((product) => (
+                {products?.map((product) => (
                   <div
-                    key={product.prd_id}
+                    key={product?.id}
                     className="col-lg-3 col-md-6 col-sm-6 mb-3"
                   >
                     <div className="feature-card">
@@ -125,8 +136,8 @@ export default function Wishlist() {
                       </span>
                       <span
                         className="wishicon"
-                        // onClick={() => removeWishlist(product.prd_id)}
                         style={{ cursor: "pointer" }}
+                        onClick={() => handleRemove(product?.id)}
                       >
                         <FontAwesomeIcon icon={faTrashAlt} />
                       </span>

@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { cartAction } from "../../store/Products/cartSlice";
 import config from "../../Config/config.json";
 import { deleteCartItem } from "../../API/AllApiCode";
+import { RemoveCart } from "../../Config/config";
 
 // Utility to calculate prices
 const getPriceDetails = (item) => {
@@ -111,7 +112,7 @@ const CartItem = ({ item, onRemove, onQuantityChange }) => {
 export default function Cart() {
   const fetch_products = useSelector((store) => store.products);
   const [products, setProducts] = useState([]);
-  // console?.log("products cart ----->>>", products);
+  console?.log("products cart ----->>>", fetch_products);
 
   const [checkCart, setCheckCart] = useState(false);
   const [checkoutDetail, setCheckoutDetail] = useState({
@@ -180,7 +181,7 @@ export default function Cart() {
     if (!confirmDelete) return; // User cancelled
 
     try {
-      const success = await deleteCartItem(item.cart_id);
+      const success = await deleteCartItem(item.cart_id, RemoveCart);
       if (success) {
         fetchCart();
         setProducts((prev) => prev.filter((p) => p?.id !== item?.id));

@@ -1,7 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import categoriesSlice from "./Categories/categoriesSlice";
 import productsSlice from "./Products/productsSlice";
-import wishlistSlice from "./Products/wishlistSlice";
 import bannersSlice from "./HomesSection/bannerSlice";
 import cartSlice from "./Products/cartSlice";
 import filtersSlice from "./Products/filtersSlice";
@@ -18,6 +17,7 @@ import RecentViewSlice from "./RecentViewSlice/RecentViewSlice"
 import ordersSlice from "./Orders/OrdersSlice";
 import testimonialSlice from "./HomesSection/TestimonialSlice";
 import pressSlice from "./HomesSection/PressSlice";
+import { wishlistSlice } from "./Products/wishlistSlice";
 
 
 const ecommerceStore = configureStore({

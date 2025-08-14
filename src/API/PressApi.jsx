@@ -13,7 +13,7 @@ export default function PressApi() {
     axios
       .get(`${config.API_URL}/web/section/in-press-slide`)
       .then(function (response) {
-        console.log("press", response)
+        // console.log("press", response)
         dispatch(pressAction.getInfo(response.data));
       })
       .catch(function (error) {

@@ -111,6 +111,7 @@ export default function ReviewRating({ singleProduct }) {
   const hasPurchased = orders?.some(order =>
     order.products?.some(p => p.product_id === singleProduct.id)
   );
+  console.log("reviews", reviews)
 
   return (
     <>
@@ -147,7 +148,7 @@ export default function ReviewRating({ singleProduct }) {
                 </button>
               )}
             </div>
-
+              <div className='review_s-box' style={{height:"375px", overflowY:"overlay",}}>
             {reviews.length === 0 ? (
               <p className="text-center p-4">No reviews yet. Be the first to review!</p>
             ) : (
@@ -155,8 +156,8 @@ export default function ReviewRating({ singleProduct }) {
                 <div key={review.id} className="review-card">
                   <div className='d-flex align-items-top gap-4'>
                     <div className='reviewr-img'>
-                      {review.image ? (
-                        <img src={review.image} alt={`${review.user?.name || "User"}'s review`} />
+                      {review.user.profile ? (
+                        <img src={review.user.profile} alt={`${review.user?.name || "User"}'s review`} />
                       ) : (
                         <span>{review.user?.name ? review.user.name.slice(0, 2).toUpperCase() : "AN"}</span>
                       )}
@@ -166,11 +167,13 @@ export default function ReviewRating({ singleProduct }) {
                       <StarRating rating={review.rating || review.star || 0} />
                       <p className='revicw-date'>{new Date(review.created_at).toLocaleDateString()}</p>
                       <p>{review.description || review.review_msg}</p>
+                      {review.image && (<img src={review.image} alt="" style={{ width: "120px", height: "120px", objectFit: "contain" }} />)}
                     </div>
                   </div>
                 </div>
               ))
             )}
+            </div>
           </div>
         </div>
       </div>

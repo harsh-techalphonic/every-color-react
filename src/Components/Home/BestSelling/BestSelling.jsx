@@ -10,10 +10,10 @@ import SingleProductSlide from "../../Product/SingleProductSlide";
 export default function BestSelling() {
   const fetch_products = useSelector((store) => store.products);
 
-  // defensive guard
+
   const allProducts = Array.isArray(fetch_products?.data) ? fetch_products.data : [];
-console.log(allProducts)
-  // filter new arrivals (and optionally only active status)
+// console.log(allProducts)
+  
   const newArrivals = allProducts.filter(
     (p) => p.home_type === "best_seller" && String(p.status) === "1"
   );

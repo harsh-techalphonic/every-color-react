@@ -41,6 +41,7 @@ export default function Header() {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
+    console.log("toekn" , token)
     setIsLoggedIn(!!token);
   }, []);
 
@@ -127,7 +128,7 @@ export default function Header() {
       <section className={`Header ${isSticky ? "sticky" : ""}`}>
         <ProductsApi />
         <CategoriesApi />
-        <OrderApi />
+        {/* <OrderApi /> */}
         <div className="infobox">
           <div className="container">
             <ul className="list-unstyled d-flex align-items-center justify-content-between mb-0">

@@ -11,6 +11,7 @@ import RecentViewApi from "../../../API/RecentViewApi";
 export default function DealsOfDay() {
     const fetch_singleProduct = useSelector((store) => store.singleProduct?.data || []);
   const products = useSelector((store) => store.recentView?.products || []);
+  // console.log("recent view products", products)
  const dispatch = useDispatch();  
   const [singleProduct, setSingleProduct] = useState(null);
   const { slug } = useParams();
@@ -67,7 +68,8 @@ export default function DealsOfDay() {
      useEffect(() => {
     RecentViewApi(dispatch);
   }, [dispatch]);
-  console.log("products deal of the day", products)
+  // console.log("products deal of the day", products);
+  
   return (
   <>
     {products && products.length > 0 && (

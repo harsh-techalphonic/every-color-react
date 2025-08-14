@@ -10,7 +10,6 @@ export default function TcpprcApi() {
 
   useEffect(() => {
     if (tcpprc.status) return;
-
     axios.get(`${config.API_URL}/static-page`)
   .then((response) => {
     dispatch(TcpprcAction.getInfo(response.data));

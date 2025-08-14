@@ -120,7 +120,7 @@ export default function Login() {
           localStorage.setItem("user", JSON.stringify(user));
 
           toast.success("Register successful!");
-          setTimeout(() => navigate("/user-account"), 1000);
+          setTimeout(() => navigate("/"), 1000);
         }
 
         if (response?.data?.errors) {
@@ -409,11 +409,11 @@ export default function Login() {
                     Login or register
                   </button>
                   {/* 
-                                    <div className="d-flex align-items-center justify-content-center text-center mt-3 dont-accnt">
-                                        <p className="mb-0">
-                                            Don't have an account? <Link to="/signup" className="ms-3">Sign up</Link>
-                                        </p>
-                                    </div> */}
+                    <div className="d-flex align-items-center justify-content-center text-center mt-3 dont-accnt">
+                        <p className="mb-0">
+                            Don't have an account? <Link to="/signup" className="ms-3">Sign up</Link>
+                        </p>
+                    </div> */}
                 </form>
               </div>
             </div>

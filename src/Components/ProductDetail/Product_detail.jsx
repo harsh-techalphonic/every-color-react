@@ -332,6 +332,19 @@ export default function Product_detail({ singleProduct }) {
     }
     // toggleCart(singleProduct.id, variation);
   };
+const [reviews, setReviews] = useState([]);
+
+     useEffect(() => {
+    setReviews(singleProduct.reviews || []);
+  }, [singleProduct]);
+
+
+   const averageRating = singleProduct.reviews.length
+    ? (
+        reviews.reduce((acc, review) => acc + (review.rating || review.star || 0), 0) 
+        / reviews.length
+      ).toFixed(1)
+    : "0.0";
 
   return (
     <div className="product-detail-slider-content my-5">
@@ -366,8 +379,8 @@ export default function Product_detail({ singleProduct }) {
                     className="star-rating"
                   />
                   <span className="ms-2 rating-test d-flex align-items-center">
-                    4.7 Star Rating <pre className="mb-0">(1,671 Users)</pre>
-                  </span>
+                    {averageRating} Star Rating <pre className="mb-0">( {singleProduct.reviews?.length} Users)</pre>
+                  </span> 
                 </div>
               </div>
 

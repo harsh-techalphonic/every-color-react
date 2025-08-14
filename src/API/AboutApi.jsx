@@ -8,13 +8,12 @@ import { AboutAction } from '../store/About/AboutSlice';
 export default function AboutApi() {
     const About = useSelector((store) => store.About);
     const AuthCheck = useSelector((store) => store.AuthCheck);
-    console.log(AuthCheck);
+    // console.log(AuthCheck);
     const dispatch = useDispatch();
   
     useEffect(() => {
       if (About.status) return;
-  
-      axios.get(`${config.API_URL}/about-page`)
+      axios.get(`${config.API_URL}/web/section/about-main/about-page`)
     .then((response) => {
       dispatch(AboutAction.getInfo(response.data));
     })

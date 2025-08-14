@@ -12,7 +12,7 @@ export default function ExploreBestSeller() {
     fetch('https://dimgrey-eel-688395.hostingersite.com/api/web/section/our-client')
       .then((res) => res.json())
       .then((data) => {
-        console.log("fatch dataw", data)
+        // console.log("fatch dataw", data)
         if (data && data) {
           setProducts(data);
         }

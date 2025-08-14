@@ -16,7 +16,7 @@ export default function Hero() {
     axios
       .get(`${config.API_URL}/web/section/home-banner-desktop`)
       .then((response) => {
-        console.log("banner_data", response.data);
+        // console.log("banner_data", response.data);
         dispatch(bannersAction.getCategory(response.data));
       })
       .catch((error) => {

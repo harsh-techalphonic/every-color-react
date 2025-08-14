@@ -7,13 +7,13 @@ import { useSelector } from 'react-redux';
 export default function Press() {
 
 const press = useSelector((store) => store.press);
-  console.log("Redux testimonials:", press);
+  // console.log("Redux testimonials:", press);
 
   // Convert testimonials object to array if data exists
   const pressData = press?.data
     ? Object.values(press.data)
     : [];
-    console.log("pressData", pressData)
+    // console.log("pressData", pressData)
 
 
     const settings = {
@@ -26,28 +26,6 @@ const press = useSelector((store) => store.press);
     autoplay: true,
   };
  
-//   const pressData =[
-//   {
-//     "Image":"https://randomuser.me/api/portraits/men/14.jpg",
-//     "pressContent": "Working with Bytewave has been an absolute game-changer for our online presence. Their innovative strategies and creative approach have taken our brand to new heights!",
-
-//   },
-//   { 
-//     "Image":"https://randomuser.me/api/portraits/men/14.jpg",
-//     "pressContent": "The team at Bytewave is highly professional, responsive, and genuinely cares about our business growth. We’ve seen incredible results.",
-
-//   },
-//   {
-//      "Image":"https://randomuser.me/api/portraits/men/14.jpg",
-//     "pressContent": "Bytewave’s attention to detail and strategic mindset exceeded our expectations. Would definitely recommend them to anyone serious about scaling online.",
-
-//   },
-//   {
-//      "Image":"https://randomuser.me/api/portraits/men/14.jpg",
-//     "pressContent": "It’s rare to find a team that combines creativity with performance so effectively. Bytewave nailed it.",
-
-//   }
-// ]
   return (
     <>
     <PressApi/>

@@ -12,10 +12,11 @@ import ScrollToTop from '../ScrollToTop';
 
 export default function Contact() {
     const Contact = useSelector((store) => store.Contact);
+    // console.log("contact-info", Contact)
 
     const [formData, setFormData] = useState({
-        name: '',
-        phone_no: '',
+        full_name: '',
+        phone: '',
         message: ''
     });
 
@@ -33,9 +34,9 @@ export default function Contact() {
         setResponseMsg('');
 
         try {
-             await axios.post(`${config.API_URL_POST}/contact-enquiry`, formData);
+             await axios.post(`${config.API_URL_POST}/web/send-query`, formData);
             setResponseMsg('Request Sent Successfully!');
-            setFormData({ name: '', phone_no: '', message: '' });
+            setFormData({ full_name: '', phone: '', message: '' });
         } catch (error) {
             setResponseMsg('Failed to send message. Please try again.');
         } finally {
@@ -68,29 +69,30 @@ export default function Contact() {
                                         )}
                                     <div className='row'>
                                         <div className='col-lg-12 mb-3'>
-                                            <label className='form-label' htmlFor="Name">Name</label>
+                                            <label className='form-label' htmlFor="full_name">Name</label>
                                             <input
                                                 type='text'
-                                                id='Name'
+                                                id='full_name'
                                                 className='form-control'
                                                 placeholder='Name'
-                                                value={formData.name}
+                                                value={formData.full_name}
                                                 onChange={handleChange}
                                                 required
                                             />
                                         </div>
+                                        
                                         <div className='col-lg-12 mb-3'>
-                                            <label className='form-label' htmlFor="phone_no">Phone Number</label>
+                                            <label className='form-label' htmlFor="phone">Phone Number</label>
                                             <input
                                                 type='tel'
-                                                id='phone_no'
+                                                id='phone'
                                                 className='form-control'
                                                 placeholder='Phone Number'
-                                                value={formData.phone_no}
+                                                value={formData.phone}
                                                 onChange={(e) => {
                                                     const value = e.target.value;
                                                     if (/^\d{0,13}$/.test(value)) {
-                                                        setFormData((prev) => ({ ...prev, phone_no: value }));
+                                                        setFormData((prev) => ({ ...prev, phone: value }));
                                                     }
                                                 }}
                                                 maxLength={13}
@@ -98,11 +100,11 @@ export default function Contact() {
                                             />
                                         </div>
                                         <div className="col-lg-12 mb-3">
-                                            <label htmlFor="Message" className="form-label">Message</label>
+                                            <label htmlFor="message" className="form-label">Message</label>
                                             <textarea
                                                 className="form-control"
-                                                id="Message"
-                                                rows="9"
+                                                id="message"
+                                                rows="7"
                                                 placeholder='Describe your requirement here..'
                                                 value={formData.message}
                                                 onChange={handleChange}
@@ -135,7 +137,7 @@ export default function Contact() {
                                 <div>
                                     <div className='contact_content pe-5 mb-5'>
                                         <h1>Contact Us</h1>
-                                        <p>{Contact.data.data.desc}</p>
+                                        <p>{Contact.data[3].content}</p>
                                     </div>
 
                                     <div className="contact_box d-flex align-items-top gap-2  mb-4  ">
@@ -144,7 +146,7 @@ export default function Contact() {
                                         </div>
                                         <div className='contne-rignt'>
                                             <h4>Address</h4>
-                                            <p>{Contact.data.data.address}</p>
+                                            <p>{Contact.data[0].content}</p>
                                         </div>
                                     </div>
 
@@ -154,7 +156,7 @@ export default function Contact() {
                                         </div>
                                         <div className='contne-rignt'>
                                             <h4>Call Us</h4>
-                                            <p><Link to="#!">{Contact.data.data.call_us}</Link></p>
+                                            <p><Link to={`tel:${Contact.data[1].content}`}>{Contact.data[1].content}</Link></p>
                                         </div>
                                     </div>
 
@@ -164,7 +166,7 @@ export default function Contact() {
                                         </div>
                                         <div className='contne-rignt'>
                                             <h4>E-mail Us</h4>
-                                            <p><Link to="#!">{Contact.data.data.email}</Link></p>
+                                            <p><Link to={`mailto:${Contact.data[2].content}`}>{Contact.data[2].content}</Link></p>
                                         </div>
                                     </div>
                                 </div>

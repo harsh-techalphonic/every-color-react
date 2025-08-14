@@ -9,10 +9,9 @@ export default function ContactApi() {
     const dispatch = useDispatch();
   
     useEffect(() => {
-      if (Contact.status) return;
-  
-      axios.get(`${config.API_URL}/contact-info-items`)
-    .then((response) => {
+      if (Contact.status) return;  
+      axios.get(`${config.API_URL}/web/section/contact-info`)
+    .then((response) => {      
       dispatch(ContactAction.getInfo(response.data));
     })
         .catch((error) => {

@@ -13,7 +13,7 @@ import ScrollToTop from '../../ScrollToTop';
 export default function ResetPassword() {
   const location = useLocation();
   const navigate = useNavigate();
-  const email = location.state?.email;
+  const { phone, otp } = location.state || {};
 
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -31,56 +31,54 @@ export default function ResetPassword() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
-    if (!email) {
-      toast.error('Email not provided. Please try again.');
+
+    if (!phone || !otp) {
+      toast.error('Phone or OTP missing. Please try again.');
       return;
     }
-  
+
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{6,}$/;
-  
     if (!passwordRegex.test(password)) {
-      toast.error('Your password should have at least 6 characters, including a capital letter, a lowercase letter, a number, and a special symbol.');
+      toast.error(
+        'Password must have at least 6 characters, including uppercase, lowercase, number, and special symbol.'
+      );
       return;
     }
-  
+
     if (password !== confirmPassword) {
       toast.error('Passwords do not match.');
       return;
     }
-  
+
     setLoading(true);
-  
+
     try {
-      const response = await axios.post(`${config.API_URL_POST}/reset-password`, {
+      const response = await axios.post(`${config.API_URL}/auth/forgot-password`, {
+        phone,
+        otp,
         password,
-        email,
+        cpassword: confirmPassword
       });
-  
-      if (response.status === 200) {
+
+      if (response.data?.status === true) {
         toast.success('Password reset successfully.');
         setPassword('');
         setConfirmPassword('');
-  
-        setTimeout(() => {
-          navigate('/login');
-        }, 2000);
+        setTimeout(() => navigate('/login'), 2000);
       } else {
-        toast.error(response.data.message || 'Something went wrong.');
+        toast.error(response.data?.message || 'Something went wrong.');
       }
     } catch (error) {
-      console.error(error);
       toast.error(error?.response?.data?.message || 'Failed to reset password. Try again later.');
     } finally {
       setLoading(false);
     }
   };
-  
 
   return (
     <>
-    <ScrollToTop/>
-    <ToastContainer />
+      <ScrollToTop />
+      <ToastContainer />
       <Header />
       <section className="reset_pass-sec">
         <div className="container h-100">

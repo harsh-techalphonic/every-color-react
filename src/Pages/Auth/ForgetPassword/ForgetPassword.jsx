@@ -9,84 +9,88 @@ import { toast, ToastContainer } from 'react-toastify';
 import ScrollToTop from '../../ScrollToTop';
 
 export default function ForgetPassword() {
-  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const isValidPhone = (phone) => /^\d{10}$/.test(phone);
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
+  e.preventDefault();
+  setLoading(true);
+  setError('');
 
-    if (!isValidEmail(email)) {
-      setLoading(false);
-      setError('Please enter a valid email address.');
+  if (!isValidPhone(phone)) {
+    setLoading(false);
+    setError('Please enter a valid 10-digit phone number.');
+    return;
+  }
+
+  try {
+    const response = await axios.post(`${config.API_URL}/auth/login`, { phone });
+    console.log("response login", response);
+
+    if (!response?.data) {
+      toast.error("Unexpected response from server. Please try again later.");
       return;
     }
 
-    try {
-      const response = await axios.post(`${config.API_URL_POST}/check-email`, { email });
+    const { status, msg } = response.data;
 
-      if (!response?.data) {
-        toast.error("Unexpected response from server. Please try again later.");
-        return;
+    if (status === true) {
+      toast.success('Phone verified. Sending OTP...');
+
+      try {
+        const otpResponse = await axios.post(`${config.API_URL}/auth/send-otp`, { phone });
+        console.log("otpResponse", otpResponse);
+
+        if (!otpResponse?.data) {
+          toast.error("Failed to receive OTP response. Please try again.");
+          return;
+        }
+
+        // Extract phone and OTP from response
+        const otpData = otpResponse.data.otp;
+        const otpPhone = otpData.phone;
+        const otpCode = otpData.otp;
+
+        navigate("/verify", {
+          state: { phone: otpPhone, otp: otpCode, from: "forget-password" },
+        });
+
+      } catch (otpError) {
+        const otpMsg =
+          otpError?.response?.data?.msg ||
+          otpError?.message ||
+          'Error sending OTP. Please try again later.';
+        toast.error(otpMsg);
       }
 
-      const { type, msg } = response.data;
-
-      if (type === 'Success') {
-        toast.success('Email verified. Sending OTP...');
-
-        try {
-          const otpResponse = await axios.post(`${config.API_URL_POST}/send-otp-in-mail`, { email });
-
-          if (!otpResponse?.data) {
-            toast.error("Failed to receive OTP response. Please try again.");
-            return;
-          }
-
-          const { email: otpEmail, otp } = otpResponse.data;
-
-          navigate("/verify", {
-            state: { email: otpEmail, otp, from: "forget-password" },
-          });
-
-        } catch (otpError) {
-          const otpMsg =
-            otpError?.response?.data?.msg ||
-            otpError?.message ||
-            'Error sending OTP. Please try again later.';
-          toast.error(otpMsg);
-        }
-
-      } else if (type === 'Error') {
-        if (msg === 'Email does not exist') {
-          toast.error('This email does not exist in our records.');
-        } else {
-          toast.error(msg || 'Something went wrong. Please try again.');
-        }
+    } else {
+      if (msg === 'Phone does not exist') {
+        toast.error('This phone number is not registered.');
       } else {
-        toast.error('Unexpected server response. Please try again later.');
+        toast.error(msg || 'Something went wrong. Please try again.');
       }
-
-    } catch (err) {
-      const fallbackMsg =
-        err?.response?.data?.msg ||
-        err?.message ||
-        'Network error. Please check your connection.';
-      toast.error(fallbackMsg);
-    } finally {
-      setLoading(false);
     }
-  };
+
+  } catch (err) {
+    const fallbackMsg =
+      err?.response?.data?.msg ||
+      err?.message ||
+      'Network error. Please check your connection.';
+    toast.error(fallbackMsg);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <>
-    <ScrollToTop/>
-    <ToastContainer />
+      <ScrollToTop />
+      <ToastContainer />
       <Header />
       <section className="forget_sec">
         <div className="container h-100">
@@ -96,18 +100,18 @@ export default function ForgetPassword() {
                 <form onSubmit={handleSubmit}>
                   <h2 className="my-4">Forget your password</h2>
                   <p>
-                    Enter the email address associated with your account and we will send you a link to reset your password.
+                    Enter the phone number associated with your account and we will send you an OTP to reset your password.
                   </p>
 
                   <div className="mb-4">
-                    <label htmlFor="email" className="block text-gray-700 mb-2">Email</label>
+                    <label htmlFor="phone" className="block text-gray-700 mb-2">Phone</label>
                     <input
-                      type="email"
+                      type="tel"
                       className="form-control w-full p-3 border rounded-lg focus:ring focus:ring-indigo-200"
-                      id="email"
-                      placeholder="name@example.com"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
+                      id="phone"
+                      placeholder="9876543201"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
                       required
                     />
                   </div>
@@ -123,7 +127,7 @@ export default function ForgetPassword() {
                     type="submit"
                     disabled={loading}
                   >
-                    {loading ? 'Verifying email...' : 'Continue'}
+                    {loading ? 'Verifying phone...' : 'Continue'}
                   </button>
 
                   <div className="d-flex align-items-center justify-content-center text-center mt-3 dont-accnt">

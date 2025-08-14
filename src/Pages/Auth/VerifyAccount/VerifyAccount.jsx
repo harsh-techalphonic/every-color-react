@@ -1,171 +1,136 @@
-import React, { useEffect, useState, useRef } from 'react';
-import './VerifyAccount.css';
-import Header from '../../../Components/Partials/Header/Header';
-import Footer from '../../../Components/Partials/Footer/Footer';
-import { useNavigate, useLocation } from 'react-router-dom';
+import React, { useState, useRef, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import config from '../../../Config/config.json';
 import { toast, ToastContainer } from 'react-toastify';
+import Header from '../../../Components/Partials/Header/Header';
+import Footer from '../../../Components/Partials/Footer/Footer';
 import ScrollToTop from '../../ScrollToTop';
 
-const OTP_LENGTH = 6;
-
 export default function VerifyAccount() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { phone } = location.state || {};
+
+  const OTP_LENGTH = 4; // change to 6 if your backend uses 6-digit codes
+
+  const [loading, setLoading] = useState(false);
   const [otp, setOtp] = useState(Array(OTP_LENGTH).fill(''));
+  const inputsRef = useRef([]);
+
   const [countdown, setCountdown] = useState(60);
   const [resendDisabled, setResendDisabled] = useState(true);
-  const [loading, setLoading] = useState(false);
-  const inputsRef = useRef([]);
-  const navigate = useNavigate();
-  const location = useLocation();
-  const from = location.state?.from;
-  const email = location.state?.email;
-  const backOtp = location.state?.otp;
 
   useEffect(() => {
-    if (!email || !backOtp) {
-      toast.error('Invalid access. Redirecting...');
-      navigate('/login');
+    let timer;
+    if (resendDisabled && countdown > 0) {
+      timer = setTimeout(() => setCountdown((prev) => prev - 1), 1000);
+    } else if (countdown === 0) {
+      setResendDisabled(false);
     }
-  }, [email, backOtp, navigate]);
-
-  useEffect(() => {
-    inputsRef.current[0]?.focus();
-  }, []);
-
-  useEffect(() => {
-    if (resendDisabled) {
-      const timer = setInterval(() => {
-        setCountdown((prev) => {
-          if (prev === 1) {
-            clearInterval(timer);
-            setResendDisabled(false);
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-      return () => clearInterval(timer);
-    }
-  }, [resendDisabled]);
+    return () => clearTimeout(timer);
+  }, [countdown, resendDisabled]);
 
   const handleOtpChange = (e, index) => {
     const value = e.target.value.replace(/\D/g, '');
-    if (!value) return;
-
-    const newOtp = [...otp];
-    newOtp[index] = value[0];
-    setOtp(newOtp);
-
-    if (index < OTP_LENGTH - 1) {
-      inputsRef.current[index + 1]?.focus();
-    }
-  };
-
-  const handlePaste = (e) => {
-    const pasteData = e.clipboardData.getData('Text').replace(/\D/g, '');
-    if (pasteData.length === OTP_LENGTH) {
-      const newOtp = pasteData.split('').slice(0, OTP_LENGTH);
+    if (value) {
+      const newOtp = [...otp];
+      newOtp[index] = value.slice(-1); // ensure single digit
       setOtp(newOtp);
-      inputsRef.current[OTP_LENGTH - 1]?.focus();
+      if (index < OTP_LENGTH - 1) {
+        inputsRef.current[index + 1]?.focus();
+      }
+    } else {
+      const newOtp = [...otp];
+      newOtp[index] = '';
+      setOtp(newOtp);
     }
   };
 
   const handleKeyDown = (e, index) => {
-    if (e.key === 'Backspace') {
-      e.preventDefault();
-      const newOtp = [...otp];
-
-      if (otp[index]) {
-        newOtp[index] = '';
-        setOtp(newOtp);
-      } else if (index > 0) {
-        inputsRef.current[index - 1]?.focus();
-        newOtp[index - 1] = '';
-        setOtp(newOtp);
-      }
+    if (e.key === 'Backspace' && !otp[index] && index > 0) {
+      inputsRef.current[index - 1]?.focus();
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    const code = otp.join('');
-
-    toast.info('Verification in progress...');
-
-    if (otp.includes('')) {
-      toast.error('Please enter the full 6-digit code.');
-      setLoading(false);
-      return;
-    }
-
-    if (code !== backOtp) {
-      toast.error('Incorrect OTP. Please try again.');
-      setLoading(false);
-      return;
-    }
-
-    try {
-      const response = await axios.post(`${config.API_URL_POST}/otp-success`, {
-        email,
-        email_verified: 1,
-        code,
-      });
-
-      if (response.status === 200) {
-        toast.success('OTP verified successfully!');
-        setTimeout(() => {
-          if (from === 'forget-password') {
-            navigate('/reset-password', { state: { email } });
-          } else {
-            navigate('/login');
-          }
-        }, 1500);
-      } else {
-        toast.error('OTP verification failed. Please try again.');
-        setLoading(false);
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error(error?.response?.data?.message || 'An error occurred. Please try again later.');
-      setLoading(false);
-    }
+  const handlePaste = (e) => {
+    const pasted = e.clipboardData.getData('Text').replace(/\D/g, '').slice(0, OTP_LENGTH).split('');
+    if (!pasted.length) return;
+    const newOtp = [...otp];
+    pasted.forEach((char, i) => {
+      newOtp[i] = char;
+    });
+    setOtp(newOtp);
+    inputsRef.current[Math.min(pasted.length, OTP_LENGTH) - 1]?.focus();
   };
 
   const handleResend = async () => {
     try {
-      if (!email) {
-        toast.error('Missing email address for resending OTP.');
-        return;
-      }
-
-      await axios.post(`${config.API_URL_POST}/send-otp-in-mail`, { email });
-
-      toast.info('OTP resent successfully!');
-      setOtp(Array(OTP_LENGTH).fill(''));
-      setCountdown(60);
       setResendDisabled(true);
+      setCountdown(60);
+      // clear current input after resend to avoid confusion
+      setOtp(Array(OTP_LENGTH).fill(''));
       inputsRef.current[0]?.focus();
-    } catch (error) {
-      console.error(error);
-      toast.error('Failed to resend OTP. Try again later.');
+
+      const res = await axios.post(`${config.API_URL}/auth/send-otp`, { phone });
+      if (res?.data?.status) {
+        console.log("resend Otp", res)
+        toast.success('OTP resent successfully');
+        // NOTE: Many backends won't return the OTP for security (that's fine).
+        // We verify only with the backend in handleVerify.
+      } else {
+        toast.error(res?.data?.msg || 'Failed to resend OTP');
+      }
+    } catch (err) {
+      toast.error(err?.response?.data?.msg || 'Error resending OTP');
+      setResendDisabled(false);
+    }
+  };
+
+  const handleVerify = async (e) => {
+    e.preventDefault();
+
+    const enteredOtp = otp.join('');
+    if (enteredOtp.length !== OTP_LENGTH) {
+      toast.error(`Please enter the ${OTP_LENGTH}-digit code.`);
+      return;
+    }
+
+    try {
+      setLoading(true);
+      // Always verify with backend (no fragile client-side compare)
+      const res = await axios.post(`${config.API_URL}/auth/verify-otp`, {
+        phone,
+        otp: enteredOtp,
+      });
+
+      if (res?.data?.status === true) {
+        toast.success('OTP verified successfully');
+        // Pass the latest entered OTP forward (works for flows that need it on the next page)
+        navigate('/reset-password', { state: { phone, otp: enteredOtp } });
+      } else {
+        toast.error(res?.data?.msg || 'Invalid OTP. Please try again.');
+      }
+    } catch (err) {
+      toast.error(err?.response?.data?.msg || 'Error verifying OTP');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <>
-    <ScrollToTop/>
-    <ToastContainer />
+      <ScrollToTop />
+      <ToastContainer />
       <Header />
       <section className="login-sec verify_sec">
         <div className="container h-100">
           <div className="row justify-content-center align-items-center h-100">
             <div className="col-xl-5 col-lg-6 col-md-8 col-12 my-5">
               <div className="login-box text-center">
-                <form onSubmit={handleSubmit}>
-                  <h2 className="my-4">Verify Your Email Address</h2>
-                  <p>Please enter the verification code sent to your email address.</p>
+                <form onSubmit={handleVerify}>
+                  <h2 className="my-4">Verify Your Phone Number</h2>
+                  <p>Please enter the verification code sent to your phone: {phone}</p>
 
                   <div className="mb-3 text-left">
                     <div className="d-flex align-items-center justify-content-between mb-2">

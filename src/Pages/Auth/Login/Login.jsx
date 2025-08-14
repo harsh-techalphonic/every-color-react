@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./Login.css";
 import Header from "../../../Components/Partials/Header/Header";
@@ -18,9 +18,12 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
-  const [validUser, setValidUser] = useState(0);
-  const [loginWithPassword, setloginWithPassword] = useState(false);
+  const [otpTimer, setOtpTimer] = useState(0);
+
+  const [validUser, setValidUser] = useState(0); // 0=not checked, 1=exists, 2=new user
+  const [loginWithPassword, setloginWithPassword] = useState(true);
   const [registerForm, setRegisterForm] = useState(false);
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -29,65 +32,89 @@ export default function Login() {
     cpassword: "",
     terms_conditions: 1,
   });
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const togglePasswordVisibility = () => {
-    setPasswordVisible((prevState) => !prevState);
-  };
+  const togglePasswordVisibility = () => setPasswordVisible((prev) => !prev);
 
-  const authUser = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+  const isValidPhone = (p) => /^[0-9]{10}$/.test(p || "");
 
+  useEffect(() => {
+    if (otpTimer > 0) {
+      const timerId = setInterval(() => setOtpTimer((prev) => prev - 1), 1000);
+      return () => clearInterval(timerId);
+    }
+  }, [otpTimer]);
+
+  const sendOtpToUser = async () => {
     try {
-      const payload = {
-        phone,
-      };
-      const response = await axios.post(
-        `${config.API_URL}/auth/login`,
-        payload
-      );
-      const sendOtp = await axios.post(
-        `${config.API_URL}/auth/send-otp`,
-        payload
-      );
-      console.log("sendOtp", sendOtp);
-      if (sendOtp.data.status == true) {
-        toast.success(sendOtp?.data?.message);
-        setPhone(sendOtp.data.otp.phone);
+      if (!isValidPhone(phone)) {
+        toast.error("Enter a valid 10-digit phone number before sending OTP");
+        return;
       }
-      response.data.status == true && response.data.key == "user_exist"
-        ? setValidUser(1)
-        : setValidUser(2);
+      setLoading(true);
+      const payload = { phone };
+      const sendOtp = await axios.post(`${config.API_URL}/auth/send-otp`, payload);
+      if (sendOtp?.data?.status === true) {
+        toast.success(sendOtp?.data?.message || "OTP sent");
+        console.log("otp",sendOtp?.data )
+        setOtpTimer(60);
+      } else {
+        toast.error(sendOtp?.data?.message || "Failed to send OTP");
+      }
     } catch (err) {
-      toast.error(err.response?.data?.message || "Login failed");
+      toast.error(err.response?.data?.message || "Error sending OTP");
     } finally {
       setLoading(false);
     }
   };
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+
+  // Step 1: Check if user exists
+  const checkUserAndProceed = async () => {
     try {
-      const login = await axios.post(
-        `${config.API_URL}/auth/login`,
-        !loginWithPassword
-          ? {
-              phone,
-              otp,
-            }
-          : {
-              phone,
-              password,
-            }
-      );
-      if (login.data.status == true) {
+      setLoading(true);
+      const payload = { phone };
+      const response = await axios.post(`${config.API_URL}/auth/login`, payload);
+
+      if (response?.data?.status === true && response?.data?.key === "user_exist") {
+        setValidUser(1); // Existing user
+      } else {
+        setValidUser(2); // New user
+        setloginWithPassword(false); // Force OTP mode
+        await sendOtpToUser();
+      }
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Error checking user");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleLogin = async () => {
+    if (!isValidPhone(phone)) {
+      toast.error("Please enter a valid 10-digit phone number");
+      return;
+    }
+    if (loginWithPassword && !password) {
+      toast.error("Password is required");
+      return;
+    }
+    if (!loginWithPassword && !otp) {
+      toast.error("OTP is required");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const payload = loginWithPassword ? { phone, password } : { phone, otp };
+      const login = await axios.post(`${config.API_URL}/auth/login`, payload);
+
+      if (login?.data?.status === true) {
         const { token, user } = login.data;
-
         dispatch(AuthCheckAction.addauth({ status: true }));
-        localStorage.setItem("token", token);
-
+        if (token) localStorage.setItem("token", token);
+        if (user) localStorage.setItem("user", JSON.stringify(user));
         toast.success("Login successful!");
         setTimeout(() => navigate("/user-account"), 1000);
       } else {
@@ -100,61 +127,74 @@ export default function Login() {
     }
   };
 
-  const handleRegister = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+  const handleRegister = async () => {
+    if (formData.password !== formData.cpassword) {
+      toast.error("Confirm password must match the password.");
+      return;
+    }
+    try {
+      setLoading(true);
+      const response = await axios.post(`${config.API_URL}/auth/register`, {
+        ...formData,
+        phone,
+      });
 
-    if (registerForm) {
-      try {
-        if (formData.password != formData.cpassword) {
-          return toast.error("Confirm password must match the password.");
-        }
-        const response = await axios.post(`${config.API_URL}/auth/register`, {
-          ...formData,
-          phone,
+      if (response?.data?.status === true) {
+        const { token, user } = response.data;
+        if (token) localStorage.setItem("token", token);
+        if (user) localStorage.setItem("user", JSON.stringify(user));
+        toast.success("Register successful!");
+        setTimeout(() => navigate("/"), 1000);
+      } else if (response?.data?.errors) {
+        const errors = response.data.errors;
+        Object.keys(errors).forEach((key) => {
+          errors[key].forEach((msg) => toast.error(msg));
         });
-        if (response.data.status == true) {
-          const { token, user } = response.data;
-
-          localStorage.setItem("token", token);
-          localStorage.setItem("user", JSON.stringify(user));
-
-          toast.success("Register successful!");
-          setTimeout(() => navigate("/"), 1000);
-        }
-
-        if (response?.data?.errors) {
-          const errors = response.data.errors;
-          Object.keys(errors).forEach((key) => {
-            errors[key].forEach((msg) => {
-              toast.error(msg);
-            });
-          });
-        } else {
-          toast.error(response?.data?.message || "Something went wrong");
-        }
-      } catch (err) {
-        toast.error(err.response?.data?.message || "Login or Register failed");
-      } finally {
-        setLoading(false);
+      } else {
+        toast.error(response?.data?.message || "Something went wrong");
       }
-    } else {
-      try {
-        const response = await axios.post(`${config.API_URL}/auth/verify-otp`, {
-          phone,
-          otp,
-        });
-        if (response.data.status == false) {
-          return toast.error(response?.data?.message || "Invalid Otp");
-        }
-        setRegisterForm(true);
-      } catch (err) {
-        toast.error(err.response?.data?.message || "Login or Register failed");
-      } finally {
-        setLoading(false);
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Register failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const verifyOtpForRegister = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.post(`${config.API_URL}/auth/verify-otp`, {
+        phone,
+        otp,
+      });
+      if (response?.data?.status === false) {
+        toast.error(response?.data?.message || "Invalid OTP");
+        return;
+      }
+      setRegisterForm(true);
+    } catch (err) {
+      toast.error(err.response?.data?.message || "OTP verification failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (validUser === 0) {
+      await checkUserAndProceed();
+    } else if (validUser === 1) {
+      await handleLogin();
+    } else if (validUser === 2) {
+      if (!registerForm) {
+        await verifyOtpForRegister();
+      } else {
+        await handleRegister();
       }
     }
   };
+
   return (
     <>
       <ScrollToTop />
@@ -166,60 +206,31 @@ export default function Login() {
           <div className="row justify-content-center align-items-center h-100">
             <div className="col-xl-5 col-lg-6 col-md-8 col-12 my-5">
               <div className="login-box">
-                <form
-                  onSubmit={
-                    validUser == 0
-                      ? authUser
-                      : validUser == 1
-                      ? handleLogin
-                      : handleRegister
-                  }
-                >
+                <form onSubmit={handleSubmit}>
                   <h2 className="my-4">Login or signup</h2>
+
                   {!registerForm ? (
                     <>
                       <div className="mb-3">
-                        <label htmlFor="phone" className="form-label">
-                          Phone Number
-                        </label>
+                        <label htmlFor="phone" className="form-label">Phone Number</label>
                         <input
-                          type="text"
+                          type="tel"
                           className="form-control"
                           id="phone"
                           placeholder="Enter phone number"
                           value={phone}
-                          onChange={(e) => setPhone(e.target.value)}
+                          onChange={(e) => {
+                            const onlyDigits = e.target.value.replace(/\D/g, "").slice(0, 10);
+                            setPhone(onlyDigits);
+                          }}
                           required
-                          pattern="\d{10}"
                           maxLength="10"
                         />
                       </div>
-                      {!loginWithPassword &&
-                      (validUser == 1 || validUser == 2) ? (
-                        <div className="mb-3">
-                          <label htmlFor="otp" className="form-label">
-                            OTP
-                          </label>
-                          <input
-                            type="text"
-                            className="form-control"
-                            id="otp"
-                            placeholder="Enter OTP"
-                            value={otp}
-                            pattern="\d{4}"
-                            maxLength="4"
-                            onChange={(e) => setOtp(e.target.value)}
-                            required
-                          />
-                        </div>
-                      ) : (
-                        ""
-                      )}
-                      {loginWithPassword ? (
+
+                      {validUser === 1 && loginWithPassword && (
                         <div className="mb-3 position-relative">
-                          <label htmlFor="password" className="form-label">
-                            Password
-                          </label>
+                          <label htmlFor="password" className="form-label">Password</label>
                           <input
                             type={passwordVisible ? "text" : "password"}
                             className="form-control"
@@ -232,21 +243,50 @@ export default function Login() {
                           <span
                             className="fa field-icon toggle-password position-absolute"
                             onClick={togglePasswordVisibility}
-                            style={{
-                              top: "38px",
-                              right: "10px",
-                              cursor: "pointer",
-                            }}
+                            style={{ top: "38px", right: "10px", cursor: "pointer" }}
                           >
-                            <FontAwesomeIcon
-                              icon={passwordVisible ? faEyeSlash : faEye}
-                            />
+                            <FontAwesomeIcon icon={passwordVisible ? faEyeSlash : faEye} />
                           </span>
                         </div>
-                      ) : (
-                        ""
                       )}
-                      {validUser == 1 ? (
+
+                      {(!loginWithPassword || validUser === 2) && (
+                        <>
+                          <div className="mb-3">
+                            <label htmlFor="otp" className="form-label">OTP</label>
+                            <input
+                              type="text"
+                              className="form-control"
+                              id="otp"
+                              placeholder="Enter OTP"
+                              value={otp}
+                              onChange={(e) => setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                              required
+                              maxLength="6"
+                            />
+                          </div>
+
+                          <div className="mb-3 d-flex justify-content-end">
+                            {otpTimer > 0 ? (
+                              <span className="text-muted" style={{color:"red",fontSize:"12px"}}>
+                                Re-send OTP in {otpTimer}s
+                              </span>
+                            ) : (
+                              <button
+                                type="button"
+                                className="btn btn-link p-0"
+                                style={{color:"red",fontSize:"12px"}}
+                                onClick={sendOtpToUser}
+                                disabled={!isValidPhone(phone) || loading}
+                              >
+                                {loading ? "Please wait..." : "Resend OTP"}
+                              </button>
+                            )}
+                          </div>
+                        </>
+                      )}
+
+                      {validUser === 1 && (
                         <div className="d-flex justify-content-between align-items-center mb-3">
                           <div className="form-check form-switch align-items-center">
                             <input
@@ -254,166 +294,106 @@ export default function Login() {
                               type="checkbox"
                               role="switch"
                               id="switchCheckDefault"
-                              checked={loginWithPassword}
-                              onChange={(e) =>
-                                setloginWithPassword(e.target.checked)
-                              }
+                              checked={!loginWithPassword}
+                              onChange={async (e) => {
+                                const isOtpMode = e.target.checked;
+                                if (isOtpMode) {
+                                  if (!isValidPhone(phone)) {
+                                    toast.error("Enter a valid 10-digit phone number first");
+                                    return;
+                                  }
+                                  setloginWithPassword(false);
+                                  await sendOtpToUser();
+                                } else {
+                                  setloginWithPassword(true);
+                                }
+                              }}
                             />
-                            <label
-                              className="form-check-label mb-0"
-                              htmlFor="switchCheckDefault"
-                            >
-                              Login with Password
+                            <label className="form-check-label mb-0" htmlFor="switchCheckDefault">
+                              Login with OTP
                             </label>
                           </div>
-                          {/* <Link to="/forget-password">Forget Password?</Link> */}
                         </div>
-                      ) : (
-                        ""
                       )}
                     </>
                   ) : (
                     <>
                       <div className="mb-3">
-                        <label htmlFor="name" className="form-label">
-                          Full Name
-                        </label>
+                        <label htmlFor="name" className="form-label">Full Name</label>
                         <input
                           type="text"
                           className="form-control"
                           id="name"
-                          name="name"
-                          placeholder="Name"
-                          autoComplete="name"
                           value={formData.name}
-                          onChange={(e) =>
-                            setFormData({
-                              ...formData,
-                              name: e.target.value,
-                            })
-                          }
+                          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                           required
                         />
                       </div>
                       <div className="mb-3">
-                        <label htmlFor="email" className="form-label">
-                          Email
-                        </label>
+                        <label htmlFor="email" className="form-label">Email</label>
                         <input
                           type="email"
                           className="form-control"
                           id="email"
-                          name="email"
-                          placeholder="name@example.com"
-                          autoComplete="email"
                           value={formData.email}
-                          onChange={(e) =>
-                            setFormData({ ...formData, email: e.target.value })
-                          }
+                          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                           required
                         />
                       </div>
-                      <div className="mb-3">
-                        <label htmlFor="phone" className="form-label">
-                          Phone
-                        </label>
+                      <div className="mb-3 position-relative">
+                        <label htmlFor="password" className="form-label">Password</label>
                         <input
-                          type="tel"
+                          type={passwordVisible ? "text" : "password"}
                           className="form-control"
-                          id="phone"
-                          name="phone"
-                          placeholder="Phone"
-                          autoComplete="tel"
-                          value={phone}
-                          readOnly
+                          id="password"
+                          value={formData.password}
+                          onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                           required
                         />
+                        <span
+                          className="fa field-icon toggle-password position-absolute"
+                          onClick={togglePasswordVisibility}
+                          style={{ top: "38px", right: "10px", cursor: "pointer" }}
+                        >
+                          <FontAwesomeIcon icon={passwordVisible ? faEyeSlash : faEye} />
+                        </span>
                       </div>
-                      <div className="mb-3">
-                        <label htmlFor="password" className="form-label">
-                          Password
-                        </label>
-                        <div className="position-relative">
-                          <input
-                            type={passwordVisible ? "text" : "password"}
-                            className="form-control password-field"
-                            id="password"
-                            name="password"
-                            placeholder="Password"
-                            autoComplete="new-password"
-                            value={formData.password}
-                            onChange={(e) =>
-                              setFormData({
-                                ...formData,
-                                password: e.target.value,
-                              })
-                            }
-                            required
-                          />
-                          <FontAwesomeIcon
-                            icon={passwordVisible ? faEyeSlash : faEye}
-                          />
-                        </div>
-                      </div>
-                      <div className="mb-3">
-                        <label htmlFor="cpassword" className="form-label">
-                          Confirm Password
-                        </label>
-                        <div className="position-relative">
-                          <input
-                            type={passwordVisible ? "text" : "password"}
-                            className="form-control password-field"
-                            id="cpassword"
-                            name="cpassword"
-                            placeholder="Confirm Password"
-                            autoComplete="new-password"
-                            value={formData.cpassword}
-                            onChange={(e) =>
-                              setFormData({
-                                ...formData,
-                                cpassword: e.target.value,
-                              })
-                            }
-                            required
-                          />
-                          <FontAwesomeIcon
-                            icon={passwordVisible ? faEyeSlash : faEye}
-                          />
-                        </div>
+                      <div className="mb-3 position-relative">
+                        <label htmlFor="cpassword" className="form-label">Confirm Password</label>
+                        <input
+                          type={passwordVisible ? "text" : "password"}
+                          className="form-control"
+                          id="cpassword"
+                          value={formData.cpassword}
+                          onChange={(e) => setFormData({ ...formData, cpassword: e.target.value })}
+                          required
+                        />
                       </div>
                       <div className="form-check d-flex align-items-center gap-3 mb-4">
                         <input
                           className="form-check-input"
                           type="checkbox"
-                          name="terms_conditions"
-                          id="terms_conditions"
                           checked={formData.terms_conditions}
-                          onChange={(e) =>
-                            setFormData({
-                              ...formData,
-                              terms_conditions: e.target.value,
-                            })
-                          }
+                          onChange={(e) => setFormData({
+                            ...formData,
+                            terms_conditions: e.target.checked ? 1 : 0
+                          })}
                         />
-                        <label
-                          className="form-check-label"
-                          htmlFor="terms_conditions"
-                        >
-                          I agree to the{" "}
-                          <Link to="/terms">terms and conditions</Link>
+                        <label className="form-check-label">
+                          I agree to the <Link to="/term&conditons">terms and conditions</Link>
                         </label>
                       </div>
                     </>
                   )}
-                  <button className="form-control btn" type="submit">
-                    Login or register
+
+                  <button className="form-control btn" type="submit" disabled={loading}>
+                    {loading ? "Please wait..." : "Login or register"}
                   </button>
-                  {/* 
-                    <div className="d-flex align-items-center justify-content-center text-center mt-3 dont-accnt">
-                        <p className="mb-0">
-                            Don't have an account? <Link to="/signup" className="ms-3">Sign up</Link>
-                        </p>
-                    </div> */}
+                  {validUser === 1 && (
+                    <p className="d-flex justify-content-center mt-3">
+                      <Link to="/forget-password">Forget Password?</Link>
+                    </p>
+                  )}
                 </form>
               </div>
             </div>

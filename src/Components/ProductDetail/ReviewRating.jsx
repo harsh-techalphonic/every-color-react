@@ -148,7 +148,7 @@ export default function ReviewRating({ singleProduct }) {
                 </button>
               )}
             </div>
-              <div className='review_s-box' style={{height:"375px", overflowY:"overlay",}}>
+              <div className='review_s-box' style={{height:"100%", maxHeight: "375px", overflowY:"overlay",}}>
             {reviews.length === 0 ? (
               <p className="text-center p-4">No reviews yet. Be the first to review!</p>
             ) : (

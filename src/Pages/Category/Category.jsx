@@ -22,6 +22,7 @@ export default function Category() {
     const currentCategory = fetch_categories.data.find(
       (cat) => cat.slug === category
     );
+    console.log("currentCategory", currentCategory)
 
     if (currentCategory) {
       setCategoryName(currentCategory.name);
@@ -45,9 +46,10 @@ export default function Category() {
 
   // ✅ Handle card click
   const handleCardClick = (subCatSlug) => {
-    navigate(`/product/${subCatSlug}`);
+    navigate(`/category/${categoryTitle}/${subCatSlug}`);
   };
 
+  const Uri= "category/:${currentCategory.name}/:${subCatSlug}"
   return (
     <>
       <Header />
@@ -69,7 +71,7 @@ export default function Category() {
                 onClick={() => handleCardClick(sub.slug)} // ✅ Click to navigate
                 style={{ cursor: "pointer" }}
               >
-                <CategoryCard data={sub} uri={"product"} />
+                <CategoryCard data={sub} uri={Uri} />
               </div>
             ))}
           </div>

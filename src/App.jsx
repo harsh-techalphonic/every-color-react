@@ -43,8 +43,12 @@ const router = createBrowserRouter([
   },
   {
     path: "/product",
-    element: <Product />,
+    element: <Product/>,
   },
+  // {
+  //   path: "/product/category/:sub_category",
+  //   element: <Product category_type="sub_category"/>,
+  // },
   {
     path: "/product/:slug",
     element: <ProductDetail />,
@@ -57,10 +61,10 @@ const router = createBrowserRouter([
     path: "/category/:category",
     element: <Category category_type="sub_category" />,
   },
-  //  {
-  //   path : '/category/:category/:sub_category',
-  //   element : <Product category_type="sub_category"/>
-  // },
+   {
+    path : '/category/:category/:sub_category',
+    element : <Product category_type="sub_category"/>
+  },
   {
     path: "/cart",
     element: <Cart />,

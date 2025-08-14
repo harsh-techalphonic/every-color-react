@@ -193,7 +193,7 @@ export default function ProductFilter({ products }) {
                         <img
                           src={category.image}
                           alt={category.name}
-                          style={{ width: 20, height: 20, objectFit: "cover", borderRadius: 3 }}
+                          style={{ width: 25, height: 25, objectFit: "cover", borderRadius: 3 }}
                         />
                       )}
                       <span>{category.name}</span>

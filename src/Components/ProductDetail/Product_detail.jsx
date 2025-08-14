@@ -1,6 +1,4 @@
-
-
-  // IMPORTS
+// IMPORTS
 import React, { useEffect, useRef, useState } from "react";
 import Slider from "react-slick";
 import "./ProductDetail.css";
@@ -20,7 +18,8 @@ import { Link } from "react-router-dom";
 import { cartAction } from "../../store/Products/cartSlice";
 import { useDispatch } from "react-redux";
 
-import { AddOrRemoveCart, API_URL, GetCartList } from "../../Config/config";
+import { AddOrRemoveCart, API_URL } from "../../Config/config";
+
 // IMAGE URL FUNCTION
 const getVariationImage = (filename) =>
   `https://dimgrey-eel-688395.hostingersite.com/uploads/${filename}`;
@@ -257,31 +256,9 @@ export default function Product_detail({ singleProduct }) {
     ref: navSliderRef,
   };
 
-  // const toggleCart = (id, variation) => {
-  //   let cartItems = JSON.parse(localStorage.getItem("cart")) || [];
-  //   const isInCart = cartItems.some((item) => item.prd_id === id);
-
-  //   if (isInCart) {
-  //     cartItems = cartItems.filter((item) => item.prd_id !== id);
-  //     dispatch(cartAction.removeCart(cartItems));
-  //   } else {
-  //     const newItem = { quantity, prd_id: id, variation };
-  //     cartItems = [newItem, ...cartItems];
-  //     dispatch(cartAction.addCart(newItem));
-  //   }
-
-  //   setaddTocart(cartItems);
-  //   localStorage.setItem("cart", JSON.stringify(cartItems));
-  // };
-
   const toggleCart = async (item) => {
     const token = localStorage.getItem("token");
 
-    console?.log(
-      "`${API_URL}${AddOrRemoveCart}`",
-      `${API_URL}${AddOrRemoveCart}`
-    );
-    console?.log("item", item);
     try {
       const response = await fetch(`${API_URL}${AddOrRemoveCart}`, {
         method: "POST",
@@ -295,13 +272,12 @@ export default function Product_detail({ singleProduct }) {
       if (!response.ok) throw new Error("Failed to update cart.");
 
       const data = await response.json();
-      console?.log("`${API_URL}${AddOrRemoveCart}`", data);
 
       if (data.message === "Product added to cart") {
-        dispatch(cartAction.addCart(item)); // ✅ send single item
+        dispatch(cartAction.addCart(item));
         setaddTocart((prev) => [item, ...prev]);
       } else if (data.message === "Product removed from cart") {
-        dispatch(cartAction.removeCart(item)); // ✅ send single item
+        dispatch(cartAction.removeCart(item));
         setaddTocart((prev) => prev.filter((i) => i.id !== item.id));
       }
     } catch (error) {
@@ -330,19 +306,20 @@ export default function Product_detail({ singleProduct }) {
         action_type = value;
       }
     }
-    // toggleCart(singleProduct.id, variation);
   };
-const [reviews, setReviews] = useState([]);
 
-     useEffect(() => {
+  const [reviews, setReviews] = useState([]);
+
+  useEffect(() => {
     setReviews(singleProduct.reviews || []);
   }, [singleProduct]);
 
-
-   const averageRating = singleProduct.reviews.length
+  const averageRating = singleProduct.reviews.length
     ? (
-        reviews.reduce((acc, review) => acc + (review.rating || review.star || 0), 0) 
-        / reviews.length
+        reviews.reduce(
+          (acc, review) => acc + (review.rating || review.star || 0),
+          0
+        ) / reviews.length
       ).toFixed(1)
     : "0.0";
 
@@ -355,9 +332,13 @@ const [reviews, setReviews] = useState([]);
               <Slider {...sliderSettings} className="slider slider-for">
                 {getImageSlides()}
               </Slider>
-              <Slider {...sliderNavSettings} className="slider slider-nav">
-                {getImageSlides()}
-              </Slider>
+
+              {/* Show slider-nav only if no color is selected */}
+              {!productVarSelected.color && (
+                <Slider {...sliderNavSettings} className="slider slider-nav">
+                  {getImageSlides()}
+                </Slider>
+              )}
             </div>
           </div>
 
@@ -379,8 +360,11 @@ const [reviews, setReviews] = useState([]);
                     className="star-rating"
                   />
                   <span className="ms-2 rating-test d-flex align-items-center">
-                    {averageRating} Star Rating <pre className="mb-0">( {singleProduct.reviews?.length} Users)</pre>
-                  </span> 
+                    {averageRating} Star Rating{" "}
+                    <pre className="mb-0">
+                      ( {singleProduct.reviews?.length} Users)
+                    </pre>
+                  </span>
                 </div>
               </div>
 
@@ -472,7 +456,7 @@ const [reviews, setReviews] = useState([]);
                     className="fw-bold"
                     to={`/category/${singleProduct.category.slug}`}
                   >
-                    {singleProduct.category.name} 
+                    {singleProduct.category.name}
                   </Link>
                 </span>
               </div>

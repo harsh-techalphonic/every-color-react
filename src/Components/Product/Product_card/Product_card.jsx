@@ -158,7 +158,7 @@ export default function Product_card({ products, filters }) {
                 <FontAwesomeIcon icon={faStar} />
                 <FontAwesomeIcon icon={faStar} />
                 <FontAwesomeIcon icon={faStarHalfAlt} />
-                <span>({product.avg_ratting})</span>
+                <span>({product?.reviews?.length})</span>
               </div>
               <div className="Pricing d-flex align-items-center">
                 <p className="price">₹ {product.product_discount_price}</p>

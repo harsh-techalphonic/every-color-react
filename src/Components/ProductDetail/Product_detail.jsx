@@ -1,5 +1,5 @@
 // IMPORTS
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Slider from "react-slick";
 import "./ProductDetail.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -17,7 +17,6 @@ import {
 import { Link } from "react-router-dom";
 import { cartAction } from "../../store/Products/cartSlice";
 import { useDispatch } from "react-redux";
-
 import { AddOrRemoveCart, API_URL } from "../../Config/config";
 
 // IMAGE URL FUNCTION
@@ -30,15 +29,16 @@ export default function Product_detail({ singleProduct }) {
   const [productVar, setProductVar] = useState({});
   const [productVarSelected, setProductVarSelected] = useState({});
   const [productAmount, setProductAmount] = useState(false);
-  const mainSliderRef = useRef(null);
-  const navSliderRef = useRef(null);
   const [wishlist, setWishlist] = useState([]);
   const [addTocart, setaddTocart] = useState([]);
   const dispatch = useDispatch();
+  const [mainSlider, setMainSlider] = useState(null);
+  const [navSlider, setNavSlider] = useState(null);
 
-  const increaseQuantity = () => setQuantity(quantity + 1);
-  const decreaseQuantity = () => setQuantity(quantity > 1 ? quantity - 1 : 1);
+  const increaseQuantity = () => setQuantity((q) => q + 1);
+  const decreaseQuantity = () => setQuantity((q) => (q > 1 ? q - 1 : 1));
 
+  // Load wishlist & cart from localStorage (once)
   useEffect(() => {
     if (localStorage.getItem("wishlist")) {
       setWishlist(JSON.parse(localStorage.getItem("wishlist")));
@@ -48,18 +48,64 @@ export default function Product_detail({ singleProduct }) {
     }
   }, []);
 
+  // Build available variation attributes whenever the product changes
   useEffect(() => {
-    if (!singleProduct.variations?.variation_json) return;
+    // reset selection & price and quantity for new product
+    setProductVarSelected({});
+    setProductAmount(false);
+    setQuantity(1);
+
+    if (!singleProduct?.variations?.variation_json) {
+      setProductVar({});
+      return;
+    }
+
+    let variationArray;
+    try {
+      variationArray = JSON.parse(singleProduct.variations.variation_json);
+    } catch {
+      setProductVar({});
+      return;
+    }
+
+    const removeKeys = ["sale_price", "stock_status", "reguler_price", "image"];
+    const createAttr = {};
+    variationArray.forEach((item) => {
+      const filtered = Object.fromEntries(
+        Object.entries(item).filter(([key]) => !removeKeys.includes(key))
+      );
+      for (const [key, value] of Object.entries(filtered)) {
+        if (!createAttr[key]) createAttr[key] = [];
+        createAttr[key].push(value);
+      }
+    });
+    for (const key in createAttr) {
+      createAttr[key] = [...new Set(createAttr[key])];
+    }
+    setProductVar(createAttr);
+  }, [singleProduct]);
+
+  // When selection changes (or product changes), compute the matched variation (price/image)
+  useEffect(() => {
+    if (!singleProduct?.variations?.variation_json) {
+      setProductAmount(false);
+      return;
+    }
+
     let variations;
     try {
       variations = JSON.parse(singleProduct.variations.variation_json);
     } catch {
+      setProductAmount(false);
       return;
     }
 
+    // If not all selected or nothing selected, clear amount
     if (
       Object.keys(productVarSelected).length === 0 ||
-      Object.keys(productVar).length !== Object.keys(productVarSelected).length
+      (productVar &&
+        Object.keys(productVar).length !==
+          Object.keys(productVarSelected).length)
     ) {
       setProductAmount(false);
       return;
@@ -68,59 +114,29 @@ export default function Product_detail({ singleProduct }) {
     const match = variations.find((v) =>
       Object.entries(productVarSelected).every(([key, val]) => v[key] === val)
     );
-    setProductAmount(match);
-  }, [productVarSelected]);
+    setProductAmount(match || false);
+  }, [productVarSelected, singleProduct, productVar]);
 
-  useEffect(() => {
-    if (!singleProduct.variations?.variation_json) return;
-    let variationArray;
-    try {
-      variationArray = JSON.parse(singleProduct.variations.variation_json);
-    } catch {
-      return;
-    }
-
-    const removeKeys = ["sale_price", "stock_status", "reguler_price", "image"];
-    const createAttr = {};
-
-    variationArray.forEach((item) => {
-      const filtered = Object.fromEntries(
-        Object.entries(item).filter(([key]) => !removeKeys.includes(key))
-      );
-
-      for (const [key, value] of Object.entries(filtered)) {
-        if (!createAttr[key]) {
-          createAttr[key] = [];
-        }
-        createAttr[key].push(value);
-      }
-    });
-
-    for (const key in createAttr) {
-      createAttr[key] = [...new Set(createAttr[key])];
-    }
-
-    setProductVar(createAttr);
-  }, []);
-
+  // Handle clicking a variation value
   const handleVariation = (type, value) => {
     const isSame = productVarSelected[type] === value;
 
     if (isSame) {
+      // Deselect this attribute
       const updated = { ...productVarSelected };
       delete updated[type];
       setProductVarSelected(updated);
 
+      // If nothing selected anymore, rebuild full attribute list from all variations
       if (Object.keys(updated).length === 0) {
+        if (!singleProduct?.variations?.variation_json) return;
         let variationArray;
         try {
           variationArray = JSON.parse(singleProduct.variations.variation_json);
         } catch {
           return;
         }
-
         const allAttr = {};
-
         variationArray.forEach((item) => {
           const filteredEntry = Object.fromEntries(
             Object.entries(item).filter(
@@ -133,39 +149,34 @@ export default function Product_detail({ singleProduct }) {
                 ].includes(key)
             )
           );
-
-          for (const [key, val] of Object.entries(filteredEntry)) {
-            if (!allAttr[key]) {
-              allAttr[key] = [];
-            }
-            allAttr[key].push(val);
+          for (const [k, val] of Object.entries(filteredEntry)) {
+            if (!allAttr[k]) allAttr[k] = [];
+            allAttr[k].push(val);
           }
         });
-
-        for (const key in allAttr) {
-          allAttr[key] = [...new Set(allAttr[key])];
+        for (const k in allAttr) {
+          allAttr[k] = [...new Set(allAttr[k])];
         }
-
         setProductVar(allAttr);
       }
-
       return;
     }
 
+    // Select / change attribute
     setProductVarSelected((prev) => ({
       ...prev,
       [type]: value,
     }));
 
+    // Narrow available options based on this selection
+    if (!singleProduct?.variations?.variation_json) return;
     let variationArray;
     try {
       variationArray = JSON.parse(singleProduct.variations.variation_json);
     } catch {
       return;
     }
-
     const filtered = variationArray.filter((item) => item[type] === value);
-
     const removeKeys = [
       "sale_price",
       "stock_status",
@@ -173,41 +184,36 @@ export default function Product_detail({ singleProduct }) {
       "image",
       `${type}`,
     ];
-
     const createAttr = {};
     filtered.forEach((item) => {
       const filteredEntry = Object.fromEntries(
         Object.entries(item).filter(([key]) => !removeKeys.includes(key))
       );
-      for (const [key, val] of Object.entries(filteredEntry)) {
-        if (!createAttr[key]) {
-          createAttr[key] = [];
-        }
-        createAttr[key].push(val);
+      for (const [k, val] of Object.entries(filteredEntry)) {
+        if (!createAttr[k]) createAttr[k] = [];
+        createAttr[k].push(val);
       }
     });
-
-    for (const key in createAttr) {
-      createAttr[key] = [...new Set(createAttr[key])];
+    for (const k in createAttr) {
+      createAttr[k] = [...new Set(createAttr[k])];
     }
-
     setProductVar((prev) => ({ ...prev, ...createAttr }));
   };
 
+  // Build image slides based on selected variation (color or matched variation image), otherwise galleries
   const getImageSlides = () => {
     let variationArray = [];
-
-    if (singleProduct.variations?.variation_json) {
+    if (singleProduct?.variations?.variation_json) {
       try {
         variationArray = JSON.parse(singleProduct.variations.variation_json);
       } catch {}
     }
 
+    // If color selected and that variation has image -> show only that image
     if (productVarSelected.color) {
       const matchedColorVariation = variationArray.find(
         (v) => v.color === productVarSelected.color && v.image
       );
-
       if (matchedColorVariation) {
         return [
           <div key="color-variation-image">
@@ -220,6 +226,7 @@ export default function Product_detail({ singleProduct }) {
       }
     }
 
+    // If full matched variation has image -> show that image
     if (productAmount?.image) {
       return [
         <div key="variation-image">
@@ -231,7 +238,8 @@ export default function Product_detail({ singleProduct }) {
       ];
     }
 
-    return singleProduct.galleries.map((item, index) => (
+    // Default to product galleries
+    return (singleProduct?.galleries || []).map((item, index) => (
       <div key={index}>
         <img src={item.image} alt={`Product ${index}`} />
       </div>
@@ -243,22 +251,34 @@ export default function Product_detail({ singleProduct }) {
     slidesToScroll: 1,
     arrows: false,
     fade: true,
-    asNavFor: navSliderRef.current,
-    ref: mainSliderRef,
+    asNavFor: navSlider,
   };
 
   const sliderNavSettings = {
     slidesToShow: 6,
     slidesToScroll: 1,
-    asNavFor: mainSliderRef.current,
+    asNavFor: mainSlider,
     focusOnSelect: true,
     arrows: true,
-    ref: navSliderRef,
   };
+
+
+  const renderStars = (rating) => {
+  const stars = [];
+  for (let i = 1; i <= 5; i++) {
+    if (rating >= i) {
+      stars.push(<FontAwesomeIcon key={i} icon={faStar} className="text-warning" />);
+    } else if (rating >= i - 0.5) {
+      stars.push(<FontAwesomeIcon key={i} icon={faStarHalfAlt} className="text-warning" />);
+    } else {
+      stars.push(<FontAwesomeIcon key={i} icon={["far", "star"]} className="text-warning" />);
+    }
+  }
+  return stars;
+};
 
   const toggleCart = async (item) => {
     const token = localStorage.getItem("token");
-
     try {
       const response = await fetch(`${API_URL}${AddOrRemoveCart}`, {
         method: "POST",
@@ -268,11 +288,8 @@ export default function Product_detail({ singleProduct }) {
         },
         body: JSON.stringify({ product_id: item?.id }),
       });
-
       if (!response.ok) throw new Error("Failed to update cart.");
-
       const data = await response.json();
-
       if (data.message === "Product added to cart") {
         dispatch(cartAction.addCart(item));
         setaddTocart((prev) => [item, ...prev]);
@@ -287,10 +304,10 @@ export default function Product_detail({ singleProduct }) {
   };
 
   const submitAction = (formData) => {
+    // (kept from your original; no functional change)
     const variation = {};
     let quantity = null;
     let action_type = null;
-
     for (let [key, value] of formData.entries()) {
       if (key.startsWith("variation")) {
         const match = key.match(/\[\](\[(.*?)\])/);
@@ -298,7 +315,6 @@ export default function Product_detail({ singleProduct }) {
           variation[match[2]] = value;
         }
       }
-
       if (key === "quantity") {
         quantity = value;
       }
@@ -308,13 +324,13 @@ export default function Product_detail({ singleProduct }) {
     }
   };
 
+  // Reviews & rating
   const [reviews, setReviews] = useState([]);
-
   useEffect(() => {
-    setReviews(singleProduct.reviews || []);
+    setReviews(singleProduct?.reviews || []);
   }, [singleProduct]);
 
-  const averageRating = singleProduct.reviews.length
+  const averageRating = reviews.length
     ? (
         reviews.reduce(
           (acc, review) => acc + (review.rating || review.star || 0),
@@ -327,48 +343,53 @@ export default function Product_detail({ singleProduct }) {
     <div className="product-detail-slider-content my-5">
       <div className="container">
         <div className="row">
+          {/* Left: Image sliders */}
           <div className="col-lg-6">
             <div className="product-galler-slide">
-              <Slider {...sliderSettings} className="slider slider-for">
+              <Slider
+                {...sliderSettings}
+                ref={(slider) => setMainSlider(slider)}
+                className="slider slider-for"
+              >
                 {getImageSlides()}
               </Slider>
 
-              {/* Show slider-nav only if no color is selected */}
+              {/* Hide the thumbnail slider when color is selected (as in your original) */}
               {!productVarSelected.color && (
-                <Slider {...sliderNavSettings} className="slider slider-nav">
+                <Slider
+                  {...sliderNavSettings}
+                  ref={(slider) => setNavSlider(slider)}
+                  className="slider slider-nav"
+                >
                   {getImageSlides()}
                 </Slider>
               )}
             </div>
           </div>
 
+          {/* Right: Product details */}
           <div className="col-lg-5">
             <form action={submitAction} className="product-description">
               <h5>{singleProduct.product_name}</h5>
 
               <div className="my-3">
                 <div className="rating d-flex align-items-center">
-                  {[...Array(4)].map((_, i) => (
-                    <FontAwesomeIcon
-                      key={i}
-                      icon={faStar}
-                      className="star-rating"
-                    />
-                  ))}
-                  <FontAwesomeIcon
-                    icon={faStarHalfAlt}
-                    className="star-rating"
-                  />
+                  {/* <div className="d-flex align-items-center"> */}
+                    {renderStars(averageRating)} 
+                    {/* <span className="ms-2">
+                      {singleProduct.rating} Star Rating ({singleProduct.rating_count} Users)
+                    </span> */}
+                  {/* </div> */}
                   <span className="ms-2 rating-test d-flex align-items-center">
                     {averageRating} Star Rating{" "}
                     <pre className="mb-0">
-                      ( {singleProduct.reviews?.length} Users)
+                      ( {singleProduct.reviews?.length || 0} Users)
                     </pre>
                   </span>
                 </div>
               </div>
 
-              {/* PRICING */}
+              {/* Price block */}
               {productAmount ? (
                 <div className="mt-2">
                   <span className="fw-bold fs-4 Pricing">
@@ -379,8 +400,7 @@ export default function Product_detail({ singleProduct }) {
                   </span>
                   <span className="discount ms-2">
                     {(
-                      ((productAmount.reguler_price -
-                        productAmount.sale_price) /
+                      ((productAmount.reguler_price - productAmount.sale_price) /
                         productAmount.reguler_price) *
                       100
                     ).toFixed(0)}
@@ -407,33 +427,35 @@ export default function Product_detail({ singleProduct }) {
                 </div>
               )}
 
-              {/* VARIATIONS */}
-              {Object.entries(productVar).map(([key, values]) => (
-                <div key={key} className="mb-3">
-                  <label className="form-label fw-bold text-capitalize">
-                    Select {key}
-                  </label>
-                  <div className="d-flex gap-2 mt-1 flex-wrap">
-                    {values.map((option, idx) => (
-                      <button
-                        key={idx}
-                        type="button"
-                        className={`btn ${
-                          productVarSelected[key] === option
-                            ? "btn-danger"
-                            : "btn-outline-secondary"
-                        }`}
-                        onClick={() => handleVariation(key, option)}
-                        name={`variation[][${key}]`}
-                      >
-                        {option}
-                      </button>
-                    ))}
+              {/* Variations (render only if productVar has keys) */}
+              {Object.keys(productVar).map(([key, values]) => null) /* no-op just to ensure type */}
+              {Object.keys(productVar).length > 0 &&
+                Object.entries(productVar).map(([key, values]) => (
+                  <div key={key} className="mb-3">
+                    <label className="form-label fw-bold text-capitalize">
+                      Select {key}
+                    </label>
+                    <div className="d-flex gap-2 mt-1 flex-wrap">
+                      {values.map((option, idx) => (
+                        <button
+                          key={idx}
+                          type="button"
+                          className={`btn ${
+                            productVarSelected[key] === option
+                              ? "btn-danger"
+                              : "btn-outline-secondary"
+                          }`}
+                          onClick={() => handleVariation(key, option)}
+                          name={`variation[][${key}]`}
+                        >
+                          {option}
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
 
-              {/* HIDDEN VARIATION INPUTS */}
+              {/* Hidden inputs for selected variations (kept exactly as yours) */}
               {Object.entries(productVarSelected).map(([key, value]) => (
                 <input
                   key={key}
@@ -463,7 +485,7 @@ export default function Product_detail({ singleProduct }) {
 
               <hr className="my-5" />
 
-              {/* QUANTITY + CART BUTTONS */}
+              {/* Purchase buttons */}
               <div className="purchase-btns mt-4 d-flex gap-3 align-items-center justify-content-between w-100">
                 <div className="d-flex">
                   <button
@@ -515,17 +537,16 @@ export default function Product_detail({ singleProduct }) {
                   <FontAwesomeIcon icon={faCartShopping} className="ms-2" />
                 </button>
 
-                <button
+                <Link
                   type="submit"
                   name="action_type"
                   value="buy_now"
                   className="btn btn-outline-dark w-50"
                 >
                   BUY NOW
-                </button>
+                </Link>
               </div>
 
-              {/* WISHLIST / SHARE */}
               <div className="mt-3 wishlist-sec-prodet d-flex align-items-center gap-3 justify-content-between">
                 <div className="whiashad d-flex align-items-center gap-2">
                   <FontAwesomeIcon icon={faHeart} />
@@ -550,7 +571,6 @@ export default function Product_detail({ singleProduct }) {
                 </div>
               </div>
 
-              {/* PAYMENT SECTION */}
               <div className="mt-3 Guarantee_Checkout border p-4 bg-light">
                 <span>100% Guarantee Safe Checkout</span>
                 <div className="paymetn-img mt-3">

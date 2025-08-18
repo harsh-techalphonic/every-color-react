@@ -1,14 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import Header from "../../Components/Partials/Header/Header";
 import Footer from "../../Components/Partials/Footer/Footer";
 import "./About.css";
 import { useSelector } from "react-redux";
 import AboutApi from "../../API/AboutApi";
 import ScrollToTop from "../ScrollToTop";
+import NewsletterForm from "../../Components/Partials/Footer/NewsletterForm";
 
 export default function About() {
   const About = useSelector((store) => store.About);
-  // console.log("About page data", About);
   const aboutArray = About?.data ? Object.values(About.data) : [];
 
   const aboutMain =
@@ -18,14 +18,14 @@ export default function About() {
     (item) => item.type === "about-page"
   );
 
-  // console.log("about main data", aboutMain);
-  // console.log("about Page Sections main data", aboutPageSections);
+
 
   return (
     <>
       <ScrollToTop />
       <Header />
       <AboutApi />
+      {/* <ToastContainer /> */}
       <section className="about_banner">
         <div className="container d-flex align-items-center justify-content-center">
           <div className="about_Title">
@@ -40,7 +40,6 @@ export default function About() {
             <div className="col-lg-6">
               <div className="text_left">
                 <h2>{aboutMain?.heading}</h2>
-
                 <div dangerouslySetInnerHTML={{ __html: aboutMain?.content }} />
               </div>
             </div>
@@ -101,6 +100,7 @@ export default function About() {
         </div>
       </section>
 
+      {/* Newsletter Section */}
       <section className="newsleter_subscription mt-5">
         <div className="container">
           <div className="row justify-content-center">
@@ -112,15 +112,7 @@ export default function About() {
                   tempor libero et cursus. Donec non quam urna. Quisque vitae
                   porta ipsum.
                 </p>
-                <form action="">
-                  <input
-                    type="email"
-                    maxLength="50"
-                    required
-                    placeholder="Email address"
-                  />
-                  <button className="bt">Subscribe</button>
-                </form>
+                <NewsletterForm  simple={true} />
               </div>
             </div>
           </div>

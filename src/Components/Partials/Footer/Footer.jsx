@@ -11,13 +11,54 @@ import { Link } from "react-router-dom";
 import TcpprcApi from "../../../API/TcpprcApi";
 import ContactApi from "../../../API/ContactApi";
 import AboutApi from "../../../API/AboutApi";
-import BrandApi from "../../../API/BrandApi";
+// import BrandApi from "../../../API/BrandApi";
 import { useSelector } from "react-redux";
 import AuthCheck from "../../../API/AuthCheck";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+import { useState } from "react";
+import { toast, ToastContainer } from "react-toastify";
+import NewsletterForm from "./NewsletterForm";
+
 
 export default function Footer() {
   const categories = useSelector((store) => store.categories);
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!email) {
+      toast.error("Please enter your email!");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const response = await fetch(
+        "https://dimgrey-eel-688395.hostingersite.com/api/web/send-newslatter",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email }),
+        }
+      );
+
+      const result = await response.json();
+      if (response.ok) {
+        toast.success(result.message || "Subscribed successfully!");
+        setEmail("");
+      } else {
+        toast.info(result.message || "Something went wrong!");
+      }
+    } catch (error) {
+      toast.error("Failed to subscribe. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <section className="Footer">
       <div className="container">
@@ -26,6 +67,7 @@ export default function Footer() {
             <div className="col-lg-3">
               <div className="footer-brand pe-lg-5 pe-md-4 pe-0">
                 <div className="brand-logo mb-4">
+                  <ToastContainer />
                   <Link to="#!">
                     <img src={logo} alt="" />
                   </Link>
@@ -114,26 +156,6 @@ export default function Footer() {
               </div>
             </div>
             <div className="col-lg-3 col-md-4 mt-5">
-              {/* <div className="menu-box">
-                <h4>Blogs</h4>
-                <ul className="list-unstyled mt-4">
-                  <li className="d-flex gap-3">
-                   <img src="/DealDay1.png"  alt="" style={{ width: "100px", height: "80px", borderRadius: "8px" }}/>
-                    <div>
-                      <p className="mb-0"><Link to="#!"  className="mb-0 fs-lg-5 fs-md-6">The Future of AI: What You Need to Know Today</Link></p>
-                      <p className="text-white">{new Date().toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}</p>
-                    </div>
-                  </li>
-                  <li className="d-flex gap-3">
-                   <img src="/DealDay1.png"  alt="" style={{ width: "100px", height: "80px", borderRadius: "8px" }}/>
-                    <div>
-                      <p className="mb-0"><Link to="#!"  className="mb-0 fs-lg-5 fs-md-6">The Future of AI: What You Need to Know Today</Link></p>
-                      <p className="text-white">{new Date().toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}</p>
-                    </div>
-                  </li>
-                  
-                </ul>
-              </div> */}
               <section className="bg-gray-900 menu-box text-white py-10 px-5">
                 <div className="max-w-3xl mx-auto">
                   <h4 className="text-3xl font-bold mb-3">
@@ -143,18 +165,27 @@ export default function Footer() {
                     Get the latest blogs, news, and updates straight to your
                     inbox.
                   </p>
-                  <form
+                  <NewsletterForm/>
+                  {/* <form
                     className="d-flex align-items-center position-relative"
-                    method="post"
-                    action=""
+                    onSubmit={handleSubmit}
                   >
                     <input
                       type="email"
                       placeholder="Enter your email"
                       className="form-control px-4 py-3 rounded-rounded text-black flex-grow-1"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      disabled={loading}
                     />
-                    <button type="submit" className=" px-4 py-3 border-0 font-semibold position-absolute top-0 end-0"><FontAwesomeIcon icon={faPaperPlane}/></button>
-                  </form>
+                    <button
+                      type="submit"
+                      className="px-4 py-3 border-0 font-semibold position-absolute top-0 end-0"
+                      disabled={loading}
+                    >
+                      {loading ? "..." : <FontAwesomeIcon icon={faPaperPlane} />}
+                    </button>
+                  </form> */}
                 </div>
               </section>
             </div>
@@ -188,7 +219,6 @@ export default function Footer() {
       <TcpprcApi />
       <ContactApi />
       <AboutApi />
-      <BrandApi />
       <AuthCheck />
     </section>
   );

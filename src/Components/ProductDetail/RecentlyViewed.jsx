@@ -10,14 +10,15 @@ import { faHeart as faRegularHeart } from "@fortawesome/free-regular-svg-icons";
 import { faHeart as faSolidHeart } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link, useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import SingleProductSlide from "../Product/SingleProductSlide";
+import RecentViewApi from "../../API/RecentViewApi";
 
 export default function RecentlyViewed() {
   // Safely select Redux state
   const fetch_singleProduct = useSelector((store) => store.singleProduct?.data || []);
   const products = useSelector((store) => store.recentView?.products || []);
-
+const dispatch = useDispatch(); 
   const [singleProduct, setSingleProduct] = useState(null);
   
   const { slug } = useParams();
@@ -60,6 +61,9 @@ export default function RecentlyViewed() {
       { breakpoint: 480, settings: { slidesToShow: 1, slidesToScroll: 1 } },
     ],
   };
+      useEffect(() => {
+      RecentViewApi(dispatch);
+    }, [dispatch]);
 
   return (
     <section className="Best_selling my-5">
@@ -67,6 +71,7 @@ export default function RecentlyViewed() {
         <div className="feature-product-tile d-flex align-items-center justify-content-between">
           <div className="title-box">
             <h2>
+              <RecentViewApi />
               <span>Recently</span> Viewed
             </h2>
           </div>
@@ -79,10 +84,10 @@ export default function RecentlyViewed() {
 
         <div className="featureslider_one my-4">
           <Slider {...settings} className="xyzg-slider">
-          {products.map((product, index) => (
-                        <SingleProductSlide key={product?.id || index} product={product} />
-                      ))}
-                      </Slider>
+            {products.map((product, index) => (
+              <SingleProductSlide key={product?.id || index} product={product} />
+            ))}
+          </Slider>
         </div>
       </div>
     </section>

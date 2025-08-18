@@ -50,7 +50,7 @@ export default function Checkout() {
         e.preventDefault();
         submitCheckOut(e);
       }} method="POST">
-        {/* <input type="hidden" name="_token" value="sgBHpivzebFjK7qMRMNrCqBurDh5NZuu71U2Fwwp" autoComplete="off" /> */}
+        <input type="hidden" name="_token" value="sgBHpivzebFjK7qMRMNrCqBurDh5NZuu71U2Fwwp" autoComplete="off" />
         <div className="row justify-content-between">
           <div className="col-md-7">
             <div className="bolling-box">

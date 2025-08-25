@@ -156,7 +156,7 @@ export default function Footer() {
               </div>
             </div>
             <div className="col-lg-3 col-md-4 mt-5">
-              <section className="bg-gray-900 menu-box text-white py-10 px-5">
+              <div className="bg-gray-900 menu-box text-white py-10">
                 <div className="max-w-3xl mx-auto">
                   <h4 className="text-3xl font-bold mb-3">
                     Subscribe to Our Newsletter
@@ -187,7 +187,7 @@ export default function Footer() {
                     </button>
                   </form> */}
                 </div>
-              </section>
+              </div>
             </div>
           </div>
         </div>

@@ -10,7 +10,7 @@ import RecentViewApi from "../../../API/RecentViewApi";
 
 export default function DealsOfDay() {
     const fetch_singleProduct = useSelector((store) => store.singleProduct?.data || []);
-  const products = useSelector((store) => store.recentView?.products || []);
+  const products = useSelector((store) => store?.recentView?.products || []);
   // console.log("recent view products", products)
  const dispatch = useDispatch();  
   const [singleProduct, setSingleProduct] = useState(null);
@@ -92,7 +92,7 @@ export default function DealsOfDay() {
           <div className="featureslider_one my-4">
             <Slider {...settings} className="xyzg-slider">
               {products.map((product, index) => (
-                <SingleProductSlide key={product.id || index} product={product} />
+                <SingleProductSlide key={product?.id || index} product={product} />
               ))}
             </Slider>
           </div>

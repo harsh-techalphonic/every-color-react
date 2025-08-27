@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from "react";
 import "./Addresses.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -5,6 +6,7 @@ import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
 import axios from "axios";
 import config from "../../../Config/config.json";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { AddAddress, API_URL, EditAddress } from "../../../Config/config";
 
 export default function Addresses() {
   const [showModal, setShowModal] = useState(false);
@@ -13,9 +15,7 @@ export default function Addresses() {
   const [error, setError] = useState(null);
   const [fullname, setFullname] = useState("");
   const [phonenumber, setPhonenumber] = useState("");
-  const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
-  const [country, setCountry] = useState("");
   const [state, setState] = useState("");
   const [zipcode, setZipcode] = useState("");
   const [city, setCity] = useState("");
@@ -23,11 +23,11 @@ export default function Addresses() {
   const [statedata, setStatedata] = useState("");
   const [citydata, setCitydata] = useState([]);
   const [addreddAdded, setAddreddAdded] = useState("");
-  // console.log("data get api", data?.data);
+  const [editVal, setEditVal] = useState([]);
+
   useEffect(() => {
     const token = localStorage.getItem("token");
     setGettoken(token);
-    // setIsLoggedIn(!!token);
   }, []);
 
   const handleOpenAddrModal = (e) => {
@@ -36,12 +36,7 @@ export default function Addresses() {
   };
 
   const handleCloseAddrModal = () => setShowModal(false);
-
-  // Replace with your actual token
-
   const token = gettoken;
-  // "eyJpdiI6InAvczZTUlVzNmNvamZHaExuV3Blamc9PSIsInZhbHVlIjoib3UzNFg0bC83cmovS0hRajlPUDdvQT09IiwibWFjIjoiZjZlZTZjNjI0YWI1MGIwMjdmZjc4Njk0MmEyYjBhOWIwODRjZjZkODM1YTliY2VmYTEwYjNkZDFhNTJkZTczZiIsInRhZyI6IiJ9";
-
   useEffect(() => {
     fetchData();
     stateapi();
@@ -49,6 +44,17 @@ export default function Addresses() {
       cityapi();
     }
   }, [token, addreddAdded, state]);
+  useEffect(() => {
+    if (editVal && editVal.id) {
+      setFullname(editVal.name || "");
+      setPhonenumber(editVal.mobile || "");
+      setAddress(editVal.full_address || "");
+      setState(editVal.state || "");
+      setCity(editVal.city || "");
+      setZipcode(editVal.zip || "");
+      setLandmark(editVal.landmark || "");
+    }
+  }, [editVal]);
 
   const fetchData = async () => {
     try {
@@ -65,12 +71,10 @@ export default function Addresses() {
       setError(err.message);
     }
   };
-
   const stateapi = async () => {
     try {
       const response = await axios.get(`${config.City_State_URL}state`, {
         headers: {
-          // Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
       });
@@ -81,7 +85,6 @@ export default function Addresses() {
       setError(err.message);
     }
   };
-
   const cityapi = async () => {
     try {
       const response = await axios.post(`${config.City_State_URL}city`, {
@@ -98,7 +101,6 @@ export default function Addresses() {
       setError(err.message);
     }
   };
-
   const delete_address = async (id) => {
     console.log("delete-address", id?.id);
     const confirmed = window.confirm(
@@ -133,32 +135,23 @@ export default function Addresses() {
       }
     }
   };
-
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("error", error);
-    console.log("fullname", fullname);
-    console.log("phonenumber", phonenumber);
-    console.log("email", email);
-    console.log("address", address);
-    console.log("country", country);
-    console.log("state", state);
-    console.log("zipcode", zipcode);  
-
     let form_data = {
+      address_id: editVal.id ? editVal.id : "",
       mobile: phonenumber,
       full_address: address,
-      country: country,
+      country: "India",
       city: city,
-      state: statedata,
-      zip: zipcode,
+      state: state,
+      zip: editVal.id ? zipcode?.toString() : zipcode,
       landmark: landmark,
       name: fullname,
     };
     const postData = async () => {
       try {
         const response = await axios.post(
-          `${config.API_URL}/order/add-address`,
+          `${API_URL}${editVal.id ? EditAddress : AddAddress}`,
           form_data,
           {
             headers: {
@@ -177,6 +170,7 @@ export default function Addresses() {
     };
     postData();
   };
+
   return (
     <>
       <div className="addresss_Box">
@@ -197,7 +191,7 @@ export default function Addresses() {
                   </div>
                 </div>
 
-                {data?.data?.map((item,index) => (
+                {data?.data?.map((item, index) => (
                   <div className="col-lg-4 mb-3" key={index}>
                     <div className="AddressBox_one">
                       <h4>Billing Address</h4>
@@ -206,15 +200,25 @@ export default function Addresses() {
                         {item?.full_address} {item?.landmark} {item?.state}{" "}
                         {item?.country}
                       </p>
-                      <button onClick={handleOpenAddrModal}>
-                        <FontAwesomeIcon icon={faPenToSquare} />
-                      </button>
-                      <button
-                        className="delete_btn"
-                        onClick={() => delete_address(item)}
-                      >
-                        <FontAwesomeIcon icon={faTrash} />
-                      </button>
+
+                      <div className="address_actions">
+                        <button
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setEditVal(item);
+                            handleOpenAddrModal(e);
+                          }}
+                          className="edit_btn"
+                        >
+                          <FontAwesomeIcon icon={faPenToSquare} />
+                        </button>
+                        <button
+                          className="delete_btn"
+                          onClick={() => delete_address(item)}
+                        >
+                          <FontAwesomeIcon icon={faTrash} />
+                        </button>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -233,7 +237,9 @@ export default function Addresses() {
               onSubmit={handleSubmit}
             >
               <div className="modal-header">
-                <h5 className="modal-title">Add Address</h5>
+                <h5 className="modal-title">
+                  {editVal?.name ? "Edit Address" : "Add Address"}
+                </h5>
                 <button
                   type="button"
                   className="btn-close"
@@ -253,6 +259,7 @@ export default function Addresses() {
                       type="text"
                       className="form-control"
                       placeholder="Full Name"
+                      value={fullname}
                       onChange={(e) => setFullname(e.target.value)}
                       required
                     />
@@ -293,7 +300,8 @@ export default function Addresses() {
                       required
                     />
                   </div>
-                  <div className="col-lg-6 mb-3">
+
+                  {/* <div className="col-lg-6 mb-3">
                     <label
                       for="exampleFormControlInput1"
                       className="form-label"
@@ -307,8 +315,8 @@ export default function Addresses() {
                       onChange={(e) => setEmail(e.target.value)}
                       required
                     />
-                  </div>
-                    <div className="col-lg-6 mb-3">
+                  </div> */}
+                  <div className="col-lg-6 mb-3">
                     <label
                       htmlFor="exampleFormControlInput1"
                       className="form-label"
@@ -318,6 +326,7 @@ export default function Addresses() {
                     <select
                       className="form-select"
                       aria-label="Default select example"
+                      value={state}
                       onChange={(e) => setState(e.target.value)}
                       required
                     >
@@ -341,6 +350,7 @@ export default function Addresses() {
                     <select
                       className="form-select"
                       aria-label="Default select example"
+                      value={city}
                       onChange={(e) => setCity(e.target.value)}
                       required
                     >
@@ -365,6 +375,7 @@ export default function Addresses() {
                       type="text"
                       className="form-control"
                       placeholder="Landmark"
+                      value={landmark}
                       onChange={(e) => setLandmark(e.target.value)}
                       required
                     />
@@ -389,7 +400,7 @@ export default function Addresses() {
                       }
                       required
                     />
-                  </div> 
+                  </div>
                   <div className="col-lg-12 mb-3">
                     <label
                       for="exampleFormControlInput1"
@@ -401,6 +412,7 @@ export default function Addresses() {
                       type="text"
                       className="form-control"
                       placeholder="Road No. 13/x, House no. 1320/C, Flat No. 5D"
+                      value={address}
                       onChange={(e) => setAddress(e.target.value)}
                       required
                     />
@@ -470,8 +482,6 @@ export default function Addresses() {
                       <option value="3">Three</option>
                     </select>
                   </div> */}
-                
-                  
                 </div>
               </div>
               <div className="modal-footer">

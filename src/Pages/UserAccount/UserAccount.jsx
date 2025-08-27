@@ -106,7 +106,7 @@ export default function UserAccount() {
                   </>
                 }
               >
-                <Orders/>
+                <ReturnRefund/>
               </Tab>
               <Tab
                 eventKey="Addresses"
@@ -128,7 +128,7 @@ export default function UserAccount() {
                   </>
                 }
               >
-                <ReturnRefund />
+                <Orders />
               </Tab>
               <Tab
                 eventKey="Account_details"

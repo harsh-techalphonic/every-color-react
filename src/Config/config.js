@@ -2,6 +2,11 @@ export const API_URL = "https://dimgrey-eel-688395.hostingersite.com/api";
 export const API_URL_POST = "https://dimgrey-eel-688395.hostingersite.com/api";
 export const City_State_URL = "https://fantasycricketid.co.in/api/";
 
+// Address 
+
+export const AddAddress = '/order/add-address'
+export const EditAddress ='/order/edit-address'
+
 // cart
 export const GetCartList = "/bag/get-cart";
 export const RemoveCart = "/bag/remove-to-cart";

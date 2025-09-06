@@ -2,10 +2,10 @@ export const API_URL = "https://dimgrey-eel-688395.hostingersite.com/api";
 export const API_URL_POST = "https://dimgrey-eel-688395.hostingersite.com/api";
 export const City_State_URL = "https://fantasycricketid.co.in/api/";
 
-// Address 
+// Address
 
-export const AddAddress = '/order/add-address'
-export const EditAddress ='/order/edit-address'
+export const AddAddress = "/order/add-address";
+export const EditAddress = "/order/edit-address";
 
 // cart
 export const GetCartList = "/bag/get-cart";
@@ -16,6 +16,8 @@ export const AddOrRemoveCart = "/bag/add-remove-cart";
 export const PrivacyPolicyApi = "/web/privacy-policy";
 export const TermsCondition = "/web/terms-and-condition";
 export const ReturnCancelation = "/web/return-and-cancellation-policy";
+// Profile
+export const ProfileUser = "/user/profile";
 
 // WishList
 export const WishlistApi = "/bag/get-wishlist";

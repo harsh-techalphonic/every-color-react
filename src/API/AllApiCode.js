@@ -1,6 +1,7 @@
 import {
   AddOrDeleteWishlist,
   API_URL,
+  ProfileUser,
   RemoveCart,
   WishlistApi,
 } from "../Config/config";
@@ -26,11 +27,32 @@ export const fetchwishlistdata = async (apiPath, setData) => {
     return { status: false, data: [], error };
   }
 };
+
 export const fetchWishListApi = async () => {
   try {
     const token = localStorage.getItem("token");
 
     const response = await fetch(`${API_URL}${WishlistApi}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error("Error fetching wishlist:", error);
+    return { status: false, data: [], error };
+  }
+};
+
+export const fetchUserDataApi = async () => {
+  try {
+    const token = localStorage.getItem("token");
+
+    const response = await fetch(`${API_URL}${ProfileUser}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

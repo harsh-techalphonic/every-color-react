@@ -13,12 +13,12 @@ import ContactSlice from "./Contact/ContactSlice";
 import AboutSlice from "./About/AboutSlice";
 import brandsSlice from "./Brands/BrandSlice";
 import AuthCheckSlice from "./Auth/AuthCheckSlice";
-import RecentViewSlice from "./RecentViewSlice/RecentViewSlice"
+import RecentViewSlice from "./RecentViewSlice/RecentViewSlice";
 import ordersSlice from "./Orders/OrdersSlice";
 import testimonialSlice from "./HomesSection/TestimonialSlice";
 import pressSlice from "./HomesSection/PressSlice";
 import { wishlistSlice } from "./Products/wishlistSlice";
-
+import userReducer from "../store/User/userSlice";
 
 const ecommerceStore = configureStore({
   reducer: {
@@ -40,7 +40,8 @@ const ecommerceStore = configureStore({
     recentView: RecentViewSlice.reducer,
     orders: ordersSlice.reducer,
     testimonials: testimonialSlice.reducer,
-    press: pressSlice.reducer
+    press: pressSlice.reducer,
+    user: userReducer,
   },
 });
 

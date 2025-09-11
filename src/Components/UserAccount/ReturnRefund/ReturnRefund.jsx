@@ -1,33 +1,46 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "./ReturnRefund.css";
 import { Link } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch, } from "react-redux";
 import OrderApi from "../../../API/OrderApi";
+import { getRefundAndReturnList } from "../../../API/AllApiCode";
 
 export default function ReturnRefund() {
+  const [refundRetunDta, setRefundRetunDta] = useState([]);
   const dispatch = useDispatch();
 
   useEffect(() => {
     OrderApi(dispatch);
   }, [dispatch]);
 
-  // Get orders array from Redux
-  const orders = useSelector((store) => store.orders.orders);
-const user = orders.length > 0 ? orders[0].user : null;
+  useEffect(() => {
+    const getUserProfile = async () => {
+      try {
+        const getData = await getRefundAndReturnList();
 
-  console.log("orders details", orders);
-  console.log("user details", user);
+        if (getData && getData) {
+          setRefundRetunDta(getData?.data);
+        }
+      } catch (err) {
+        console.error("Error loading user profile:", err);
+      }
+    };
+    getUserProfile();
+  }, []);
+
+  // const orders = useSelector((store) => store.orders.orders);
+  // const user = orders.length > 0 ? orders[0].user : null;
 
   // If no orders yet
-  if (!orders || orders.length === 0) {
+  if (!refundRetunDta || refundRetunDta.length === 0) {
     return <p className="text-center mt-5">No orders found.</p>;
   }
 
   return (
     <div className="orders__box return_refund">
       <div className="row">
-        <div className="col-lg-7">
-          {orders.map((order) =>
+        <div className="col-lg-7 order-box-one">
+          {refundRetunDta.map((order) =>
             order.products.map((product) => {
               const variation = product.product_variation
                 ? JSON.parse(product.product_variation)
@@ -49,7 +62,10 @@ const user = orders.length > 0 ? orders[0].user : null;
                   {/* Product Details */}
                   <div className="order-box_content">
                     <p className="bold">{product.product_name}</p>
-                    <p className="pricing">₹{product.product_price} / <span>{order.payment_method}</span> </p>
+                    <p className="pricing">
+                      ₹{product.product_price} /{" "}
+                      <span>{order.payment_method}</span>{" "}
+                    </p>
                     <p className="orderID">
                       <b>Delivered on :</b>{" "}
                       {new Date(order.created_at).toLocaleDateString()}
@@ -73,17 +89,17 @@ const user = orders.length > 0 ? orders[0].user : null;
                   </div>
 
                   {/* Action Buttons */}
-                  <div className="Rerun_ref_btn">
+                  {/* <div className="Rerun_ref_btn">
                     <button className="RETURN mb-4">RETURN</button>
                     <button className="Refund">Refund</button>
-                  </div>
+                  </div> */}
                 </div>
               );
             })
           )}
         </div>
 
-        <div className="col-lg-5">
+        {/* <div className="col-lg-5">
           <div className="container">
             <div className="card bg-light p-3">
               <h6>Order# (1 item)</h6>
@@ -137,7 +153,7 @@ const user = orders.length > 0 ? orders[0].user : null;
               </p>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

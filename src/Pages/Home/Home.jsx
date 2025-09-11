@@ -72,22 +72,21 @@ export default function Home() {
         console.error("Error loading wishlist:", err);
       }
     };
+    const getUserProfile = async () => {
+      try {
+        const userResponse = await fetchUserDataApi();
+        console?.log("userResponse -------->>>>", userResponse);
 
-   const getUserProfile = async () => {
-  try {
-    const userResponse = await fetchUserDataApi();
-    console?.log('userResponse -------->>>>',userResponse)
-
-    if (userResponse && userResponse) {
-      dispatch(userAction.setUserProfile(userResponse));
-    } else {
-      dispatch(userAction.clearUserProfile());
-    }
-  } catch (err) {
-    console.error("Error loading user profile:", err);
-    dispatch(userAction.clearUserProfile());
-  }
-};
+        if (userResponse && userResponse) {
+          dispatch(userAction.setUserProfile(userResponse));
+        } else {
+          dispatch(userAction.clearUserProfile());
+        }
+      } catch (err) {
+        console.error("Error loading user profile:", err);
+        dispatch(userAction.clearUserProfile());
+      }
+    };
 
     fetchCart();
     getWishlist();

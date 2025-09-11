@@ -10,7 +10,10 @@ import { filtersAction } from "../../store/Products/filtersSlice";
 import ScrollToTop from "../ScrollToTop";
 
 export default function Product({ category_type }) {
-  const fetch_products = useSelector((store) => store.products) || { data: [], status: false };
+  const fetch_products = useSelector((store) => store.products) || {
+    data: [],
+    status: false,
+  };
   const fetch_filter = useSelector((store) => store.filters) || {};
   const dispatch = useDispatch();
 
@@ -28,18 +31,28 @@ export default function Product({ category_type }) {
     if (category_type) {
       if (category_type === "category") {
         filtered = all.filter(
-          (value) => String(value.category?.slug || "").toLowerCase() === String(category || "").toLowerCase()
+          (value) =>
+            String(value.category?.slug || "").toLowerCase() ===
+            String(category || "").toLowerCase()
         );
       } else if (category_type === "sub_category") {
         // note: your product object must have sub_category_slug or a nested subcategory. Adjust if different.
         filtered = all.filter(
-          (value) => String(value.sub_category_slug || "").toLowerCase() === String(sub_category || "").toLowerCase()
+          (value) =>
+            String(value.sub_category_slug || "").toLowerCase() ===
+            String(sub_category || "").toLowerCase()
         );
       }
     }
 
     setProducts(filtered);
-  }, [category_type, fetch_products.status, fetch_products.data, category, sub_category]);
+  }, [
+    category_type,
+    fetch_products.status,
+    fetch_products.data,
+    category,
+    sub_category,
+  ]);
 
   // update product count in filters slice
   useEffect(() => {
@@ -65,13 +78,17 @@ export default function Product({ category_type }) {
 
   // Placeholder active filters; ideally derive from fetch_filter state
   const activeFilters = [];
-  if (fetch_filter.sorted && fetch_filter.sorted !== "newest") activeFilters.push(`Sort: ${fetch_filter.sorted}`);
-  if (fetch_filter.ratingSorted && fetch_filter.ratingSorted > 0) activeFilters.push(`${fetch_filter.ratingSorted}★ & above`);
+  if (fetch_filter.sorted && fetch_filter.sorted !== "newest")
+    activeFilters.push(`Sort: ${fetch_filter.sorted}`);
+  if (fetch_filter.ratingSorted && fetch_filter.ratingSorted > 0)
+    activeFilters.push(`${fetch_filter.ratingSorted}★ & above`);
   if (
     typeof fetch_filter.priceRangeMin !== "undefined" &&
     typeof fetch_filter.priceRangeMax !== "undefined"
   )
-    activeFilters.push(`₹${fetch_filter.priceRangeMin} - ₹${fetch_filter.priceRangeMax}`);
+    activeFilters.push(
+      `₹${fetch_filter.priceRangeMin} - ₹${fetch_filter.priceRangeMax}`
+    );
 
   return (
     <>
@@ -137,7 +154,9 @@ export default function Product({ category_type }) {
                 <div className="d-flex justify-content-between align-items-center bg-light p-2 rounded mb-3">
                   <div className="d-flex align-items-center gap-2">
                     <span className="text-secondary">Active Filters:</span>
-                    {activeFilters.length === 0 && <span className="text-muted">None</span>}
+                    {activeFilters.length === 0 && (
+                      <span className="text-muted">None</span>
+                    )}
                     {activeFilters.map((filter, index) => (
                       <div
                         key={index}
@@ -151,7 +170,8 @@ export default function Product({ category_type }) {
                     ))}
                   </div>
                   <div className="text-secondary">
-                    {fetch_filter.countProduct ?? products.length} Results found.
+                    {fetch_filter.countProduct ?? products.length} Results
+                    found.
                   </div>
                 </div>
 

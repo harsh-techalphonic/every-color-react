@@ -20,7 +20,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 export default function Header() {
   const categories = useSelector((store) => store.categories);
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const [show, setShow] = useState(false);
   const [isSticky, setIsSticky] = useState(false);
   const [wishlistCount, setWishlistCount] = useState(0);

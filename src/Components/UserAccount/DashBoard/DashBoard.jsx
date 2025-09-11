@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./DashBoard.css";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { fetchUserDataApi } from "../../../API/AllApiCode";
 
 const orderData = [
   {
@@ -26,19 +26,24 @@ const orderData = [
   },
 ];
 
-export default function DashBoard() {
-  const user = useSelector((state) => state?.user?.profile);
-  console?.log("user--------------->>>>>>>", user);
+export default function DashBoard({ setActiveTab }) {
   const [userProfileDta, setUserProfileDta] = useState([]);
 
   useEffect(() => {
-    if (user) {
-      setUserProfileDta(user);
-    }
+    const getUserProfile = async () => {
+      try {
+        const userResponse = await fetchUserDataApi();
+
+        if (userResponse && userResponse) {
+          setUserProfileDta(userResponse);
+        }
+      } catch (err) {
+        console.error("Error loading user profile:", err);
+      }
+    };
+    getUserProfile();
   }, []);
 
-  
-  console?.log("userProfileDta--------------->>>>>>>", userProfileDta);
   return (
     <>
       <div className="dashbaord_kbox">
@@ -46,7 +51,10 @@ export default function DashBoard() {
           <div className="col-lg-7">
             <div className="dashborad_profile d-flex align-items-center ">
               <div className="profile-box">
-                <img src={userProfileDta?.profile || "/avatar-profile.png"} alt="" />
+                <img
+                  src={userProfileDta?.profile || "/avatar-profile.png"}
+                  alt=""
+                />
               </div>
               <div className="profile-content">
                 <h3>{userProfileDta?.name}</h3>
@@ -57,7 +65,13 @@ export default function DashBoard() {
                   <Link to="#!">{userProfileDta?.phone}</Link>
                 </p>
               </div>
-              <Link to="AccountDetails" className="edit_profile">
+              <Link
+                onClick={(e) => {
+                  e.preventDefault();
+                  setActiveTab("Account_details");
+                }}
+                className="edit_profile"
+              >
                 {" "}
                 Edit Profile{" "}
               </Link>

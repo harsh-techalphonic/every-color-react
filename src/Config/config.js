@@ -16,6 +16,7 @@ export const AddOrRemoveCart = "/bag/add-remove-cart";
 export const PrivacyPolicyApi = "/web/privacy-policy";
 export const TermsCondition = "/web/terms-and-condition";
 export const ReturnCancelation = "/web/return-and-cancellation-policy";
+
 // Profile
 export const ProfileUser = "/user/profile";
 
@@ -26,3 +27,6 @@ export const AddOrDeleteWishlist = "/bag/add-remove-wishlist";
 
 //Recent View
 export const GetRecentView = "get-recent-view";
+
+//Refund and Return api
+export const GetRefundReturnApi = "/refund-replace";

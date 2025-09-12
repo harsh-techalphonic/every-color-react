@@ -7,17 +7,15 @@ import OrderApi from "../../../API/OrderApi";
 
 export default function ReturnRefund() {
   const dispatch = useDispatch();
-
+  const orders = useSelector((store) => store.orders.orders);
+  console?.log("orders ------>>>>>", orders);
   const token = localStorage.getItem("token");
 
-    console?.log('localStorage.getItem("token") ------>>>>>',token)
   useEffect(() => {
-    console?.log('localStorage.getItem("token") ------>>>>>',token)
     OrderApi(dispatch, token);
   }, [dispatch]);
 
   // Get orders array from Redux
-  const orders = useSelector((store) => store.orders.orders);
   const user = orders.length > 0 ? orders[0].user : null;
 
   console.log("orders details", orders);
@@ -34,6 +32,8 @@ export default function ReturnRefund() {
         <div className="col-lg-7">
           {orders.map((order) =>
             order.products.map((product) => {
+              console.log("product ---------->>>>>>>", product?.product_image);
+
               const variation = product.product_variation
                 ? JSON.parse(product.product_variation)
                 : null;

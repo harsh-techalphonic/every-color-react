@@ -62,7 +62,7 @@ button:hover {
   max-width: 40px;
   border-radius: 50%;
   background-color: #ffffff !important;
-  z-index: 99;
+  z-index: 8;
 }
 /* .slick-prev:before {
   content: '←' !important;
@@ -105,4 +105,173 @@ button:hover {
     border-color: #ff9999;
     outline: 0;
     box-shadow: 0 0 0 .125rem #fd000040;
+}
+
+@media screen and (max-width:768px) {
+  .Best_selling .feature-product-tile .title-box h2,
+  .Super_saving .feature-product-tile .title-box h2,
+  .CategoryBestSellers .feature-product-tile .title-box h2,
+  .All_Products .product-section .feature-product-tile .title-box h2
+   {
+      font-size: 32px !important;
+  }
+  .All_Products .product-section .feature-product-tile .title-box span.asdkjkj{
+    font-size: 14px;
+  }
+   .All_Products .product-section .feature-product-tile .title-box select{
+    font-size: 13px;
+  }
+  .Shop_by_health h2 {
+    font-size: 28px;
+  }
+  .fitkere span{
+      font-size: 12px;
+  }
+      .home_hero .main-content-box .content-box h1 {
+        font-size: 32px;
+    }
+    .home_hero .main-content-box .content-box p{
+        font-size: 15px;
+    }
+    .home_hero .main-content-box .image-box {
+        height: auto;
+    }
+    .gprscertified .gprscertified-box .gprscertified-icon {
+        max-width: 46px;
+    }
+    .gprscertified .gprscertified-box .gprscertified-content h4{
+    font-size: 14px;;
+}
+.Product_card .feature-card .product-detail .Pricing .slashPrice{
+  font-size: 13px !important;
+}
+
+      
+}
+@media screen and (max-width:576px) {
+  .Best_selling .feature-product-tile .title-box h2,
+  .CategoryBestSellers .feature-product-tile .title-box h2,
+  .Super_saving .feature-product-tile .title-box h2,
+    .Hot_offers .Hot_offer-Content h2,
+    .All_Products .product-section .feature-product-tile .title-box h2  {
+      font-size: 24px !important;
+  }
+    .Shop_by_health h2 {
+      font-size: 18px !important;
+  }
+      .home_hero .main-content-box .content-box h1 {
+        font-size: 28px !important;
+    }
+    .Shop_by_health-card .card-img{
+      height: auto !important;
+    }
+    .Shop_by_health-card .product-detail h3 a{
+      font-size: 15px !important;
+    }
+    .Best_selling .feature-product-tile .title-box a{
+      font-size: 13px !important;
+    }
+     .Best_selling .feature-card .product-detail .Pricing .price,
+     .Product_card .feature-card .product-detail .Pricing .price {
+      font-size: 15px !important;
+  }
+  .Best_selling .feature-card span.disco,
+  .Product_card .feature-card span.disco {
+    top: 8px !important;
+    left: 8px !important;
+    padding: 3px 7px !important;
+    font-size: 9px !important;
+}
+  .Best_selling .feature-card span.wishicon,
+  .Product_card .feature-card span.wishicon
+   {
+    top: 8px !important;
+    right: 8px !important;
+    padding: 3px 7px !important;
+    font-size: 9px !important;
+    width: 24px !important;
+    height: 24px !important;
+}
+.Best_selling .feature-card,
+.Product_card .feature-card {
+    padding: 8px 8px 20px !important;
+}
+.Best_selling .cart-btn,.Product_card .cart-btn {
+    padding: 4px 0 !important;
+    font-size: 12px !important;
+}
+
+.CategoryBestSellers .feature-product-tile .title-box a {
+    font-size: 14px !important;
+}
+.Product_card .feature-card .product-detail .Pricing{
+  margin-bottom: 0px !important;
+}
+.Product_card .feature-card .card-img{
+  height: auto !important;
+}
+  .product-galler-slide .slick-slider .slick-list .slick-slide > div{
+  padding: 4px 4px 0px !important;
+}
+.product-galler-slide .slick-prev,.product-galler-slide .slick-next{
+    height: 20px !important;
+    max-width: 20px;
+}
+.product-galler-slide .slick-prev:before,.product-galler-slide .slick-next:before{
+  font-size: 10px;
+}
+.product-galler-slide .slider-for .slick-slide img{
+  width: 100% !important;
+  height: auto !important;
+}
+.product-detail-slider-content h5{
+  font-size: 20px !important;
+}
+.purchase-btns button ,.purchase-btns a{
+  font-size: 14px;
+  white-space: nowrap;
+}
+.reviewer-sec .reviewer-main-box .tititle h3{
+  font-size: 20px !important;
+}
+.reviewer-sec .reviewer-main-box .tititle h3 span{
+  font-size: 24px !important;
+}
+.reviewer-sec .reviewer-main-box .tititle button{
+  font-size: 14px !important;
+}
+.login-sec .login-box{
+  padding: 24px 32px !important;
+}
+.custom-dropdown {
+    left: 0 !important;
+}
+.reviewer-sec .reviewer-main-box .review-card .reviewr-img img, .reviewer-sec .reviewer-main-box .review-card .reviewr-img span {
+    width: 50px !important;
+    height: 50px !important;
+    font-size: 20px !important;
+}
+.reviewer-sec .reviewer-main-box .review-card .reviewer-content h4 {
+    font-size: 18px !important;  
+}
+.reviewer-sec .reviewer-main-box .review-card .reviewer-content span.rating-reviwe,
+.reviewer-sec .reviewer-main-box .review-card .reviewer-content p{
+    font-size: 14px !important;
+}
+.reviewer-content img{
+  height: 80px !important;
+  width: 80px !important;
+}
+.copyright div{
+  flex-wrap: wrap !important;
+  gap: 12px;
+}
+.copyright div .Payemt-img{
+ order: -1;
+}
+}
+@media screen and (min-width:991px) {
+  .logo-cartbox{
+    margin-left: 24px;
+  }
 }

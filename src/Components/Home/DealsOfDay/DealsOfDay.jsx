@@ -58,7 +58,13 @@ export default function DealsOfDay() {
         },
       },
       {
-        breakpoint: 480,
+        breakpoint: 576,
+        settings: {
+          slidesToShow: 2,
+        },
+      },
+      {
+        breakpoint: 360,
         settings: {
           slidesToShow: 1,
         },

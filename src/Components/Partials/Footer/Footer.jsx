@@ -119,7 +119,7 @@ export default function Footer() {
                 </div>
               </div>
             </div>
-            <div className="col-lg-3 col-md-4 mt-5">
+            <div className="col-lg-3 col-md-4 col-6 mt-5">
               <div className="menu-box">
                 <h4>Quick Links</h4>
                 <ul className="list-unstyled mt-4">
@@ -136,12 +136,15 @@ export default function Footer() {
                     <Link to="#!">Track Orders</Link>
                   </li>
                   <li>
+                    <Link to="/bulk-order">Bulk Order</Link>
+                  </li>
+                  <li>
                     <Link to="/contact-us">Contact Us</Link>
                   </li>
                 </ul>
               </div>
             </div>
-            <div className="col-lg-3 col-md-4 mt-5">
+            <div className="col-lg-3 col-md-4  col-6  mt-5">
               <div className="menu-box">
                 <h4>Categories</h4>
                 <ul className="list-unstyled mt-4">
@@ -192,7 +195,7 @@ export default function Footer() {
           </div>
         </div>
       </div>
-      <div className="copyright">
+      <div className="copyright mt-3">
         <div className="container">
           <div className="d-flex justify-content-between">
             <div className="copytext">

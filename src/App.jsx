@@ -31,6 +31,9 @@ import ecommerceStore from "./store";
 import Category from "./Pages/Category/Category";
 import Support from "./Pages/Support/Support";
 import PrivateRoute from "./Components/UserAccount/PrivateRoute";
+import BulkOrder from "./Pages/BulkOrder/BulkOrder";
+import Export from "./Pages/Export/Export";
+import TrackOrder from "./Pages/TrackOrder/TrackOrder";
 
 const router = createBrowserRouter([
   {
@@ -132,6 +135,18 @@ const router = createBrowserRouter([
   {
     path: "/support",
     element: <Support />,
+  },
+   {
+    path: "/bulk-order",
+    element: <BulkOrder/>
+  },
+  {
+    path: "/export",
+    element: <Export/>
+  },
+   {
+    path: "/track-order",
+    element: <TrackOrder/>
   },
   {
     path: "*",

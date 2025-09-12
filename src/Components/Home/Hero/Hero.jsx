@@ -43,7 +43,7 @@ export default function Hero() {
         <div className="main-content-box py-4">
           <div className="container placeholder-glow">
             <div className="row justify-content-between align-items-center">
-              <div className="col-lg-5">
+              <div className="col-lg-5 my-4">
                 <div className="content-box">
                   <h1>
                     <span className="placeholder col-4"></span>
@@ -63,7 +63,7 @@ export default function Hero() {
                   </div>
                 </div>
               </div>
-              <div className="col-lg-5">
+              <div className="col-lg-5 my-4">
                 <div className="image-box placeholder w-100 rounded"></div>
               </div>
             </div>
@@ -79,10 +79,10 @@ export default function Hero() {
               <div className="main-content-box py-4">
                 <div className="container">
                   <div className="row justify-content-between align-items-center">
-                    <div className="col-lg-5">
+                    <div className="col-lg-5  my-4">
                       <div className="content-box">
                         <h1>{item.heading}</h1>
-                        <p className="my-4">{item.content}</p>
+                        <p className="my-lg-4 my-md-3 my-2">{item.content}</p>
                         {item.link && (
                           <div className="button-light mt-5">
                             <a href={item.link}>
@@ -92,7 +92,7 @@ export default function Hero() {
                         )}
                       </div>
                     </div>
-                    <div className="col-lg-5">
+                    <div className="col-lg-5  my-4">
                       <div className="image-box">
                         <img src={item.image} alt={item.heading} />
                       </div>

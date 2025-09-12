@@ -43,9 +43,9 @@ export default function Categories() {
         },
       },
       {
-        breakpoint: 480,
+        breakpoint: 576,
         settings: {
-          slidesToShow: 1,
+          slidesToShow: 2,
         },
       },
     ],

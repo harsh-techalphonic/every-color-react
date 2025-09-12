@@ -74,7 +74,7 @@ export default function UserAccount() {
 
       <section className="User_dashboard my-5">
         <div className="container">
-          <div className="user_tabBoard d-flex">
+          <div className="user_tabBoard d-flex ">
             <Tabs
               defaultActiveKey="DashBoard"
               id="justify-tab-Dashboard"

@@ -59,7 +59,7 @@
     box-shadow: 0px 4px 4px 0px #00000040;
     background-color: #ffffff;
     width: 100%;
-    max-width: calc(100%/2 - 58px);
+    max-width: calc(100%/2 - 16px);
     padding: 16px 18px;
     gap: 16px;
 }
@@ -77,4 +77,18 @@
     font-weight: 600;
     color: #191C1F; 
     margin-bottom: 0;
+}
+@media screen and (max-width:768px) {
+    .ordera-boxer .orderbox-one{
+    max-width: calc(100%/2 - 8px);
+    padding: 12px 14px;
+    gap: 8px;
+    height: -webkit-fill-available;
+}
+.orders__box .order-titel h2{
+    font-size: 24px !important;
+}
+.orders__box .order-titel select {
+    font-size: 10px !important;
+}
 }

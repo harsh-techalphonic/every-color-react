@@ -183,19 +183,20 @@ export default function Header() {
             </div>
 
             <div className="searchbar-category-barr d-flex align-items-center justify-content-center w-100">
-              <button className="ms-4 touggle-btn" onClick={handleShow}>
-                <FontAwesomeIcon icon={faBarsStaggered} />
-              </button>
-              <div className=" position-relative">
+              
+              <div className="aasdfasdf position-relative">
                 <AllCatergory_Filter />
               </div>
               <SearchBar />
             </div>
 
-            <div className="logo-cartbox">
+            <div className="logo-cartbox ">
               <ul className="list-unstyled d-flex gap-3 mb-0">
                 <WishlistMenu />
                 <CartMenu />
+                <button className="ms-1 touggle-btn" onClick={handleShow}>
+                <FontAwesomeIcon icon={faBarsStaggered} />
+              </button>
               </ul>
             </div>
           </div>
@@ -213,6 +214,12 @@ export default function Header() {
                 <Link to={`/category/${category.slug}`}>{category.name}</Link>
               </li>
             ))}
+            <li>
+              <Link to="/bulk-order">Bulk Order</Link>
+            </li>
+            <li>
+              <Link to="/export">Export</Link>
+            </li>
             <li>
               <Link to="#!">Track Order</Link>
             </li>
@@ -258,6 +265,12 @@ export default function Header() {
                 </li>
                 <li>
                   <Link to="/contact-us">Contact Us</Link>
+                </li>
+                <li>
+                  <Link to="/bulk-order">Bulk Order</Link>
+                </li>
+                <li>
+                  <Link to="/export">Export</Link>
                 </li>
                 <li>
                   <Link to="#!">Track Order</Link>

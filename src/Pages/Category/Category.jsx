@@ -67,7 +67,7 @@ export default function Category() {
             {subCategories.map((sub, idx) => (
               <div
                 key={idx}
-                className="col-lg-3 col-md-4 col-sm-6 col-6"
+                className="col-lg-3 col-md-4 col-sm-6 col-6 "
                 onClick={() => handleCardClick(sub.slug)} // ✅ Click to navigate
                 style={{ cursor: "pointer" }}
               >

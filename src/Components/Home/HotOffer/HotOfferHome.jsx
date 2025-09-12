@@ -22,7 +22,7 @@ export default function HotOfferHome() {
     <section className="Hot_offers py-5">
       <div className="container">
         <div className="row justify-content-between align-items-center">
-          <div className="col-lg-5">
+          <div className="col-lg-5 mb-lg-0 mb-4">
             <div className="Hot_offer-Content">
               {sectionData?.sub_heading && <span>{sectionData.sub_heading}</span>}
               {sectionData?.heading && <h2>{sectionData.heading}</h2>}
@@ -37,7 +37,7 @@ export default function HotOfferHome() {
               )}
             </div>
           </div>
-          <div className="col-lg-5">
+          <div className="col-lg-5  mb-lg-0 mb-4">
             <div className="Hot_offer-image">
               {sectionData?.image ? (
                 <img src={sectionData.image} alt={sectionData.heading || 'Hot offer'} />

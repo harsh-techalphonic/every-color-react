@@ -173,7 +173,7 @@ export default function Product_card({ products, filters }) {
   return (
     <div className="row Product_card">
       {products.map((product, index) => (
-        <div key={index} className="col-lg-3 col-md-6 col-sm-6 mb-3">
+        <div key={index} className="col-lg-3 col-md-6 col-sm-6 col-6 col-auto mb-3">
           <div className="feature-card">
             <span className="disco">
               {Math.round(

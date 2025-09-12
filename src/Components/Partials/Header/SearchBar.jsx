@@ -53,11 +53,11 @@ export default function SearchBar() {
   }, [location.pathname]);
 
   return (
-    <div className="position-relative sraechbar-we" ref={wrapperRef} style={{ margin: "0 20px" }}>
+    <div className="position-relative sraechbar-we" ref={wrapperRef} style={{ margin: "0 8px" }}>
       <div className="input-group">
         <input
           type="text"
-          className="form-control"
+          className="form-control mx-0"
           placeholder="What are you looking for?"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}

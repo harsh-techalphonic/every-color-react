@@ -8,6 +8,8 @@ import { Form } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { filtersAction } from "../../store/Products/filtersSlice";
 import ScrollToTop from "../ScrollToTop";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBarsStaggered, faClose } from "@fortawesome/free-solid-svg-icons";
 
 export default function Product({ category_type }) {
   const fetch_products = useSelector((store) => store.products) || {
@@ -102,12 +104,17 @@ export default function Product({ category_type }) {
               <div className="fliterbox mt-lg-5 mt-md-4 mt-3 mb-0">
                 <div className="fliterbox-tile d-flex align-items-center justify-content-between">
                   <div className="title-box">
-                    <h2>
+                    <h2 className="d-flex">
                       <span
                         className={`filter-btn ${isMobile ? "showrel" : ""}`}
                         onClick={toggleFilter}
                       >
-                        Filter
+                        Filter{" "}
+                        {showFilter ? (
+                          <FontAwesomeIcon icon={faClose} className="d-inline-block d-lg-none" />
+                        ) : (
+                          <FontAwesomeIcon icon={faBarsStaggered} className="d-inline-block d-lg-none" />
+                        )}
                       </span>
                     </h2>
                   </div>
@@ -134,7 +141,7 @@ export default function Product({ category_type }) {
                     </h2>
                   </div>
                   <div className="title-box d-flex align-items-center gap-2">
-                    <span style={{ whiteSpace: "nowrap" }}>Sort by:</span>
+                    <span className="asdkjkj" style={{ whiteSpace: "nowrap" }}>Sort by:</span>
                     <Form.Select
                       className="custom-select"
                       aria-label="Sort by"
@@ -151,7 +158,7 @@ export default function Product({ category_type }) {
                   </div>
                 </div>
 
-                <div className="d-flex justify-content-between align-items-center bg-light p-2 rounded mb-3">
+                <div className="d-flex justify-content-between align-items-center bg-light p-2 rounded my-3 fitkere">
                   <div className="d-flex align-items-center gap-2">
                     <span className="text-secondary">Active Filters:</span>
                     {activeFilters.length === 0 && (

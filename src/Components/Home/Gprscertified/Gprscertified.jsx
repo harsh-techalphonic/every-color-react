@@ -23,7 +23,7 @@ export default function Gprscertified() {
         <div className="container">
           <div className="row">
             {basicInfoArray.map((item) => (
-              <div className="col-lg-3 col-md-6 mb-lg-0 mb-3" key={item.id}>
+              <div className="col-lg-3 col-md-6 mb-lg-0 my-lg-3 my-md-3 mb-2" key={item.id}>
                 <div className="gprscertified-box d-flex align-items-center  gap-3">
                   <div className="gprscertified-icon">
                     <img src={item.image} alt={item.heading} />

@@ -3,7 +3,9 @@
     border-bottom: 1px solid #EAEAEA;
     background-color: #DB3030;
 }
-
+.logo-cartbox .touggle-btn{
+      display: none;
+    }
 .Header .infobox ul li a{
     font-size: 14px;
     font-weight: 400;
@@ -148,13 +150,47 @@
     .account-dropdown{
         width: 100%;
     }
-    
+    .logo-cartbox .touggle-btn{
+      display: block;
+    }
+    .Header .searchbar-category-barr .input-group{
+    margin: 0 0px;
+    }
+    .searchbar-category-barr .aasdfasdf button{
+      margin-left: 0 !important;
+      font-size: 12px;
+      padding: 7px 8px;
+    }
+    .searchbar-category-barr .aasdfasdf button svg{
+     height: 0.7rem;
+      
+    }
+    .Header .searchbar-category-barr .input-group input {
+        font-size: 12px;
+        padding: 7px 8px;
+        width: calc(100% - 30px);
+    }
+        .searchbar-category-barr .input-group .input-group-text {
+        padding: 7px 8px;
+        width: 30px;
+        font-size: 12px;
+    }
+  
 }
 @media screen and (max-width:576px) {
+      .Header .logo-serach .brand-name{
+        width: 100%;
+        max-width: 50px;
+      }
+    .mobsideMenu .brand-name {
+      width: 100%;
+        max-width: 50px;
+    }
     .searchbar-category-barr{
-        flex-wrap: wrap;
         gap: 8px;
     }
+
+    
 }
 
 .custom-dropdown {
@@ -310,7 +346,7 @@
     animation: slide 0.3s ;
     box-shadow: 0 2px 4px 0 #c9c9c9;
     background-color: #ffffff;
-    z-index: 9999;
+    z-index: 9;
     }
     @keyframes slide {
         0% {

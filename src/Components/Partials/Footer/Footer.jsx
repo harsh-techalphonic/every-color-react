@@ -133,10 +133,13 @@ export default function Footer() {
                     <Link to="/product">Our Products</Link>
                   </li>
                   <li>
-                    <Link to="#!">Track Orders</Link>
+                    <Link to="/track-order">Track Orders</Link>
                   </li>
                   <li>
                     <Link to="/bulk-order">Bulk Order</Link>
+                  </li>
+                  <li>
+                    <Link to="/bulk-order">Export</Link>
                   </li>
                   <li>
                     <Link to="/contact-us">Contact Us</Link>

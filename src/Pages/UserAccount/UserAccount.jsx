@@ -186,6 +186,7 @@ import AccountDetails from "../../Components/UserAccount/AccountDetails/AccountD
 import ScrollToTop from "../ScrollToTop";
 import { useSelector, useDispatch } from "react-redux";
 import { cartAction } from "../../store/Products/cartSlice";
+import ChangePassword from "../../Components/UserAccount/ChangePassword/ChangePassword";
 
 export default function UserAccount() {
   const dispatch = useDispatch();
@@ -320,7 +321,7 @@ export default function UserAccount() {
                   </>
                 }
               >
-                <AccountDetails />
+                <ChangePassword />
               </Tab>
               <Tab
                 eventKey="Log_out"

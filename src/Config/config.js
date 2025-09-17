@@ -12,6 +12,7 @@ export const EditAddress = "/order/edit-address";
 export const GetCartList = "/bag/get-cart";
 export const RemoveCart = "/bag/remove-to-cart";
 export const AddOrRemoveCart = "/bag/add-remove-cart";
+export const UpdateCartQut = '/bag/update-cart-quantity';
 
 // Privacy or Policy
 export const PrivacyPolicyApi = "/web/privacy-policy";

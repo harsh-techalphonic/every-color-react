@@ -5,11 +5,12 @@ import Footer from "../../Components/Partials/Footer/Footer";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHouse, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { cartAction } from "../../store/Products/cartSlice";
 import config from "../../Config/config.json";
 import { deleteCartItem } from "../../API/AllApiCode";
-import { RemoveCart } from "../../Config/config";
+import { RemoveCart, UpdateCartQut } from "../../Config/config";
+import { updateCartItemQuantity } from "./CartValUpdateApi";
 
 // Utility to calculate prices
 const getPriceDetails = (item) => {
@@ -110,10 +111,7 @@ const CartItem = ({ item, onRemove, onQuantityChange }) => {
 };
 
 export default function Cart() {
-  const fetch_products = useSelector((store) => store.products);
   const [products, setProducts] = useState([]);
-  console?.log("products cart ----->>>", fetch_products);
-
   const [checkCart, setCheckCart] = useState(false);
   const [checkoutDetail, setCheckoutDetail] = useState({
     subTotal: 0,
@@ -121,6 +119,10 @@ export default function Cart() {
     total: 0,
   });
   const [checkoutUrl, setCheckoutUrl] = useState("");
+  const [coupon, setCoupon] = useState("");
+  const [isCouponApplied, setIsCouponApplied] = useState(false);
+  const [couponMessage, setCouponMessage] = useState("");
+  const [couponMessageColor, setCouponMessageColor] = useState("");
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -150,7 +152,7 @@ export default function Cart() {
             ...product,
             cart_id: cartItem.id,
             prd_id: product?.id,
-            quantity: 1,
+            quantity: cartItem.quantity || 1,
             variation,
             product_inventory_details: product?.variations
               ? [product?.variations]
@@ -195,13 +197,6 @@ export default function Cart() {
     }
   };
 
-  // 2. Update Checkout URL when totals change
-  // useEffect(() => {
-  //   const cartIds = JSON.parse(localStorage.getItem("cart")) || [];
-  //   const url = JSON.stringify({ ...checkoutDetail, data: cartIds });
-  //   setCheckoutUrl(btoa(url));
-  // }, [checkoutDetail]);
-
   useEffect(() => {
     const cartIds = JSON.parse(localStorage.getItem("cart")) || [];
     const url = JSON.stringify({ ...checkoutDetail, data: cartIds });
@@ -232,13 +227,35 @@ export default function Cart() {
   }, [products]);
 
   // Quantity change
-  const handleQuantityChange = (prd_id, newQuantity) => {
-    setProducts((prevItems) =>
-      prevItems.map((item) =>
-        item?.prd_id === prd_id ? { ...item, quantity: newQuantity } : item
-      )
-    );
-    dispatch(cartAction.updateCart({ prd_id, quantity: newQuantity }));
+  // const handleQuantityChange = (prd_id, newQuantity) => {
+  //   setProducts((prevItems) =>
+  //     prevItems.map((item) =>
+  //       item?.prd_id === prd_id ? { ...item, quantity: newQuantity } : item
+  //     )
+  //   );
+  //   dispatch(cartAction.updateCart({ prd_id, quantity: newQuantity }));
+  // };
+
+  // Quantity change
+  const handleQuantityChange = async (prd_id, newQuantity) => {
+    try {
+      const response = await updateCartItemQuantity(prd_id, newQuantity);
+
+      if (response) {
+        // ✅ API success → update local state + Redux
+        setProducts((prevItems) =>
+          prevItems.map((item) =>
+            item?.prd_id === prd_id ? { ...item, quantity: newQuantity } : item
+          )
+        );
+
+        dispatch(cartAction.updateCart({ prd_id, quantity: newQuantity }));
+      } else {
+        alert("Failed to update cart quantity");
+      }
+    } catch (err) {
+      console.error("Quantity update error:", err);
+    }
   };
 
   // Remove item
@@ -250,11 +267,6 @@ export default function Cart() {
   //   setProducts(updatedProducts);
   //   dispatch(cartAction.removeCart(updatedProducts));
   // };
-
-  const [coupon, setCoupon] = useState("");
-  const [isCouponApplied, setIsCouponApplied] = useState(false);
-  const [couponMessage, setCouponMessage] = useState("");
-  const [couponMessageColor, setCouponMessageColor] = useState("");
 
   const applyCoupon = () => {
     if (coupon === "DISCOUNT180") {

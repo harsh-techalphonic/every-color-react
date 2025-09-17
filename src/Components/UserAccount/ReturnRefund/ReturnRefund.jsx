@@ -39,7 +39,7 @@ export default function ReturnRefund() {
   return (
     <div className="orders__box return_refund">
       <div className="row">
-        <div className="col-lg-7 order-box-one">
+        <div className="col-lg-7 order-box-one p-3">
           {refundRetunDta.map((order) =>
             order.products.map((product) => {
               const variation = product.product_variation

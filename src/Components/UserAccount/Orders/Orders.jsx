@@ -48,10 +48,24 @@ export default function ReturnRefund() {
     { key: "DAMAGED_ON_ARRIVAL", label: "Product damaged on arrival" },
     { key: "DEFECTIVE_PRODUCT", label: "Product was defective" },
     { key: "WRONG_ITEM_RECEIVED", label: "Wrong item received" },
-    { key: "OVERCHARGED", label: "Charged more than expected" },
-    { key: "DUPLICATE_PAYMENT", label: "Duplicate payment detected" },
-    { key: "SERVICE_ISSUE", label: "Service not satisfactory" },
-    { key: "PAYMENT_FAILURE", label: "Payment failed but amount deducted" },
+    // { key: "OVERCHARGED", label: "Charged more than expected" },
+    // { key: "DUPLICATE_PAYMENT", label: "Duplicate payment detected" },
+    // { key: "SERVICE_ISSUE", label: "Service not satisfactory" },
+    // { key: "PAYMENT_FAILURE", label: "Payment failed but amount deducted" },
+    {
+      key: "UNAUTHORIZED_TRANSACTION",
+      label: "Unauthorized or fraudulent transaction",
+    },
+    {
+      key: "SUBSCRIPTION_CANCELLED",
+      label: "Subscription or service cancelled",
+    },
+    {
+      key: "PROMOTION_NOT_APPLIED",
+      label: "Discount or promotion not applied",
+    },
+    { key: "SHIPPING_DELAY", label: "Shipping delayed beyond promised date" },
+
     { key: "OTHER", label: "Other" },
   ];
 
@@ -132,20 +146,22 @@ export default function ReturnRefund() {
                     <button className="Refund">Refund</button>
                   </div> */}
 
-                  <div className="Rerun_ref_btn">
-                    <button
-                      className="RETURN mb-4"
-                      onClick={() => handleShowModal("RETURN", product)}
-                    >
-                      RETURN
-                    </button>
-                    <button
-                      className="Refund"
-                      onClick={() => handleShowModal("REFUND", product)}
-                    >
-                      Refund
-                    </button>
-                  </div>
+                  {order?.order_status == "delivered" && (
+                    <div className="Rerun_ref_btn">
+                      <button
+                        className="RETURN mb-4"
+                        onClick={() => handleShowModal("RETURN", product)}
+                      >
+                        RETURN
+                      </button>
+                      <button
+                        className="Refund"
+                        onClick={() => handleShowModal("REFUND", product)}
+                      >
+                        Refund
+                      </button>
+                    </div>
+                  )}
                 </div>
               );
             })

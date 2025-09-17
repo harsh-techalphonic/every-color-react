@@ -11,7 +11,7 @@ export default function MaxDicountProductAPi() {
   useEffect(() => {
     if (maxDicountProduct.status) return;
     axios
-      .get(`${config.API_URL}/maxDicountProduct`)
+      .get(`${config.API_URL}/web/crazy-deal`)
       .then(function (response) {
         dispatch(maxDicountProductAction.addMaxDicountProduct(response.data));
       })

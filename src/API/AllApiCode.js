@@ -1,9 +1,7 @@
 import {
-  AddOrDeleteWishlist,
   API_URL,
   GetRefundReturnApi,
   ProfileUser,
-  RemoveCart,
   WishlistApi,
 } from "../Config/config";
 import axios from "axios";
@@ -66,43 +64,6 @@ export const fetchUserDataApi = async () => {
     return { status: false, data: [], error };
   }
 };
-// const toggleWishlist = async (item) => {
-//   // ✅ Check if user is logged in
-//   const token = localStorage.getItem("token");
-//   // if (!token) {
-//   //   navigate("/login");
-//   //   return;
-//   // }
-
-//   try {
-//     const response = await fetch(`${API_URL}${AddOrDeleteWishlist}`, {
-//       method: "POST",
-//       headers: {
-//         "Content-Type": "application/json",
-//         Authorization: `Bearer ${token}`,
-//       },
-//       body: JSON.stringify({ product_id: item?.id }),
-//     });
-
-//     if (!response.ok) throw new Error("Failed to update cart.");
-
-//     const data = await response.json();
-
-//     if (data.message === "Product added to cart") {
-//       dispatch(cartAction.addCart(item));
-//       setaddTocart((prev) => [item, ...prev]);
-//     } else if (data.message === "Product removed from cart") {
-//       dispatch(cartAction.removeCart(item));
-//       setaddTocart((prev) => prev.filter((i) => i?.id !== item?.id));
-//     } else {
-//       console?.log("AddOrRemoveCart ---->>", data);
-//     }
-//   } catch (error) {
-//     console.error("Cart update failed:", error);
-//     alert("Something went wrong while updating the cart.");
-//   }
-// };
-
 export const deleteCartItem = async (id, apiPath) => {
   const token = localStorage.getItem("token");
   console.log("`${API_URL}${RemoveCart}`", `${API_URL}${apiPath}`);
@@ -168,7 +129,6 @@ export const getReturnCancelation = async (setData) => {
     console.error("Network Error:", error);
   }
 };
-
 export const getRefundAndReturnList = async () => {
   try {
     const token = localStorage.getItem("token");
@@ -189,3 +149,4 @@ export const getRefundAndReturnList = async () => {
     return { status: false, data: [], error };
   }
 };
+

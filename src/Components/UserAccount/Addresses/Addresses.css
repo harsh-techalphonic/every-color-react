@@ -61,3 +61,37 @@
     background-color: #ffffff;
     padding: 4px;
 }
+/* this is add for showing edit or delete icon only by AkashApp */
+.AddressBox_one {
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 8px;
+    position: relative;
+    background: #fff;
+    box-shadow: 0px 2px 5px rgba(0,0,0,0.1);
+  }
+  
+  .address_actions {
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
+  }
+  
+  .address_actions button {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 18px;
+    color: #333;
+    transition: color 0.3s;
+  }
+  
+  .address_actions button:hover {
+    
+    color: #DB3030; /* Blue on hover */
+  }
+  
+  .delete_btn {
+    color: #dc3545; /* Red */
+  }
+  

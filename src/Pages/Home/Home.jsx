@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect } from "react";
 import "./Home.css";
@@ -22,7 +23,8 @@ import { cartAction } from "../../store/Products/cartSlice";
 import { API_URL, GetCartList } from "../../Config/config.js";
 import HotOfferHome from "../../Components/Home/HotOffer/HotOfferHome.jsx";
 import { wishlistAction } from "../../store/Products/wishlistSlice.js";
-import { fetchWishListApi } from "../../API/AllApiCode.js";
+import { fetchUserDataApi, fetchWishListApi } from "../../API/AllApiCode.js";
+import { userAction } from "../../store/User/userSlice.js";
 
 export default function Home() {
   const dispatch = useDispatch();
@@ -70,9 +72,25 @@ export default function Home() {
         console.error("Error loading wishlist:", err);
       }
     };
+    const getUserProfile = async () => {
+      try {
+        const userResponse = await fetchUserDataApi();
+        console?.log("userResponse -------->>>>", userResponse);
+
+        if (userResponse && userResponse) {
+          dispatch(userAction.setUserProfile(userResponse));
+        } else {
+          dispatch(userAction.clearUserProfile());
+        }
+      } catch (err) {
+        console.error("Error loading user profile:", err);
+        dispatch(userAction.clearUserProfile());
+      }
+    };
 
     fetchCart();
     getWishlist();
+    getUserProfile();
   }, []);
 
   return (

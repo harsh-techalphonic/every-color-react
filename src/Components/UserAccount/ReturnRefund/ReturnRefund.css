@@ -37,3 +37,23 @@ border: 1px solid #DB3030;
     width: 100px;
     border: 1px solid #727272; 
 }
+
+.order-box-one {
+  border: 2px solid #ddd;
+}
+.order-box-one .order-box-img{
+    width: 100%;
+    max-width: 170px;
+}
+@media screen and (max-width:768px) {
+    .order-box-one .order-box-img{
+            max-width: 120px !important;
+        }
+      .order-box-one  .order-box_content p{
+        margin-bottom: 2px;
+        white-space: nowrap;
+      }
+        .order-box-one  .order-box_content p.bold{
+        white-space:wrap;
+      }
+}

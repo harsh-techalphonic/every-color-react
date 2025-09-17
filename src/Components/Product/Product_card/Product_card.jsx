@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
 import "./Product_card.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBagShopping,
@@ -10,16 +10,26 @@ import {
   faHeart as faSolidHeart,
 } from "@fortawesome/free-solid-svg-icons";
 import { faHeart as faRegularHeart } from "@fortawesome/free-regular-svg-icons";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { wishlistAction } from "../../../store/Products/wishlistSlice";
 import { cartAction } from "../../../store/Products/cartSlice";
 import { filtersAction } from "../../../store/Products/filtersSlice";
-
-import { AddOrRemoveCart, API_URL, GetCartList } from "../../../Config/config";
+import { AddOrDeleteWishlist, AddOrRemoveCart, API_URL, GetCartList } from "../../../Config/config";
 
 export default function Product_card({ products, filters }) {
   const [all_products, setProducts] = useState([]);
   const dispatch = useDispatch();
+  const [gettoken, setGettoken] = useState(null);
+  const fetch_products = useSelector((store) => store.wishlist);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setGettoken(token);
+    if (localStorage.getItem("wishlist")) {
+      setWishlist(JSON.parse(localStorage.getItem("wishlist")));
+    }
+  }, []);
 
   useEffect(() => {
     let sorted = [...products];
@@ -71,15 +81,15 @@ export default function Product_card({ products, filters }) {
     }
   }, []);
 
-  const toggleWishlist = (id) => {
-    let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
-    wishlist = wishlist.includes(id)
-      ? wishlist.filter((num) => num !== id)
-      : [id, ...wishlist];
-    setWishlist(wishlist);
-    localStorage.setItem("wishlist", JSON.stringify(wishlist));
-    dispatch(wishlistAction.addWishlist(wishlist.length));
-  };
+  // const toggleWishlist = (id) => {
+  //   let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+  //   wishlist = wishlist.includes(id)
+  //     ? wishlist.filter((num) => num !== id)
+  //     : [id, ...wishlist];
+  //   setWishlist(wishlist);
+  //   localStorage.setItem("wishlist", JSON.stringify(wishlist));
+  //   dispatch(wishlistAction.addWishlist(wishlist.length));
+  // };
 
   const toggleCart = async (item) => {
     const token = localStorage.getItem("token");
@@ -117,6 +127,49 @@ export default function Product_card({ products, filters }) {
     }
   };
 
+  const toggleWishlist = async (item) => {
+    if (!gettoken) {
+      navigate("/login");
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_URL}${AddOrDeleteWishlist}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${gettoken}`,
+        },
+        body: JSON.stringify({ product_id: item?.id }),
+      });
+
+      if (!response.ok) throw new Error("Failed to update wishlist.");
+
+      const data = await response.json();
+
+      if (data.message.toLowerCase().includes("added")) {
+        dispatch(
+          wishlistAction.addToWishlist({ ...item, product_id: item.id })
+        );
+        setWishlist((prev) => {
+          const updated = [...prev, item.id];
+          localStorage.setItem("wishlist", JSON.stringify(updated));
+          return updated;
+        });
+      } else if (data.message.toLowerCase().includes("removed")) {
+        dispatch(wishlistAction.removeFromWishlist(item.id));
+        setWishlist((prev) => {
+          const updated = prev.filter((wid) => wid !== item.id);
+          localStorage.setItem("wishlist", JSON.stringify(updated));
+          return updated;
+        });
+      }
+    } catch (error) {
+      console.error("Wishlist update failed:", error);
+      alert("Something went wrong while updating the wishlist.");
+    }
+  };
+
   return (
     <div className="row Product_card">
       {products.map((product, index) => (
@@ -130,7 +183,7 @@ export default function Product_card({ products, filters }) {
               )}
               %
             </span>
-            <span
+            {/* <span
               className="wishicon"
               onClick={() => toggleWishlist(product.id)}
               style={{ cursor: "pointer", fontSize: "16px" }}
@@ -141,7 +194,30 @@ export default function Product_card({ products, filters }) {
                 }
                 color={wishlist.includes(product.id) ? "red" : "black"}
               />
+            </span> */}
+            <span
+              className="wishicon"
+              onClick={() => toggleWishlist(product)}
+              style={{ cursor: "pointer", fontSize: "16px" }}
+            >
+              <FontAwesomeIcon
+                icon={
+                  fetch_products?.items?.some(
+                    (wish) => wish.product_id === product?.id
+                  )
+                    ? faSolidHeart
+                    : faRegularHeart
+                }
+                color={
+                  fetch_products?.items?.some(
+                    (wish) => wish.product_id === product?.id
+                  )
+                    ? "red"
+                    : "black"
+                }
+              />
             </span>
+
             <Link to={`/product/${product.product_slug}`}>
               <div className="card-img">
                 <img src={product.product_image} alt={product.product_name} />

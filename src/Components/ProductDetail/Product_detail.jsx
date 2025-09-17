@@ -8,16 +8,24 @@ import {
   faStar,
   faStarHalfAlt,
 } from "@fortawesome/free-solid-svg-icons";
-import { faCopy, faHeart } from "@fortawesome/free-regular-svg-icons";
+import { faCopy } from "@fortawesome/free-regular-svg-icons";
 import {
   faFacebook,
   faPinterest,
   faXTwitter,
 } from "@fortawesome/free-brands-svg-icons";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { cartAction } from "../../store/Products/cartSlice";
-import { useDispatch } from "react-redux";
-import { AddOrRemoveCart, API_URL } from "../../Config/config";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  AddOrDeleteWishlist,
+  AddOrRemoveCart,
+  API_URL,
+} from "../../Config/config";
+import { wishlistAction } from "../../store/Products/wishlistSlice";
+
+import { faHeart as faRegularHeart } from "@fortawesome/free-regular-svg-icons";
+import { faHeart as faSolidHeart } from "@fortawesome/free-solid-svg-icons";
 
 // IMAGE URL FUNCTION
 const getVariationImage = (filename) =>
@@ -35,6 +43,11 @@ export default function Product_detail({ singleProduct }) {
   const [mainSlider, setMainSlider] = useState(null);
   const [navSlider, setNavSlider] = useState(null);
 
+  const fetch_products = useSelector((store) => store.wishlist);
+  const [gettoken, setGettoken] = useState(null);
+
+  const navigate = useNavigate();
+
   const increaseQuantity = () => setQuantity((q) => q + 1);
   const decreaseQuantity = () => setQuantity((q) => (q > 1 ? q - 1 : 1));
 
@@ -45,6 +58,15 @@ export default function Product_detail({ singleProduct }) {
     }
     if (localStorage.getItem("cart")) {
       setaddTocart(JSON.parse(localStorage.getItem("cart")));
+    }
+  }, []);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setGettoken(token);
+
+    if (localStorage.getItem("wishlist")) {
+      setWishlist(JSON.parse(localStorage.getItem("wishlist")));
     }
   }, []);
 
@@ -245,7 +267,6 @@ export default function Product_detail({ singleProduct }) {
       </div>
     ));
   };
-
   const sliderSettings = {
     slidesToShow: 1,
     slidesToScroll: 1,
@@ -253,7 +274,6 @@ export default function Product_detail({ singleProduct }) {
     fade: true,
     asNavFor: navSlider,
   };
-
   const sliderNavSettings = {
     slidesToShow: 6,
     slidesToScroll: 1,
@@ -261,22 +281,33 @@ export default function Product_detail({ singleProduct }) {
     focusOnSelect: true,
     arrows: true,
   };
-
-
   const renderStars = (rating) => {
-  const stars = [];
-  for (let i = 1; i <= 5; i++) {
-    if (rating >= i) {
-      stars.push(<FontAwesomeIcon key={i} icon={faStar} className="text-warning" />);
-    } else if (rating >= i - 0.5) {
-      stars.push(<FontAwesomeIcon key={i} icon={faStarHalfAlt} className="text-warning" />);
-    } else {
-      stars.push(<FontAwesomeIcon key={i} icon={["far", "star"]} className="text-warning" />);
+    const stars = [];
+    for (let i = 1; i <= 5; i++) {
+      if (rating >= i) {
+        stars.push(
+          <FontAwesomeIcon key={i} icon={faStar} className="text-warning" />
+        );
+      } else if (rating >= i - 0.5) {
+        stars.push(
+          <FontAwesomeIcon
+            key={i}
+            icon={faStarHalfAlt}
+            className="text-warning"
+          />
+        );
+      } else {
+        stars.push(
+          <FontAwesomeIcon
+            key={i}
+            icon={["far", "star"]}
+            className="text-warning"
+          />
+        );
+      }
     }
-  }
-  return stars;
-};
-
+    return stars;
+  };
   const toggleCart = async (item) => {
     const token = localStorage.getItem("token");
     try {
@@ -302,7 +333,6 @@ export default function Product_detail({ singleProduct }) {
       alert("Something went wrong while updating the cart.");
     }
   };
-
   const submitAction = (formData) => {
     // (kept from your original; no functional change)
     const variation = {};
@@ -323,7 +353,6 @@ export default function Product_detail({ singleProduct }) {
       }
     }
   };
-
   // Reviews & rating
   const [reviews, setReviews] = useState([]);
   useEffect(() => {
@@ -338,6 +367,49 @@ export default function Product_detail({ singleProduct }) {
         ) / reviews.length
       ).toFixed(1)
     : "0.0";
+
+  const toggleWishlist = async (item) => {
+    if (!gettoken) {
+      navigate("/login");
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_URL}${AddOrDeleteWishlist}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${gettoken}`,
+        },
+        body: JSON.stringify({ product_id: item?.id }),
+      });
+
+      if (!response.ok) throw new Error("Failed to update wishlist.");
+
+      const data = await response.json();
+
+      if (data.message.toLowerCase().includes("added")) {
+        dispatch(
+          wishlistAction.addToWishlist({ ...item, product_id: item.id })
+        );
+        setWishlist((prev) => {
+          const updated = [...prev, item.id];
+          localStorage.setItem("wishlist", JSON.stringify(updated));
+          return updated;
+        });
+      } else if (data.message.toLowerCase().includes("removed")) {
+        dispatch(wishlistAction.removeFromWishlist(item.id));
+        setWishlist((prev) => {
+          const updated = prev.filter((wid) => wid !== item.id);
+          localStorage.setItem("wishlist", JSON.stringify(updated));
+          return updated;
+        });
+      }
+    } catch (error) {
+      console.error("Wishlist update failed:", error);
+      alert("Something went wrong while updating the wishlist.");
+    }
+  };
 
   return (
     <div className="product-detail-slider-content my-5">
@@ -375,8 +447,8 @@ export default function Product_detail({ singleProduct }) {
               <div className="my-3">
                 <div className="rating d-flex align-items-center">
                   {/* <div className="d-flex align-items-center"> */}
-                    {renderStars(averageRating)} 
-                    {/* <span className="ms-2">
+                  {renderStars(averageRating)}
+                  {/* <span className="ms-2">
                       {singleProduct.rating} Star Rating ({singleProduct.rating_count} Users)
                     </span> */}
                   {/* </div> */}
@@ -400,7 +472,8 @@ export default function Product_detail({ singleProduct }) {
                   </span>
                   <span className="discount ms-2">
                     {(
-                      ((productAmount.reguler_price - productAmount.sale_price) /
+                      ((productAmount.reguler_price -
+                        productAmount.sale_price) /
                         productAmount.reguler_price) *
                       100
                     ).toFixed(0)}
@@ -428,7 +501,11 @@ export default function Product_detail({ singleProduct }) {
               )}
 
               {/* Variations (render only if productVar has keys) */}
-              {Object.keys(productVar).map(([key, values]) => null) /* no-op just to ensure type */}
+              {
+                Object.keys(productVar).map(
+                  ([key, values]) => null
+                ) /* no-op just to ensure type */
+              }
               {Object.keys(productVar).length > 0 &&
                 Object.entries(productVar).map(([key, values]) => (
                   <div key={key} className="mb-3">
@@ -548,10 +625,49 @@ export default function Product_detail({ singleProduct }) {
               </div>
 
               <div className="mt-3 wishlist-sec-prodet d-flex align-items-center gap-3 justify-content-between">
-                <div className="whiashad d-flex align-items-center gap-2">
+                {/* <div className="whiashad d-flex align-items-center gap-2">
                   <FontAwesomeIcon icon={faHeart} />
                   <label>Add to Wishlist</label>
+                </div> */}
+                {/* <div
+                  className="whiashad d-flex align-items-center gap-2"
+                  style={{ cursor: "pointer" }}
+                  onClick={() => alert("Product added to wishlist!")}
+                >
+                  <FontAwesomeIcon icon={faHeart} />
+                  <label>Add to Wishlist</label>
+                </div> */}
+
+                <div
+                  className="whiashad d-flex align-items-center gap-2"
+                  style={{ cursor: "pointer" }}
+                  onClick={() => toggleWishlist(singleProduct)}
+                >
+                  <FontAwesomeIcon
+                    icon={
+                      fetch_products?.items?.some(
+                        (wish) => wish.product_id === singleProduct?.id
+                      )
+                        ? faSolidHeart
+                        : faRegularHeart
+                    }
+                    color={
+                      fetch_products?.items?.some(
+                        (wish) => wish.product_id === singleProduct?.id
+                      )
+                        ? "red"
+                        : "black"
+                    }
+                  />
+                  <label>
+                    {fetch_products?.items?.some(
+                      (wish) => wish.product_id === singleProduct?.id
+                    )
+                      ? "Remove from Wishlist"
+                      : "Add to Wishlist"}
+                  </label>
                 </div>
+
                 <div className="share-product d-flex align-items-center">
                   <p>Share product: </p>
                   <ul className="d-flex align-items-center gap-2 list-unstyled mb-0 ms-2">

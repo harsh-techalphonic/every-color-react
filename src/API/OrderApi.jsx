@@ -2,8 +2,9 @@ import axios from "axios";
 import config from "../Config/config.json";
 import { setOrders } from "../store/Orders/OrdersSlice";
 
-export default function OrderApi(dispatch) {
-  const token = localStorage.getItem("token");
+export default function OrderApi(dispatch, token) {
+  console?.log('localStorage.getItem("OrderApi") ------>>>>>', token);
+
   if (!token) {
     console.warn("No token found for order API");
     return;
@@ -16,8 +17,7 @@ export default function OrderApi(dispatch) {
       },
     })
     .then((res) => {
-      console.log("Orders API Response:", res.data);
-
+      console.log("Orders API Response: ----------?>>>>>>>>", res);
       if (Array.isArray(res.data)) {
         dispatch(setOrders(res.data));
       } else {

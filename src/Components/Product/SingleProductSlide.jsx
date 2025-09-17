@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { wishlistAction } from "../../store/Products/wishlistSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -22,6 +22,7 @@ export default function SingleProductSlide({ product }) {
   const [wishlist, setWishlist] = useState([]);
   const [addTocart, setaddTocart] = useState([]);
   const [gettoken, setGettoken] = useState(null);
+  const fetch_products = useSelector((store) => store.wishlist);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -121,6 +122,10 @@ export default function SingleProductSlide({ product }) {
     }
   };
 
+  const isInWishlist = fetch_products?.items?.some(
+    (wish) => wish.product_id === product?.id
+  );
+
   return (
     <div key={product?.id} className="feature-card">
       <span className="disco">
@@ -131,7 +136,7 @@ export default function SingleProductSlide({ product }) {
         )}
         %
       </span>
-      <span
+      {/* <span
         className="wishicon"
         onClick={() => toggleWishlist(product)}
         style={{ cursor: "pointer", fontSize: "16px" }}
@@ -139,6 +144,29 @@ export default function SingleProductSlide({ product }) {
         <FontAwesomeIcon
           icon={wishlist.includes(product?.id) ? faSolidHeart : faRegularHeart}
           color={wishlist.includes(product?.id) ? "red" : "black"}
+        />
+      </span> */}
+
+      <span
+        className="wishicon"
+        onClick={() => toggleWishlist(product)}
+        style={{ cursor: "pointer", fontSize: "16px" }}
+      >
+        <FontAwesomeIcon
+          icon={
+            fetch_products?.items?.some(
+              (wish) => wish.product_id === product?.id
+            )
+              ? faSolidHeart
+              : faRegularHeart
+          }
+          color={
+            fetch_products?.items?.some(
+              (wish) => wish.product_id === product?.id
+            )
+              ? "red"
+              : "black"
+          }
         />
       </span>
 

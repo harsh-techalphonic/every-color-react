@@ -1,6 +1,8 @@
 import {
   AddOrDeleteWishlist,
   API_URL,
+  GetRefundReturnApi,
+  ProfileUser,
   RemoveCart,
   WishlistApi,
 } from "../Config/config";
@@ -45,7 +47,25 @@ export const fetchWishListApi = async () => {
     return { status: false, data: [], error };
   }
 };
+export const fetchUserDataApi = async () => {
+  try {
+    const token = localStorage.getItem("token");
 
+    const response = await fetch(`${API_URL}${ProfileUser}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error("Error fetching wishlist:", error);
+    return { status: false, data: [], error };
+  }
+};
 // const toggleWishlist = async (item) => {
 //   // ✅ Check if user is logged in
 //   const token = localStorage.getItem("token");
@@ -146,5 +166,26 @@ export const getReturnCancelation = async (setData) => {
   } catch (error) {
     alert("Error: Something went wrong");
     console.error("Network Error:", error);
+  }
+};
+
+export const getRefundAndReturnList = async () => {
+  try {
+    const token = localStorage.getItem("token");
+
+    const response = await fetch(`${API_URL}${GetRefundReturnApi}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+        // Authorization:`Bearer eyJpdiI6IkRuNUIrdm1ZZ0R6Q0hUSll0RWFNK2c9PSIsInZhbHVlIjoiU1ZhK1Z3WmxBNWNGN1g5Yk8zRGVkUT09IiwibWFjIjoiMzNkZGVlNDY0YTFkYjY5MjIzNzE3MjM5ODk5M2EwY2RkN2E3Nzc2ZjJmZjUyNjBjMmU3MDlkYmE1MjVjNjlhZCIsInRhZyI6IiJ9`,
+      },
+    });
+
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error("Error fetching wishlist:", error);
+    return { status: false, data: [], error };
   }
 };

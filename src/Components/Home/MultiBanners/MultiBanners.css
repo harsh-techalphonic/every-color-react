@@ -92,3 +92,13 @@
     text-decoration: line-through;
     margin-left: 8px;
 }
+
+.multibanner .banners-right .banner-right-one .banner-right-img {
+    height: 214px;
+    width: 100%;
+    max-width: max-content;
+    margin: auto;
+}
+.multibanner .banners-right .banner-right-one .banner-right-img  img{
+    height: 100%;
+}

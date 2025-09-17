@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Slider from "react-slick";
 import "./DealsOfDay.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowRightLong } from "@fortawesome/free-solid-svg-icons";
-import { Link, useParams } from "react-router-dom";
+import {useParams } from "react-router-dom";
 import SingleProductSlide from "../../Product/SingleProductSlide";
 import { useDispatch, useSelector } from "react-redux";
 import RecentViewApi from "../../../API/RecentViewApi";
@@ -13,6 +11,7 @@ export default function DealsOfDay() {
     (store) => store.singleProduct?.data || []
   );
   const products = useSelector((store) => store.recentView?.products || []);
+  // console.log("dael of the day", products)
   const dispatch = useDispatch();
   const [singleProduct, setSingleProduct] = useState(null);
   const { slug } = useParams();

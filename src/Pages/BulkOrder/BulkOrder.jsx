@@ -15,6 +15,7 @@ export default function BulkOrder() {
     contact_person: "",
     number: "",
     email: "",
+    description: "",
     order_type: "bulk",
   });
 
@@ -169,6 +170,21 @@ export default function BulkOrder() {
                       onChange={handleChange}
                       required
                     />
+                  </div>
+
+                  <div className="mb-3">
+                    <label htmlFor="description" className="form-label">
+                      Description
+                    </label>
+                    <textarea
+                      className="form-control"
+                      id="description"
+                      name="description"
+                      placeholder="Enter description"
+                      value={formData.description}
+                      onChange={handleChange}
+                      required
+                    ></textarea>
                   </div>
 
                   {/* Hidden Order Type */}

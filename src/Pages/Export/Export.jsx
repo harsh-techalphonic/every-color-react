@@ -4,7 +4,7 @@ import Footer from "../../Components/Partials/Footer/Footer";
 import ScrollToTop from "../ScrollToTop";
 import config from "../../Config/config.json";
 import axios from "axios";
-import exportimg from "../../../public/export.jpg"
+import exportimg from "../../../public/export.jpg";
 
 export default function Export() {
   const [loading, setLoading] = useState(false);
@@ -16,6 +16,7 @@ export default function Export() {
     number: "",
     email: "",
     country: "",
+    description: "",
     order_type: "export",
   });
 
@@ -78,15 +79,18 @@ export default function Export() {
         <div className="container h-100">
           <div className="row justify-content-center align-items-center h-100">
             <div className="col-xl-7 col-lg-6 col-md-12">
-                <div className="img_box">
-                    <img src={exportimg} alt="" />
-                </div>
+              <div className="img_box">
+                <img src={exportimg} alt="" />
+              </div>
             </div>
             <div className="col-xl-5 col-lg-6 col-md-12 col-12 my-5">
               <div className="login-box">
                 <form onSubmit={handleSubmit}>
                   <h2 className="my-4">Export</h2>
-                  <p className="mb-4">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Suscipit delectus quos voluptates!</p>
+                  <p className="mb-4">
+                    Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+                    Suscipit delectus quos voluptates!
+                  </p>
 
                   {/* Company Name */}
                   <div className="mb-3">
@@ -155,6 +159,21 @@ export default function Export() {
                       onChange={handleChange}
                       required
                     />
+                  </div>
+
+                  <div className="mb-3">
+                    <label htmlFor="description" className="form-label">
+                      Description
+                    </label>
+                    <textarea
+                      className="form-control"
+                      id="description"
+                      name="description"
+                      placeholder="Enter description"
+                      value={formData.description}
+                      onChange={handleChange}
+                      required
+                    ></textarea>
                   </div>
 
                   {/* Country */}

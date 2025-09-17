@@ -1,14 +1,22 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "../ReturnRefund/ReturnRefund.css";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import OrderApi from "../../../API/OrderApi";
+import { Modal, Button } from "react-bootstrap"; // Bootstrap modal
 
 export default function ReturnRefund() {
+  const [showModal, setShowModal] = useState(false);
+  const [modalType, setModalType] = useState(""); // "RETURN" or "REFUND"
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [selectedReason, setSelectedReason] = useState("");
+  const [additionalInfo, setAdditionalInfo] = useState("");
+  const [uploadedImages, setUploadedImages] = useState([]);
+
   const dispatch = useDispatch();
   const orders = useSelector((store) => store.orders.orders);
-  console?.log("orders ------>>>>>", orders);
+
   const token = localStorage.getItem("token");
 
   useEffect(() => {
@@ -18,13 +26,53 @@ export default function ReturnRefund() {
   // Get orders array from Redux
   const user = orders.length > 0 ? orders[0].user : null;
 
-  console.log("orders details", orders);
-  console.log("user details", user);
-
   // If no orders yet
   if (!orders || orders.length === 0) {
     return <p className="text-center mt-5">No orders found.</p>;
   }
+
+  const handleShowModal = (type, product) => {
+    setModalType(type);
+    setSelectedProduct(product);
+    setShowModal(true);
+  };
+
+  const handleClose = () => setShowModal(false);
+
+  const refundReasons = [
+    { key: "PRODUCT_NOT_DELIVERED", label: "Product not delivered" },
+    {
+      key: "CANCELLED_BEFORE_SHIPPING",
+      label: "Order cancelled before shipping",
+    },
+    { key: "DAMAGED_ON_ARRIVAL", label: "Product damaged on arrival" },
+    { key: "DEFECTIVE_PRODUCT", label: "Product was defective" },
+    { key: "WRONG_ITEM_RECEIVED", label: "Wrong item received" },
+    { key: "OVERCHARGED", label: "Charged more than expected" },
+    { key: "DUPLICATE_PAYMENT", label: "Duplicate payment detected" },
+    { key: "SERVICE_ISSUE", label: "Service not satisfactory" },
+    { key: "PAYMENT_FAILURE", label: "Payment failed but amount deducted" },
+    { key: "OTHER", label: "Other" },
+  ];
+
+  const returnReasons = [
+    { key: "DAMAGED", label: "Damaged product received" },
+    { key: "DEFECTIVE", label: "Defective or not working" },
+    { key: "WRONG_ITEM", label: "Wrong item received" },
+    { key: "MISSING", label: "Item missing in package" },
+    { key: "SIZE_ISSUE", label: "Size/fit issue" },
+    {
+      key: "NOT_AS_DESCRIBED",
+      label: "Product looks different from description",
+    },
+    {
+      key: "LATE_DELIVERY",
+      label: "Received late / after expected delivery date",
+    },
+    { key: "QUALITY", label: "Quality not satisfactory" },
+    { key: "NOT_NEEDED", label: "Changed my mind / no longer needed" },
+    { key: "OTHER", label: "Other" },
+  ];
 
   return (
     <div className="orders__box return_refund">
@@ -32,8 +80,6 @@ export default function ReturnRefund() {
         <div className="col-lg-7">
           {orders.map((order) =>
             order.products.map((product) => {
-              console.log("product ---------->>>>>>>", product?.product_image);
-
               const variation = product.product_variation
                 ? JSON.parse(product.product_variation)
                 : null;
@@ -81,9 +127,24 @@ export default function ReturnRefund() {
                   </div>
 
                   {/* Action Buttons */}
-                  <div className="Rerun_ref_btn">
+                  {/* <div className="Rerun_ref_btn">
                     <button className="RETURN mb-4">RETURN</button>
                     <button className="Refund">Refund</button>
+                  </div> */}
+
+                  <div className="Rerun_ref_btn">
+                    <button
+                      className="RETURN mb-4"
+                      onClick={() => handleShowModal("RETURN", product)}
+                    >
+                      RETURN
+                    </button>
+                    <button
+                      className="Refund"
+                      onClick={() => handleShowModal("REFUND", product)}
+                    >
+                      Refund
+                    </button>
                   </div>
                 </div>
               );
@@ -146,6 +207,134 @@ export default function ReturnRefund() {
             </div>
           </div>
         </div>
+        <Modal show={showModal} onHide={handleClose}>
+          <Modal.Header closeButton>
+            <Modal.Title>{modalType} Request</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            {selectedProduct && (
+              <>
+                <p>
+                  <b>Product:</b> {selectedProduct.product_name}
+                </p>
+                <p>
+                  <b>Price:</b> ₹{selectedProduct.product_price}
+                </p>
+                <p>
+                  <b>Quantity:</b> {selectedProduct.product_quantity}
+                </p>
+              </>
+            )}
+            {/* Image Upload */}
+            <div className="mb-3">
+              <label className="form-label">Upload Images (optional)</label>
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                className="form-control"
+                // onChange={(e) => {
+                //   const files = Array.from(e.target.files);
+                //   setUploadedImages(files);
+                // }}
+                onChange={(e) => {
+                  const files = Array.from(e.target.files);
+
+                  // Append instead of replacing
+                  setUploadedImages((prev) => [...prev, ...files]);
+
+                  // Reset input value so user can select the same file again if needed
+                  e.target.value = "";
+                }}
+              />
+            </div>
+
+            <div className="d-flex flex-wrap gap-2">
+              {uploadedImages.map((file, index) => (
+                <div key={index} style={{ position: "relative" }}>
+                  <img
+                    src={URL.createObjectURL(file)}
+                    alt={`preview-${index}`}
+                    style={{
+                      width: "100px",
+                      height: "100px",
+                      objectFit: "cover",
+                      borderRadius: "5px",
+                      border: "1px solid #ccc",
+                    }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setUploadedImages((prev) =>
+                        prev.filter((_, i) => i !== index)
+                      )
+                    }
+                    style={{
+                      position: "absolute",
+                      top: "-5px",
+                      right: "-5px",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "50%",
+                      width: "25px",
+                      height: "25px",
+                      cursor: "pointer",
+                    }}
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+            </div>
+
+            <p>Are you sure you want to request a {modalType.toLowerCase()}?</p>
+            {/* Reason Dropdown */}
+            <div className="mb-3">
+              <label className="form-label">Select {modalType} Reason</label>
+              <select
+                className="form-control"
+                value={selectedReason}
+                onChange={(e) => setSelectedReason(e.target.value)}
+              >
+                <option value="">-- Select Reason --</option>
+                {(modalType === "REFUND" ? refundReasons : returnReasons).map(
+                  (reason) => (
+                    <option key={reason.key} value={reason.key}>
+                      {reason.label}
+                    </option>
+                  )
+                )}
+              </select>
+            </div>
+
+            <div className="mb-3">
+              <label className="form-label">Quantity</label>
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Enter details (optional)"
+                value={additionalInfo}
+                onChange={(e) => setAdditionalInfo(e.target.value)}
+              />
+            </div>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleClose}>
+              Cancel
+            </Button>
+            <Button
+              variant="primary"
+              onClick={() => {
+                // Handle return/refund API call here
+                console.log(`${modalType} confirmed for`, selectedProduct);
+                handleClose();
+              }}
+            >
+              Confirm {modalType}
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </div>
     </div>
   );

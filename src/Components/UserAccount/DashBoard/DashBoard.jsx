@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./DashBoard.css";
 import { Link } from "react-router-dom";
 import { fetchUserDataApi } from "../../../API/AllApiCode";
+import { ImageUrl } from "../../../Config/config";
 
 const orderData = [
   {
@@ -52,7 +53,9 @@ export default function DashBoard({ setActiveTab }) {
             <div className="dashborad_profile d-flex align-items-center ">
               <div className="profile-box">
                 <img
-                  src={userProfileDta?.profile || "/avatar-profile.png"}
+                  src={
+                    ImageUrl + userProfileDta?.profile || "/avatar-profile.png"
+                  }
                   alt=""
                 />
               </div>

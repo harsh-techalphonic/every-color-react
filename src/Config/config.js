@@ -1,4 +1,5 @@
 export const API_URL = "https://dimgrey-eel-688395.hostingersite.com/api";
+export const ImageUrl = "https://dimgrey-eel-688395.hostingersite.com/api/uploads/";
 export const API_URL_POST = "https://dimgrey-eel-688395.hostingersite.com/api";
 export const City_State_URL = "https://fantasycricketid.co.in/api/";
 

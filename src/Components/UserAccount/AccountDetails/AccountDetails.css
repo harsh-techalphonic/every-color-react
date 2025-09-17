@@ -33,9 +33,11 @@
     display: none;
   }
   .avatar-upload .avatar-edit input + label {
-    display: inline-block;
+    display: flex;
     width: 34px;
     height: 34px;
+    align-items: center;
+    justify-content: center;
     margin-bottom: 0;
     border-radius: 100%;
     background: #FFFFFF;
@@ -50,15 +52,17 @@
     border-color: #d6d6d6;
   }
   .avatar-upload .avatar-edit input + label:after {
-    content: "\f040";
-    font-family: 'FontAwesome';
+    /* content: "\f040"; */
     color: #757575;
     position: absolute;
     top: 10px;
-    left: 0;
+    left: 50%;
     right: 0;
     text-align: center;
     margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   .avatar-upload .avatar-preview {
     width: 192px;

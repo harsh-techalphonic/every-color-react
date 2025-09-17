@@ -186,11 +186,12 @@ import AccountDetails from "../../Components/UserAccount/AccountDetails/AccountD
 import ScrollToTop from "../ScrollToTop";
 import { useSelector, useDispatch } from "react-redux";
 import { cartAction } from "../../store/Products/cartSlice";
+import ChangePassword from "../../Components/UserAccount/ChangePassword/ChangePassword";
 
 export default function UserAccount() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const authcheck = useSelector((store) => store.authcheck);
+  // const authcheck = useSelector((store) => store.authcheck);
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [activeTab, setActiveTab] = useState("DashBoard"); // ✅ Controlled active tab
@@ -239,7 +240,7 @@ export default function UserAccount() {
         <div className="container">
           <div className="user_tabBoard d-flex ">
             <Tabs
-              activeKey={activeTab}   // ✅ controlled by state
+              activeKey={activeTab} // ✅ controlled by state
               onSelect={(key) => {
                 if (key === "Log_out") {
                   handleLogout();
@@ -255,7 +256,8 @@ export default function UserAccount() {
                 eventKey="DashBoard"
                 title={
                   <>
-                    <FontAwesomeIcon icon={faTachometerAlt} className="me-2" /> Dashboard
+                    <FontAwesomeIcon icon={faTachometerAlt} className="me-2" />{" "}
+                    Dashboard
                   </>
                 }
               >
@@ -266,7 +268,8 @@ export default function UserAccount() {
                 eventKey="Return_Refund"
                 title={
                   <>
-                    <FontAwesomeIcon icon={faUndo} className="me-2" /> Return/Refund
+                    <FontAwesomeIcon icon={faUndo} className="me-2" />{" "}
+                    Return/Refund
                   </>
                 }
               >
@@ -277,7 +280,8 @@ export default function UserAccount() {
                 eventKey="Addresses"
                 title={
                   <>
-                    <FontAwesomeIcon icon={faAddressBook} className="me-2" /> Addresses
+                    <FontAwesomeIcon icon={faAddressBook} className="me-2" />{" "}
+                    Addresses
                   </>
                 }
               >
@@ -288,7 +292,8 @@ export default function UserAccount() {
                 eventKey="Order"
                 title={
                   <>
-                    <FontAwesomeIcon icon={faShoppingCart} className="me-2" /> Order
+                    <FontAwesomeIcon icon={faShoppingCart} className="me-2" />{" "}
+                    Order
                   </>
                 }
               >
@@ -299,7 +304,8 @@ export default function UserAccount() {
                 eventKey="Account_details"
                 title={
                   <>
-                    <FontAwesomeIcon icon={faUser} className="me-2" /> Account details
+                    <FontAwesomeIcon icon={faUser} className="me-2" /> Account
+                    details
                   </>
                 }
               >
@@ -307,10 +313,22 @@ export default function UserAccount() {
               </Tab>
 
               <Tab
+                eventKey="Change_Password"
+                title={
+                  <>
+                    <FontAwesomeIcon icon={faUser} className="me-2" /> Change
+                    Password
+                  </>
+                }
+              >
+                <ChangePassword />
+              </Tab>
+              <Tab
                 eventKey="Log_out"
                 title={
                   <>
-                    <FontAwesomeIcon icon={faSignOutAlt} className="me-2" /> Log-out
+                    <FontAwesomeIcon icon={faSignOutAlt} className="me-2" />{" "}
+                    Log-out
                   </>
                 }
               />
@@ -323,4 +341,3 @@ export default function UserAccount() {
     </>
   );
 }
-

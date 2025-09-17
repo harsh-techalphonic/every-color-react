@@ -221,7 +221,7 @@ export default function Header() {
               <Link to="/export">Export</Link>
             </li>
             <li>
-              <Link to="/track-order">Track Order</Link>
+              <Link to="#!">Track Order</Link>
             </li>
           </ul>
         </div>
@@ -245,11 +245,21 @@ export default function Header() {
                     Home
                   </Link>
                 </li>
-                  {categories.data?.map((category, index) => (
-                    <li key={index}>
-                      <Link to={`/category/${category.slug}`}>{category.name}</Link>
-                    </li>
-                  ))}
+                <li>
+                  <Link to="/product">Kids</Link>
+                </li>
+                <li>
+                  <Link to="/product">Men</Link>
+                </li>
+                <li>
+                  <Link to="/product">Women</Link>
+                </li>
+                <li>
+                  <Link to="/product">Home Decor</Link>
+                </li>
+                <li>
+                  <Link to="/product">Electronics</Link>
+                </li>
                 <li>
                   <Link to="/about">About Us</Link>
                 </li>
@@ -263,7 +273,7 @@ export default function Header() {
                   <Link to="/export">Export</Link>
                 </li>
                 <li>
-                  <Link to="/track-order">Track Order</Link>
+                  <Link to="#!">Track Order</Link>
                 </li>
               </ul>
             </div>

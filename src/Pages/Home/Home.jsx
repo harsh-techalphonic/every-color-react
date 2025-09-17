@@ -101,11 +101,12 @@ export default function Home() {
       <Gprscertified />
       {/* <Brands /> */}
       <Categories />
+
+      <ExploreBestSeller />
       <BestSelling />
       <HotOfferHome />
       <SuperSaving />
       <MultiBanners />
-      <ExploreBestSeller />
       <DealsOfDay />
       <CategoryBestSellers />
       {/* <Category/> */}

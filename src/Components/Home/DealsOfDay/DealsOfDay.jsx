@@ -63,13 +63,12 @@ export default function DealsOfDay() {
                   <span>Recently</span> Viewed
                 </h2>
               </div>
-              
             </div>
 
             <div className="featureslider_one my-4">
               <Slider {...settings} className="xyzg-slider">
                 {products
-                  ?.filter((product) => product) 
+                  ?.filter((product) => product)
                   .map((product, index) => (
                     <div key={product.id || index}>
                       <SingleProductSlide product={product} />

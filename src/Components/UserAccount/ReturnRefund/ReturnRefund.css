@@ -37,6 +37,14 @@ border: 1px solid #DB3030;
     width: 100px;
     border: 1px solid #727272; 
 }
+.order-title12 h2{
+  font-size: 24px;
+  font-weight: 600;
+}
+.order-title12 h2{
+  font-size: 32px;
+  font-weight: 600;
+}
 
 .order-box-one {
   border: 2px solid #ddd;

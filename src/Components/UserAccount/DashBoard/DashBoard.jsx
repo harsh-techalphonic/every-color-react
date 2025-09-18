@@ -4,28 +4,6 @@ import { Link } from "react-router-dom";
 import { fetchUserDataApi } from "../../../API/AllApiCode";
 import { ImageUrl } from "../../../Config/config";
 
-// const orderData = [
-//   {
-//     imgSrc: "/total-Order.png",
-//     title: "Total Orders",
-//     count: 154,
-//   },
-//   {
-//     imgSrc: "/pending_box.png",
-//     title: "Pending Orders",
-//     count: 5,
-//   },
-//   {
-//     imgSrc: "/cart_box.png",
-//     title: "Completed Orders",
-//     count: 149,
-//   },
-//   {
-//     imgSrc: "/cart_box.png",
-//     title: "My Cart",
-//     count: 9,
-//   },
-// ];
 
 export default function DashBoard({ setActiveTab }) {
   const [userProfileDta, setUserProfileDta] = useState([]);

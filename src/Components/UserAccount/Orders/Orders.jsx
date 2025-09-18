@@ -14,6 +14,8 @@ export default function ReturnRefund() {
   const [additionalInfo, setAdditionalInfo] = useState("");
   const [uploadedImages, setUploadedImages] = useState([]);
 
+  const [statusFilter, setStatusFilter] = useState(""); // 👈 filter state
+
   const dispatch = useDispatch();
   const orders = useSelector((store) => store.orders.orders);
 
@@ -38,40 +40,22 @@ export default function ReturnRefund() {
   };
 
   const handleClose = () => {
-    setShowModal(false)
-    setUploadedImages([])
-    setAdditionalInfo('')
-    setSelectedReason('')
-  
+    setShowModal(false);
+    setUploadedImages([]);
+    setAdditionalInfo("");
+    setSelectedReason("");
   };
 
   const refundReasons = [
     { key: "PRODUCT_NOT_DELIVERED", label: "Product not delivered" },
-    {
-      key: "CANCELLED_BEFORE_SHIPPING",
-      label: "Order cancelled before shipping",
-    },
+    { key: "CANCELLED_BEFORE_SHIPPING", label: "Order cancelled before shipping" },
     { key: "DAMAGED_ON_ARRIVAL", label: "Product damaged on arrival" },
     { key: "DEFECTIVE_PRODUCT", label: "Product was defective" },
     { key: "WRONG_ITEM_RECEIVED", label: "Wrong item received" },
-    // { key: "OVERCHARGED", label: "Charged more than expected" },
-    // { key: "DUPLICATE_PAYMENT", label: "Duplicate payment detected" },
-    // { key: "SERVICE_ISSUE", label: "Service not satisfactory" },
-    // { key: "PAYMENT_FAILURE", label: "Payment failed but amount deducted" },
-    {
-      key: "UNAUTHORIZED_TRANSACTION",
-      label: "Unauthorized or fraudulent transaction",
-    },
-    {
-      key: "SUBSCRIPTION_CANCELLED",
-      label: "Subscription or service cancelled",
-    },
-    {
-      key: "PROMOTION_NOT_APPLIED",
-      label: "Discount or promotion not applied",
-    },
+    { key: "UNAUTHORIZED_TRANSACTION", label: "Unauthorized or fraudulent transaction" },
+    { key: "SUBSCRIPTION_CANCELLED", label: "Subscription or service cancelled" },
+    { key: "PROMOTION_NOT_APPLIED", label: "Discount or promotion not applied" },
     { key: "SHIPPING_DELAY", label: "Shipping delayed beyond promised date" },
-
     { key: "OTHER", label: "Other" },
   ];
 
@@ -81,24 +65,41 @@ export default function ReturnRefund() {
     { key: "WRONG_ITEM", label: "Wrong item received" },
     { key: "MISSING", label: "Item missing in package" },
     { key: "SIZE_ISSUE", label: "Size/fit issue" },
-    {
-      key: "NOT_AS_DESCRIBED",
-      label: "Product looks different from description",
-    },
-    {
-      key: "LATE_DELIVERY",
-      label: "Received late / after expected delivery date",
-    },
+    { key: "NOT_AS_DESCRIBED", label: "Product looks different from description" },
+    { key: "LATE_DELIVERY", label: "Received late / after expected delivery date" },
     { key: "QUALITY", label: "Quality not satisfactory" },
     { key: "NOT_NEEDED", label: "Changed my mind / no longer needed" },
     { key: "OTHER", label: "Other" },
   ];
 
+  // 👉 Filter orders according to selected status
+  const filteredOrders = statusFilter
+    ? orders.filter((order) => order.order_status === statusFilter)
+    : orders;
+
   return (
     <div className="orders__box return_refund">
       <div className="row">
-        <div className="col-lg-7">
-          {orders.map((order) =>
+        <div className="col-lg-8 ">
+          <div className="order-title12 mb-3 d-flex align-items-center justify-content-between">
+            <h2>Orders</h2>
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)} className="form-select w-auto"
+            >
+              <option value="">All Orders</option>
+              {[...new Set(orders.map((order) => order.order_status))].map(
+                (status, index) => (
+                  <option key={index} value={status}>
+                     {status.charAt(0).toUpperCase() + status.slice(1).toLowerCase()}
+                  </option>
+                )
+              )}
+            </select>
+          </div>
+
+          {/* Render only filtered orders */}
+          {filteredOrders.map((order) =>
             order.products.map((product) => {
               const variation = product.product_variation
                 ? JSON.parse(product.product_variation)
@@ -138,7 +139,6 @@ export default function ReturnRefund() {
                       <b>Quantity :</b> {product.product_quantity}
                     </p>
 
-                    {/* Variation details if available */}
                     {variation && (
                       <p className="orderID">
                         <b>Variation :</b> {variation.color} | {variation.size}
@@ -146,7 +146,7 @@ export default function ReturnRefund() {
                     )}
                   </div>
 
-                  {order?.order_status == "delivered" && (
+                  {order?.order_status === "delivered" && (
                     <div className="Rerun_ref_btn">
                       <button
                         className="RETURN mb-4"
@@ -168,7 +168,8 @@ export default function ReturnRefund() {
           )}
         </div>
 
-        <div className="col-lg-5">
+        {/* ✅ Right-side summary */}
+        <div className="col-lg-4">
           <div className="container">
             <div className="card bg-light p-3">
               <h6>Order# (1 item)</h6>
@@ -223,6 +224,8 @@ export default function ReturnRefund() {
             </div>
           </div>
         </div>
+
+        {/* ✅ Modal */}
         <Modal show={showModal} onHide={handleClose}>
           <Modal.Header closeButton>
             <Modal.Title>{modalType} Request</Modal.Title>
@@ -249,17 +252,9 @@ export default function ReturnRefund() {
                 accept="image/*"
                 multiple
                 className="form-control"
-                // onChange={(e) => {
-                //   const files = Array.from(e.target.files);
-                //   setUploadedImages(files);
-                // }}
                 onChange={(e) => {
                   const files = Array.from(e.target.files);
-
-                  // Append instead of replacing
                   setUploadedImages((prev) => [...prev, ...files]);
-
-                  // Reset input value so user can select the same file again if needed
                   e.target.value = "";
                 }}
               />
@@ -342,7 +337,6 @@ export default function ReturnRefund() {
             <Button
               variant="primary"
               onClick={() => {
-                // Handle return/refund API call here
                 console.log(`${modalType} confirmed for`, selectedProduct);
                 handleClose();
               }}

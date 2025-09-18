@@ -4,39 +4,63 @@ import { Link } from "react-router-dom";
 import { fetchUserDataApi } from "../../../API/AllApiCode";
 import { ImageUrl } from "../../../Config/config";
 
-const orderData = [
-  {
-    imgSrc: "/total-Order.png",
-    title: "Total Orders",
-    count: 154,
-  },
-  {
-    imgSrc: "/pending_box.png",
-    title: "Pending Orders",
-    count: 5,
-  },
-  {
-    imgSrc: "/cart_box.png",
-    title: "Completed Orders",
-    count: 149,
-  },
-  {
-    imgSrc: "/cart_box.png",
-    title: "My Cart",
-    count: 9,
-  },
-];
+// const orderData = [
+//   {
+//     imgSrc: "/total-Order.png",
+//     title: "Total Orders",
+//     count: 154,
+//   },
+//   {
+//     imgSrc: "/pending_box.png",
+//     title: "Pending Orders",
+//     count: 5,
+//   },
+//   {
+//     imgSrc: "/cart_box.png",
+//     title: "Completed Orders",
+//     count: 149,
+//   },
+//   {
+//     imgSrc: "/cart_box.png",
+//     title: "My Cart",
+//     count: 9,
+//   },
+// ];
 
 export default function DashBoard({ setActiveTab }) {
   const [userProfileDta, setUserProfileDta] = useState([]);
+  const [orderStats, setOrderStats] = useState([]);
 
   useEffect(() => {
     const getUserProfile = async () => {
       try {
         const userResponse = await fetchUserDataApi();
 
-        if (userResponse && userResponse) {
-          setUserProfileDta(userResponse);
+        if (userResponse) {
+          setUserProfileDta(userResponse.user);
+
+          setOrderStats([
+            {
+              imgSrc: "/total-Order.png",
+              title: "Total Orders",
+              count: userResponse.total_orders,
+            },
+            {
+              imgSrc: "/pending_box.png",
+              title: "Pending Orders",
+              count: userResponse.pending_orders,
+            },
+            {
+              imgSrc: "/cart_box.png",
+              title: "Delivered Orders",
+              count: userResponse.deliveredOrders,
+            },
+            {
+              imgSrc: "/cart_box.png",
+              title: "My Cart",
+              count: userResponse.cartcount,
+            },
+          ]);
         }
       } catch (err) {
         console.error("Error loading user profile:", err);
@@ -53,9 +77,7 @@ export default function DashBoard({ setActiveTab }) {
             <div className="dashborad_profile d-flex align-items-center ">
               <div className="profile-box">
                 <img
-                  src={
-                    ImageUrl + userProfileDta?.profile || "/avatar-profile.png"
-                  }
+                  src={userProfileDta?.profile_image || "/avatar-profile.png"}
                   alt=""
                 />
               </div>
@@ -81,7 +103,7 @@ export default function DashBoard({ setActiveTab }) {
             </div>
 
             <div className="ordera-boxer mt-5 ">
-              {orderData.map((item, index) => (
+              {orderStats.map((item, index) => (
                 <div className="orderbox-one mb-3" key={index}>
                   <div className="order-iocn">
                     <img src={item.imgSrc} alt={item.title} />

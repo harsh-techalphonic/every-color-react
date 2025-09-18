@@ -37,7 +37,13 @@ export default function ReturnRefund() {
     setShowModal(true);
   };
 
-  const handleClose = () => setShowModal(false);
+  const handleClose = () => {
+    setShowModal(false)
+    setUploadedImages([])
+    setAdditionalInfo('')
+    setSelectedReason('')
+  
+  };
 
   const refundReasons = [
     { key: "PRODUCT_NOT_DELIVERED", label: "Product not delivered" },
@@ -139,12 +145,6 @@ export default function ReturnRefund() {
                       </p>
                     )}
                   </div>
-
-                  {/* Action Buttons */}
-                  {/* <div className="Rerun_ref_btn">
-                    <button className="RETURN mb-4">RETURN</button>
-                    <button className="Refund">Refund</button>
-                  </div> */}
 
                   {order?.order_status == "delivered" && (
                     <div className="Rerun_ref_btn">

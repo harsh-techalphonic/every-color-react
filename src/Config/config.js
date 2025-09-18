@@ -32,3 +32,6 @@ export const GetRecentView = "get-recent-view";
 
 //Refund and Return api
 export const GetRefundReturnApi = "/refund-replace";
+
+//Order 
+export const PlaceOrder = '/order/place-order'

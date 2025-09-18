@@ -298,20 +298,26 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { API_URL } from "../../Config/config";
+import { useLocation } from "react-router-dom";
+import { PlaceOrderApis } from "./CashPlaceOrderApi";
 
 export default function Checkout() {
-  const navigate = useNavigate();
-  const [products, setProducts] = useState([]);
-  const [checkoutDetail, setCheckoutDetail] = useState({
-    subtotal: 0,
-    discount: 0,
-    total: 0,
-    tax: 0,
-  });
+  const location = useLocation();
+  const { CartData, Total } = location.state || {};
 
+  const navigate = useNavigate();
   const [addresses, setAddresses] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [error, setError] = useState(null);
+  const [products, setProducts] = useState([]);
+  const [paymentMethod, setPaymentMethod] = useState("cod");
+  console?.log("CartData.map((item) ", CartData);
+  // const [checkoutDetail, setCheckoutDetail] = useState({
+  //   subtotal: 0,
+  //   discount: 0,
+  //   total: 0,
+  //   tax: 0,
+  // });
 
   const token = localStorage.getItem("token");
 
@@ -334,14 +340,56 @@ export default function Checkout() {
     fetchData();
   }, [token]);
 
-  const submitCheckOut = (e) => {
+  const submitCheckOut = async (e) => {
     e.preventDefault();
+
     if (!selectedAddress) {
-      alert("Please select an address before placing the order!");
+      alert("⚠️ Please select an address before placing the order!");
       return;
     }
-    console.log("Selected Address:", selectedAddress);
-    // proceed with checkout logic
+
+    const payload = {
+      first_name: selectedAddress?.name,
+      address_id: selectedAddress?.id,
+      phone: selectedAddress?.mobile,
+      payment_method: paymentMethod === "cod" ? "COD" : "ONLINE",
+      order_amount: Total.total,
+      products: CartData.map((item) => ({
+        product_id: item?.id,
+        product_quantity: item?.quantity,
+        product_name: item?.product_name,
+        product_image: item?.product_image,
+        product_price: item?.variation?.sale_price || item?.product_price,
+        product_variation: item?.variation
+          ? JSON.stringify(item.variation)
+          : null,
+      })),
+    };
+
+    console.log("🚀 Order Payload:", payload);
+
+    if (paymentMethod === "cod") {
+      try {
+        const response = await PlaceOrderApis(payload);
+        console.log("Order Response:", response);
+
+        if (
+          response.message ===
+          "Order placed & pushed to Shiprocket successfully"
+        ) {
+          alert("✅ Order Placed Successfully!");
+          navigate("/order-confirmed");
+        } else {
+          alert("❌ Failed to place order");
+        }
+      } catch (err) {
+        console.error("Error placing order:", err);
+        alert("❌ Something went wrong");
+      }
+    } else {
+      alert("🌐 Redirecting to Online Payment Gateway...");
+      // later: integrate Razorpay / Stripe here
+    }
   };
 
   return (
@@ -418,6 +466,8 @@ export default function Checkout() {
                         id="cod"
                         value="cod"
                         defaultChecked
+                        checked={paymentMethod === "cod"}
+                        onChange={(e) => setPaymentMethod(e.target.value)}
                         disabled={!selectedAddress}
                         className="form-check-input"
                       />
@@ -439,6 +489,8 @@ export default function Checkout() {
                         name="payment_method"
                         id="online"
                         value="online"
+                        checked={paymentMethod === "online"}
+                        onChange={(e) => setPaymentMethod(e.target.value)}
                         disabled={!selectedAddress}
                         className="form-check-input"
                       />
@@ -495,7 +547,7 @@ export default function Checkout() {
                 <tbody>
                   <tr>
                     <td>Subtotal</td>
-                    <td className="text-end">₹{checkoutDetail.subtotal}</td>
+                    <td className="text-end">₹{Total?.subTotal}</td>
                   </tr>
                   <tr>
                     <td>Shipping</td>
@@ -503,15 +555,15 @@ export default function Checkout() {
                   </tr>
                   <tr>
                     <td>Discount</td>
-                    <td className="text-end">- ₹{checkoutDetail.discount}</td>
+                    <td className="text-end">- ₹{Total?.discount}</td>
                   </tr>
                   <tr>
                     <td>Tax</td>
-                    <td className="text-end">₹{checkoutDetail.tax}</td>
+                    <td className="text-end">₹{Total?.tax}</td>
                   </tr>
                   <tr className="fw-bold border-top">
                     <td>Total</td>
-                    <td className="text-end">₹{checkoutDetail.total}</td>
+                    <td className="text-end">₹{Total?.total}</td>
                   </tr>
                 </tbody>
               </table>

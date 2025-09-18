@@ -362,6 +362,7 @@ export default function Cart() {
                     <Link
                       to={`/checkout/${checkoutUrl}`}
                       className="btn btn-primary w-100 rounded-0 py-2"
+                      state={{ CartData: products,Total:checkoutDetail }}
                     >
                       PROCEED TO CHECKOUT →
                     </Link>

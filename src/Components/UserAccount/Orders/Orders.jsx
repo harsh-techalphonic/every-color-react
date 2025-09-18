@@ -8,10 +8,11 @@ import { Modal, Button } from "react-bootstrap"; // Bootstrap modal
 
 export default function ReturnRefund() {
   const [showModal, setShowModal] = useState(false);
-  const [modalType, setModalType] = useState(""); // "RETURN" or "REFUND"
+  const [modalType, setModalType] = useState("");
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [selectedReason, setSelectedReason] = useState("");
   const [additionalInfo, setAdditionalInfo] = useState("");
+  const [inputReason, setInputReason] = useState("");
   const [uploadedImages, setUploadedImages] = useState([]);
 
   const dispatch = useDispatch();
@@ -38,11 +39,14 @@ export default function ReturnRefund() {
   };
 
   const handleClose = () => {
-    setShowModal(false)
-    setUploadedImages([])
-    setAdditionalInfo('')
-    setSelectedReason('')
-  
+    setShowModal(false);
+    setUploadedImages([]);
+    setAdditionalInfo("");
+    setSelectedReason("");
+  };
+
+  const handleSumbit = () => {
+    console?.log("handleSumbit --->>", selectedProduct);
   };
 
   const refundReasons = [
@@ -74,7 +78,6 @@ export default function ReturnRefund() {
 
     { key: "OTHER", label: "Other" },
   ];
-
   const returnReasons = [
     { key: "DAMAGED", label: "Damaged product received" },
     { key: "DEFECTIVE", label: "Defective or not working" },
@@ -325,13 +328,29 @@ export default function ReturnRefund() {
             </div>
 
             <div className="mb-3">
+              <label className="form-label">Reason</label>
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Enter reason details"
+                value={inputReason}
+                onChange={(e) => setInputReason(e.target.value)}
+              />
+            </div>
+
+            <div className="mb-3">
               <label className="form-label">Quantity</label>
               <input
                 type="text"
                 className="form-control"
-                placeholder="Enter details (optional)"
+                placeholder="Enter quantity digit"
                 value={additionalInfo}
-                onChange={(e) => setAdditionalInfo(e.target.value)}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (/^\d*$/.test(value)) {
+                    setAdditionalInfo(value);
+                  }
+                }}
               />
             </div>
           </Modal.Body>
@@ -341,11 +360,11 @@ export default function ReturnRefund() {
             </Button>
             <Button
               variant="primary"
-              onClick={() => {
-                // Handle return/refund API call here
-                console.log(`${modalType} confirmed for`, selectedProduct);
-                handleClose();
-              }}
+              onClick={handleSumbit}
+              // onClick={() => {
+              //   console.log(`${modalType} confirmed for`, selectedProduct);
+              //   handleClose();
+              // }}
             >
               Confirm {modalType}
             </Button>

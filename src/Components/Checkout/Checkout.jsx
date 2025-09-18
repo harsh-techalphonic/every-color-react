@@ -14,7 +14,6 @@ export default function Checkout() {
   const [addresses, setAddresses] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [error, setError] = useState(null);
-  const [products, setProducts] = useState([]);
   const [paymentMethod, setPaymentMethod] = useState("cod");
 
   // State for modal management

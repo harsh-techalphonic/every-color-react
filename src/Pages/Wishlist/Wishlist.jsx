@@ -21,8 +21,6 @@ import { DeleteWishList } from "../../Config/config";
 
 export default function Wishlist() {
   const AuthCheck = useSelector((store) => store.authcheck);
-  // const fetch_products = useSelector((store) => store.wishlist);
-  // console?.log("Wishlist _------<>>>>", fetch_products);
   const [products, setProducts] = useState([]);
   const dispatch = useDispatch();
 
@@ -48,16 +46,7 @@ export default function Wishlist() {
     }
   };
 
-  // const handleRemove = (id) => {
-  //   // 1️⃣ Remove from UI
-  //   setProducts((prev) => prev.filter((item) => item.id !== id));
-
-  //   // 2️⃣ Remove from Redux
-  //   dispatch(wishlistAction.removeWishlistItem(id));
-  // };
-
   const handleRemove = async (item) => {
-    console?.log('item ------->>>>>',item)
     const confirmDelete = window.confirm(
       `Are you sure you want to remove product from your cart?`
     );
@@ -72,7 +61,7 @@ export default function Wishlist() {
         dispatch(wishlistAction.removeWishlistItem(item));
 
         console.log("Item removed successfully!");
-      } 
+      }
     } catch (error) {
       console.error("Error deleting item:", error);
     }
@@ -126,14 +115,9 @@ export default function Wishlist() {
                   >
                     <div className="feature-card">
                       <span className="disco">
-                        {Math.round(
-                          ((product?.product?.product_price -
-                            product?.product?.discount_price) /
-                            product?.product?.product_price) *
-                            100
-                        )}
-                        %
+                        {product?.product?.percent_off} %
                       </span>
+
                       <span
                         className="wishicon"
                         style={{ cursor: "pointer" }}

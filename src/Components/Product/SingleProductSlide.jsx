@@ -128,14 +128,7 @@ export default function SingleProductSlide({ product }) {
 
   return (
     <div key={product?.id} className="feature-card">
-      <span className="disco">
-        {Math.round(
-          ((product?.product_price - product?.product_discount_price) /
-            product?.product_price) *
-            100
-        )}
-        %
-      </span>
+      <span className="disco">{product?.percent_off}%</span>
       {/* <span
         className="wishicon"
         onClick={() => toggleWishlist(product)}

@@ -4,22 +4,25 @@ import "../ReturnRefund/ReturnRefund.css";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import OrderApi from "../../../API/OrderApi";
-import { Modal, Button } from "react-bootstrap"; // Bootstrap modal
+import { Modal, Button, Alert } from "react-bootstrap";
+import { sendRefundAndReplaceApi } from "./ApiExportOrBulk";
 
 export default function ReturnRefund() {
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState("");
   const [selectedProduct, setSelectedProduct] = useState(null);
+  console?.log("selectedProduct --->>", modalType);
+  const [selectedOrder, setSelectedOrder] = useState(null);
   const [selectedReason, setSelectedReason] = useState("");
-  const [additionalInfo, setAdditionalInfo] = useState("");
   const [inputReason, setInputReason] = useState("");
+  const [quantity, setQuantity] = useState(1);
   const [uploadedImages, setUploadedImages] = useState([]);
-
-  const [statusFilter, setStatusFilter] = useState(""); // 👈 filter state
+  const [statusFilter, setStatusFilter] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   const dispatch = useDispatch();
   const orders = useSelector((store) => store.orders.orders);
-
   const token = localStorage.getItem("token");
 
   useEffect(() => {
@@ -34,28 +37,46 @@ export default function ReturnRefund() {
     return <p className="text-center mt-5">No orders found.</p>;
   }
 
-  const handleShowModal = (type, product) => {
+  const handleShowModal = (type, product, order) => {
     setModalType(type);
     setSelectedProduct(product);
+    setSelectedOrder(order);
     setShowModal(true);
+    setErrorMessage("");
+    setSuccessMessage("");
   };
 
   const handleClose = () => {
     setShowModal(false);
     setUploadedImages([]);
-    setAdditionalInfo("");
+    setInputReason("");
     setSelectedReason("");
+    setQuantity(1);
+    setErrorMessage("");
+    setSuccessMessage("");
   };
 
   const refundReasons = [
     { key: "PRODUCT_NOT_DELIVERED", label: "Product not delivered" },
-    { key: "CANCELLED_BEFORE_SHIPPING", label: "Order cancelled before shipping" },
+    {
+      key: "CANCELLED_BEFORE_SHIPPING",
+      label: "Order cancelled before shipping",
+    },
     { key: "DAMAGED_ON_ARRIVAL", label: "Product damaged on arrival" },
     { key: "DEFECTIVE_PRODUCT", label: "Product was defective" },
     { key: "WRONG_ITEM_RECEIVED", label: "Wrong item received" },
-    { key: "UNAUTHORIZED_TRANSACTION", label: "Unauthorized or fraudulent transaction" },
-    { key: "SUBSCRIPTION_CANCELLED", label: "Subscription or service cancelled" },
-    { key: "PROMOTION_NOT_APPLIED", label: "Discount or promotion not applied" },
+    {
+      key: "UNAUTHORIZED_TRANSACTION",
+      label: "Unauthorized or fraudulent transaction",
+    },
+    {
+      key: "SUBSCRIPTION_CANCELLED",
+      label: "Subscription or service cancelled",
+    },
+    {
+      key: "PROMOTION_NOT_APPLIED",
+      label: "Discount or promotion not applied",
+    },
     { key: "SHIPPING_DELAY", label: "Shipping delayed beyond promised date" },
     { key: "OTHER", label: "Other" },
   ];
@@ -65,14 +86,99 @@ export default function ReturnRefund() {
     { key: "WRONG_ITEM", label: "Wrong item received" },
     { key: "MISSING", label: "Item missing in package" },
     { key: "SIZE_ISSUE", label: "Size/fit issue" },
-    { key: "NOT_AS_DESCRIBED", label: "Product looks different from description" },
-    { key: "LATE_DELIVERY", label: "Received late / after expected delivery date" },
+    {
+      key: "NOT_AS_DESCRIBED",
+      label: "Product looks different from description",
+    },
+    {
+      key: "LATE_DELIVERY",
+      label: "Received late / after expected delivery date",
+    },
     { key: "QUALITY", label: "Quality not satisfactory" },
     { key: "NOT_NEEDED", label: "Changed my mind / no longer needed" },
     { key: "OTHER", label: "Other" },
   ];
 
-  // 👉 Filter orders according to selected status
+  // Validate form inputs
+  const validateForm = () => {
+    if (!selectedReason) {
+      setErrorMessage("Please select a reason");
+      return false;
+    }
+
+    if (!inputReason.trim()) {
+      setErrorMessage("Please provide details about your request");
+      return false;
+    }
+
+    if (quantity <= 0 || quantity > selectedProduct.product_quantity) {
+      setErrorMessage(
+        `Quantity must be between 1 and ${selectedProduct.product_quantity}`
+      );
+      return false;
+    }
+
+    if (modalType === "RETURN" && uploadedImages.length === 0) {
+      setErrorMessage("Please upload at least one image for return requests");
+      return false;
+    }
+
+    return true;
+  };
+
+  // API call to submit refund/return request
+  const submitRequest = async () => {
+    console?.log("qwe1w1212");
+    try {
+      setErrorMessage("");
+
+      // Prepare form data
+      const formData = new FormData();
+      formData.append("type", modalType == "RETURN" ? "replace" : "refund");
+      formData.append("order_id", selectedProduct.order_id);
+      formData.append("product_order_id", selectedProduct?.product_id);
+      formData.append("reason_code", selectedReason);
+      formData.append("reason", inputReason);
+      formData.append("quantity", quantity);
+
+      // Append images if any
+      uploadedImages.forEach((image, index) => {
+        formData.append(`images[]`, image);
+      });
+
+      console.log("formData", formData);
+      // Call your API function
+      const response = await sendRefundAndReplaceApi(formData);
+      console.log("API Response:", response);
+
+      if (response?.success) {
+        setSuccessMessage(
+          `Your ${modalType.toLowerCase()} request has been submitted successfully!`
+        );
+        setTimeout(() => {
+          handleClose();
+          OrderApi(dispatch, token);
+        }, 2000);
+      } else {
+        setErrorMessage(
+          response?.message || "Failed to submit request. Please try again."
+        );
+      }
+    } catch (err) {
+      console.error("API Error details:", err);
+      setErrorMessage(
+        err.message || "An error occurred. Please try again later."
+      );
+    }
+  };
+
+  const handleConfirm = () => {
+    if (validateForm()) {
+      submitRequest();
+    }
+  };
+
+  // Filter orders according to selected status
   const filteredOrders = statusFilter
     ? orders.filter((order) => order.order_status === statusFilter)
     : orders;
@@ -85,13 +191,15 @@ export default function ReturnRefund() {
             <h2>Orders</h2>
             <select
               value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)} className="form-select w-auto"
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="form-select w-auto"
             >
               <option value="">All Orders</option>
               {[...new Set(orders.map((order) => order.order_status))].map(
                 (status, index) => (
                   <option key={index} value={status}>
-                     {status.charAt(0).toUpperCase() + status.slice(1).toLowerCase()}
+                    {status.charAt(0).toUpperCase() +
+                      status.slice(1).toLowerCase()}
                   </option>
                 )
               )}
@@ -150,13 +258,17 @@ export default function ReturnRefund() {
                     <div className="Rerun_ref_btn">
                       <button
                         className="RETURN mb-4"
-                        onClick={() => handleShowModal("RETURN", product)}
+                        onClick={() =>
+                          handleShowModal("RETURN", product, order)
+                        }
                       >
                         RETURN
                       </button>
                       <button
                         className="Refund"
-                        onClick={() => handleShowModal("REFUND", product)}
+                        onClick={() =>
+                          handleShowModal("REFUND", product, order)
+                        }
                       >
                         Refund
                       </button>
@@ -168,7 +280,7 @@ export default function ReturnRefund() {
           )}
         </div>
 
-        {/* ✅ Right-side summary */}
+        {/* Right-side summary */}
         <div className="col-lg-4">
           <div className="container">
             <div className="card bg-light p-3">
@@ -225,12 +337,17 @@ export default function ReturnRefund() {
           </div>
         </div>
 
-        {/* ✅ Modal */}
+        {/* Modal */}
         <Modal show={showModal} onHide={handleClose}>
           <Modal.Header closeButton>
             <Modal.Title>{modalType} Request</Modal.Title>
           </Modal.Header>
           <Modal.Body>
+            {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
+            {successMessage && (
+              <Alert variant="success">{successMessage}</Alert>
+            )}
+
             {selectedProduct && (
               <>
                 <p>
@@ -240,25 +357,30 @@ export default function ReturnRefund() {
                   <b>Price:</b> ₹{selectedProduct.product_price}
                 </p>
                 <p>
-                  <b>Quantity:</b> {selectedProduct.product_quantity}
+                  <b>Available Quantity:</b> {selectedProduct.product_quantity}
                 </p>
               </>
             )}
-            {/* Image Upload */}
-            <div className="mb-3">
-              <label className="form-label">Upload Images (optional)</label>
-              <input
-                type="file"
-                accept="image/*"
-                multiple
-                className="form-control"
-                onChange={(e) => {
-                  const files = Array.from(e.target.files);
-                  setUploadedImages((prev) => [...prev, ...files]);
-                  e.target.value = "";
-                }}
-              />
-            </div>
+
+            {/* Image Upload - Only for returns */}
+            {modalType  && (
+              <div className="mb-3">
+                <label className="form-label">
+                  Upload Images (required for returns)
+                </label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  className="form-control"
+                  onChange={(e) => {
+                    const files = Array.from(e.target.files);
+                    setUploadedImages((prev) => [...prev, ...files]);
+                    e.target.value = "";
+                  }}
+                />
+              </div>
+            )}
 
             <div className="d-flex flex-wrap gap-2">
               {uploadedImages.map((file, index) => (
@@ -285,6 +407,7 @@ export default function ReturnRefund() {
                       position: "absolute",
                       top: "-5px",
                       right: "-5px",
+                      backgroundColor: "red",
                       color: "white",
                       border: "none",
                       borderRadius: "50%",
@@ -299,7 +422,6 @@ export default function ReturnRefund() {
               ))}
             </div>
 
-            <p>Are you sure you want to request a {modalType.toLowerCase()}?</p>
             {/* Reason Dropdown */}
             <div className="mb-3">
               <label className="form-label">Select {modalType} Reason</label>
@@ -320,29 +442,26 @@ export default function ReturnRefund() {
             </div>
 
             <div className="mb-3">
-              <label className="form-label">Reason</label>
-              <input
-                type="text"
+              <label className="form-label">Reason Details</label>
+              <textarea
                 className="form-control"
-                placeholder="Enter reason details"
+                placeholder="Please provide details about your request"
                 value={inputReason}
                 onChange={(e) => setInputReason(e.target.value)}
+                rows={3}
               />
             </div>
 
             <div className="mb-3">
               <label className="form-label">Quantity</label>
               <input
-                type="text"
+                type="number"
                 className="form-control"
-                placeholder="Enter quantity digit"
-                value={additionalInfo}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  if (/^\d*$/.test(value)) {
-                    setAdditionalInfo(value);
-                  }
-                }}
+                placeholder="Enter quantity"
+                min="1"
+                max={selectedProduct ? selectedProduct.product_quantity : 1}
+                value={quantity}
+                onChange={(e) => setQuantity(parseInt(e.target.value) || 1)}
               />
             </div>
           </Modal.Body>
@@ -352,10 +471,8 @@ export default function ReturnRefund() {
             </Button>
             <Button
               variant="primary"
-              onClick={() => {
-                console.log(`${modalType} confirmed for`, selectedProduct);
-                handleClose();
-              }}
+              onClick={handleConfirm}
+              disabled={!!successMessage}
             >
               Confirm {modalType}
             </Button>

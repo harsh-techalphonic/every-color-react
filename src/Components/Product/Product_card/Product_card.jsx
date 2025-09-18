@@ -176,11 +176,8 @@ export default function Product_card({ products, filters }) {
         <div key={index} className="col-lg-3 col-md-6 col-sm-6 col-6 col-auto mb-3">
           <div className="feature-card">
             <span className="disco">
-              {Math.round(
-                ((product.product_price - product.product_discount_price) /
-                  product.product_price) *
-                  100
-              )}
+             
+              { product?.percent_off}
               %
             </span>
             {/* <span

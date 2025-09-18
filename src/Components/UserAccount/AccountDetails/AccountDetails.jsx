@@ -169,30 +169,6 @@ export default function AccountDetails() {
                       <label className='form-label'>Email Address</label>
                       <input type='email' name="email" value={formData.email} onChange={handleInputChange} className='form-control' placeholder='name@example.com' />
                     </div>
-                    <div className='col-lg-12 mb-3'>
-                      <label className='form-label'>Address</label>
-                      <input type='text' name="address" value={formData.address} onChange={handleInputChange} className='form-control' placeholder='Address Details' />
-                    </div>
-                    <div className='col-lg-6 mb-3'>
-                      <label className='form-label'>Country/Region</label>
-                      <select name="country" value={formData.country} onChange={handleInputChange} className='form-select'>
-                        <option value=''>Select Country</option>
-                        <option value='India'>India</option>
-                        <option value='USA'>USA</option>
-                      </select>
-                    </div>
-                    <div className='col-lg-3 mb-3'>
-                      <label className='form-label'>State</label>
-                      <select name="state" value={formData.state} onChange={handleInputChange} className='form-select'>
-                        <option value=''>Select State</option>
-                        <option value='Delhi'>Delhi</option>
-                        <option value='Maharashtra'>Maharashtra</option>
-                      </select>
-                    </div>
-                    <div className='col-lg-3 mb-3'>
-                      <label className='form-label'>Zip Code</label>
-                      <input type='text' name="zip" value={formData.zip} onChange={handleInputChange} className='form-control' placeholder='120712' />
-                    </div>
                   </div>
 
 

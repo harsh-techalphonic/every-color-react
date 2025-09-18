@@ -56,4 +56,48 @@ border: 1px solid #DB3030;
         .order-box-one  .order-box_content p.bold{
         white-space:wrap;
       }
+      .Rerun_ref_btn{
+          padding: 8px;
+        }
+}
+
+@media screen and (max-width:576px) {
+    .order-box-one .order-box-img{
+            max-width: 90px !important;
+        }
+        .order-box-one{
+          flex-wrap: wrap;
+        } 
+        .Rerun_ref_btn{
+          gap: 8px;
+          display: flex;
+          height: auto;
+          padding: 8px;
+        }
+        .Rerun_ref_btn .RETURN {
+          margin-bottom: 0 !important;
+        }
+      .order-box-one  .order-box_content p{
+        margin-bottom: 2px;
+        white-space: nowrap;
+        font-size: 13px;
+      }
+        .order-box-one  .order-box_content p.bold{
+        white-space:wrap;
+        font-size: 15px;
+         display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+      }
+      .return_refund .order-box_content p.pricing {
+          font-size: 15px;
+      }
+      .return_refund .order-box_content {
+          max-width: calc(100% - 126px);
+      }
+      .breadcrum_box nav .breadcrumb .breadcrumb-item {
+      font-size: 14px;
+  }
+       
 }

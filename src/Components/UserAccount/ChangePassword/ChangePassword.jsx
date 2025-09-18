@@ -22,32 +22,6 @@ export default function ChangePassword() {
     if (field === 'confirm_password') setShowConfirmPassword((prev) => !prev);
   };
 
-  const handleNewPasswordChange = (e) => {
-    const value = e.target.value;
-    setNewPassword(value);
-
-    if (new_password_confirmation && value !== new_password_confirmation) {
-      setPasswordError('Passwords do not match');
-      toast.error('Passwords do not match');
-      console.error("Passwords do not match");
-    } else {
-      setPasswordError('');
-    }
-  };
-
-  const handleConfirmPasswordChange = (e) => {
-    const value = e.target.value;
-    setConfirmPassword(value);
-
-    if (new_password && value !== new_password) {
-      setPasswordError('Passwords do not match');
-      toast.error('Passwords do not match');
-      console.error("Passwords do not match");
-    } else {
-      setPasswordError('');
-    }
-  };
-
   const handleSave = async () => {
     try {
       if (!current_password || !new_password || !new_password_confirmation) {
@@ -56,10 +30,13 @@ export default function ChangePassword() {
         return;
       }
 
-      if (passwordError) {
-        toast.error("Please fix password errors before saving.");
-        console.error("Please fix password errors before saving.");
+      if (new_password !== new_password_confirmation) {
+        setPasswordError("Passwords do not match");
+        toast.error("Passwords do not match");
+        console.error("Passwords do not match");
         return;
+      } else {
+        setPasswordError("");
       }
 
       // ✅ Send all fields exactly as requested
@@ -89,7 +66,7 @@ export default function ChangePassword() {
 
     } catch (error) {
       if (error.response) {
-        toast.error("Error: " + error.response.data.message || "Something went wrong.");
+        toast.error("Error: " + (error.response.data.message || "Something went wrong."));
         console.error("API error:", error.response.data);
       } else {
         toast.error("Network error: " + error.message);
@@ -140,7 +117,7 @@ export default function ChangePassword() {
                           className='form-control'
                           placeholder='New Password'
                           value={new_password}
-                          onChange={handleNewPasswordChange}
+                          onChange={(e) => setNewPassword(e.target.value)}
                         />
                         <span className='input-group-text' onClick={() => togglePasswordVisibility('new_password')}>
                           <FontAwesomeIcon icon={showNewPassword ? faEyeSlash : faEye} />
@@ -157,7 +134,7 @@ export default function ChangePassword() {
                           className='form-control'
                           placeholder='Confirm Password'
                           value={new_password_confirmation}
-                          onChange={handleConfirmPasswordChange}
+                          onChange={(e) => setConfirmPassword(e.target.value)}
                         />
                         <span className='input-group-text' onClick={() => togglePasswordVisibility('confirm_password')}>
                           <FontAwesomeIcon icon={showConfirmPassword ? faEyeSlash : faEye} />

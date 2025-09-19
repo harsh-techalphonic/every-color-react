@@ -60,6 +60,7 @@ export default function Footer() {
   };
 
   return (
+   
     <section className="Footer">
       <div className="container">
         <div className="footer-content ">

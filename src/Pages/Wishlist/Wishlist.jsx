@@ -24,6 +24,7 @@ export default function Wishlist() {
   // const fetch_products = useSelector((store) => store.wishlist);
   // console?.log("Wishlist _------<>>>>", fetch_products);
   const [products, setProducts] = useState([]);
+  console.log("products from wishlist", products)
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -128,7 +129,7 @@ export default function Wishlist() {
                       <span className="disco">
                         {Math.round(
                           ((product?.product?.product_price -
-                            product?.product?.discount_price) /
+                            product?.product?.product_discount_price) /
                             product?.product?.product_price) *
                             100
                         )}

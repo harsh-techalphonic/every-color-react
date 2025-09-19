@@ -116,7 +116,7 @@ export default function Login() {
         if (token) localStorage.setItem("token", token);
         if (user) localStorage.setItem("user", JSON.stringify(user));
         toast.success("Login successful!");
-        setTimeout(() => navigate("/user-account"), 1000);
+        setTimeout(() => navigate("/"), 1000);
       } else {
         toast.error(login?.data?.message || "Login failed");
       }

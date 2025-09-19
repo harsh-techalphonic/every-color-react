@@ -22,6 +22,7 @@ import { DeleteWishList } from "../../Config/config";
 export default function Wishlist() {
   const AuthCheck = useSelector((store) => store.authcheck);
   const [products, setProducts] = useState([]);
+  console.log("products from wishlist", products)
   const dispatch = useDispatch();
 
   useEffect(() => {

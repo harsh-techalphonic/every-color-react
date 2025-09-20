@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
   faBarsStaggered,
   faLocationDot,
@@ -7,7 +9,9 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useRef, useState } from "react";
 import "./Header.css";
-import logo from "../../../assets/every-color.png";
+// import logo from "../../../assets/every-color.png";
+
+import logo from '../../../assets/EveryColourLogo.png'
 import Offcanvas from "react-bootstrap/Offcanvas";
 import { Link } from "react-router-dom";
 import ProductsApi from "../../../API/ProductsApi";
@@ -16,7 +20,7 @@ import CartMenu from "./CartMenu";
 import AllCatergory_Filter from "./AllCatergory_Filter";
 import SearchBar from "./SearchBar";
 import CategoriesApi from "../../../API/CategoriesAPi";
-import { useDispatch, useSelector } from "react-redux";
+import {  useSelector } from "react-redux";
 
 export default function Header() {
   const categories = useSelector((store) => store.categories);

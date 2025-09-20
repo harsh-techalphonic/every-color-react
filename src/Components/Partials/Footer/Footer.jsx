@@ -1,5 +1,5 @@
 import "./Footer.css";
-import logo from "../../../assets/every-color.png";
+import logo from '../../../assets/EveryColourLogo.png';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faFacebookF,
@@ -14,7 +14,7 @@ import AboutApi from "../../../API/AboutApi";
 // import BrandApi from "../../../API/BrandApi";
 import { useSelector } from "react-redux";
 import AuthCheck from "../../../API/AuthCheck";
-import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+// import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import NewsletterForm from "./NewsletterForm";

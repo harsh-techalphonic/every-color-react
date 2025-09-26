@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 export default function ProductDescription({singleProduct}) {
-  console.log(singleProduct)
+  // console.log(singleProduct)
   const [activeTab, setActiveTab] = useState('Description');
 
   const handleTabClick = (tab) => setActiveTab(tab);

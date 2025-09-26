@@ -54,7 +54,7 @@ export default function ProductDetail() {
           }
         );
 
-        console.log('Recent view added:', response.data);
+        // console.log('Recent view added:', response.data);
       } catch (error) {
         console.error('Error adding recent view:', error);
       }

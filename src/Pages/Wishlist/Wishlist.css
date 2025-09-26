@@ -48,25 +48,22 @@
   font-size: 17px;
   font-weight: 700;
   color: #020A13;
-  font-family: "Nunito", serif;
-  height: 61px;
+  /* height: 50px; */
   display: -webkit-box;
 -webkit-box-orient: vertical;
--webkit-line-clamp: 3;
+-webkit-line-clamp: 2;
 overflow: hidden;
 }
 .Product_card .feature-card  p{
   font-size: 15px;
   font-weight: 500;
   color: #666666;
-  font-family: "Nunito", serif;
   margin-bottom: 10px;
 }
 .Product_card .feature-card  p b{
   font-size: 15px;
   font-weight: 700;
   color: #000000;
-  font-family: "Nunito", serif;
 }
 .Product_card .feature-card  .rating svg{
   color: #FEB92D ;

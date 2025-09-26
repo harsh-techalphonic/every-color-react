@@ -3,12 +3,13 @@ import './HotOffer.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRightLong } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
+import config from '../../../Config/config.json'
 
 export default function HotOfferHome() {
   const [sectionData, setSectionData] = useState(null);
 
   useEffect(() => {
-    fetch('https://dimgrey-eel-688395.hostingersite.com/api/web/section/about-bag')
+    fetch(`${config.API_URL}/web/section/about-bag`)
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data) && data.length > 0) {

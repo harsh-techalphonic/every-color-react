@@ -115,7 +115,7 @@ export default function BecomeSeller() {
                 name: `${firstName} ${lastName}`.trim()
             };
     
-            console.log("Submitting payload:", payload); // 🔍 Debug check
+            // console.log("Submitting payload:", payload); // 🔍 Debug check
     
             const response = await axios.post(`${config.API_URL_POST}/vendor-register`, payload);
     

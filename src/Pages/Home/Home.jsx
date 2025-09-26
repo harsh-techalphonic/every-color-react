@@ -108,7 +108,7 @@ export default function Home() {
       <SuperSaving />
       <MultiBanners />
       <DealsOfDay />
-      <CategoryBestSellers />
+      {/* <CategoryBestSellers /> */}
       {/* <Category/> */}
       <Press />
       <TestimonialSlider />

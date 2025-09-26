@@ -9,6 +9,7 @@ import SingleProductSlide from '../../Product/SingleProductSlide';
 
 export default function SuperSaving() {
   const fetch_products = useSelector((store) => store.products);
+  console.log("SuperSaving" , fetch_products)
 
   // defensive guard
   const allProducts = Array.isArray(fetch_products?.data) ? fetch_products.data : [];

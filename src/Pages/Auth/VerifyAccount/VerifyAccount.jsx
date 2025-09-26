@@ -74,7 +74,7 @@ export default function VerifyAccount() {
 
       const res = await axios.post(`${config.API_URL}/auth/send-otp`, { phone });
       if (res?.data?.status) {
-        console.log("resend Otp", res)
+        // console.log("resend Otp", res)
         toast.success('OTP resent successfully');
         // NOTE: Many backends won't return the OTP for security (that's fine).
         // We verify only with the backend in handleVerify.

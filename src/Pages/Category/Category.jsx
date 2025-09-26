@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
-import { useParams, useNavigate } from "react-router-dom"; // ✅ Added useNavigate
+import { useParams, useNavigate } from "react-router-dom"; 
+import config from '../../Config/config.json'
 
 import Header from "../../Components/Partials/Header/Header";
 import Footer from "../../Components/Partials/Footer/Footer";
@@ -10,9 +11,9 @@ import CategoryCard from "../../Components/Home/Categories/CategoryCard";
 
 export default function Category() {
   const { category } = useParams();
-  const navigate = useNavigate(); // ✅ Navigation hook
+  const navigate = useNavigate(); 
   const [subCategories, setSubCategories] = useState([]);
-  const [categoryName, setCategoryName] = useState("");
+  const [categoryName, setCategoryName] = useState("");  
 
   const fetch_categories = useSelector((store) => store.categories);
 
@@ -22,14 +23,14 @@ export default function Category() {
     const currentCategory = fetch_categories.data.find(
       (cat) => cat.slug === category
     );
-    console.log("currentCategory", currentCategory)
+    // console.log("currentCategory", currentCategory)
 
     if (currentCategory) {
       setCategoryName(currentCategory.name);
 
       axios
         .get(
-          `https://dimgrey-eel-688395.hostingersite.com/api/category-with-sub-category/${currentCategory.id}`
+          `${config.API_URL}/category-with-sub-category/${currentCategory.id}`
         )
         .then((res) => {
           setSubCategories(res.data.sub_category || []);
@@ -45,15 +46,21 @@ export default function Category() {
     category?.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 
   // ✅ Handle card click
+  // const handleCardClick = (subCatSlug) => {
+  //   navigate(`/category/${categoryTitle}/${subCatSlug}`);
+  // };
+  
+    // ✅ Handle card click
   const handleCardClick = (subCatSlug) => {
-    navigate(`/category/${categoryTitle}/${subCatSlug}`);
+    navigate(`/product?category=${category}&subcategory=${subCatSlug}`);
   };
+
 
   const Uri= "category/:${currentCategory.name}/:${subCatSlug}"
   return (
     <>
       <Header />
-      <HotOffer />
+      <HotOffer uri={Uri} />
 
       <section className="Shop_by_health bg-white">
         <div className="container">

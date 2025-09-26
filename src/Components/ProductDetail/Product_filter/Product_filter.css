@@ -31,11 +31,39 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 8px 16px;
+    /* padding: 8px 16px; */
     cursor: pointer;
     font-size: 14px;
     font-weight: 500;
     transition: background-color 0.2s ease;
+  }
+  .filter-contaienr .category-item{
+    padding: 8px;
+  }
+  .filter-contaienr .category-item .accordion-item{
+    border: none;
+    padding: 4px 8px;
+  }
+  .filter-contaienr .category-item .accordion-item ul li {
+    cursor: pointer;
+    transition: 0.2s ease;
+    border-bottom: 1px solid #ececec;
+  }
+  .filter-contaienr .category-item .accordion-header button:focus{
+      box-shadow: none;
+  }
+  .filter-contaienr .category-item .accordion-header button{
+    background-color: inherit;
+    padding: 6px 6px;
+  }
+  .accordion-button::after {
+    width: 16px;
+    height: 16px;
+    background-size: cover;
+    margin-right: 12px;
+  }
+  .filter-contaienr .category-item .accordion-header button .min_change span{
+    font-size: 16px;
   }
   .filter-contaienr .category-item .accordion-header:not(:last-child) {
     border-bottom: 1px solid #f0f0f0;
@@ -48,7 +76,7 @@
     background-color: #DB3030;
   }
   
-  .filter-contaienr .category-item:hover .accordion-header {
+  .filter-contaienr .category-item .accordion-header:hover {
     background-color: #ececec;
   }
   .filter-contaienr .category-item.active .accordion-body ul li:hover {
@@ -237,6 +265,35 @@
   .rating-check-item:not(:last-child) {
     border-bottom: 1px solid #ccc;
   }
+  .category-item.open > .accordion-header {
+  background: #f8f9fa;
+}
+
+.category-item .text-success {
+  color: #ff0000 !important;
+}
+.min_change.text-success{
+  color: #ffffff !important;
+}
+.accordion-header:hover .min_change.text-success{
+  color: #000000 !important;
+}
+.category-item.open:hover .min_change.text-success{
+  color: #000000 !important;
+}
+.category-item .accordion-body ul li{
+  padding: 4px 8px;
+}
+.category-item .accordion-body ul li:hover{
+  background-color: #d3d3d3;
+}
+.category-item .accordion-body ul li.text-success{
+  background-color: #ececec;
+}
+.accordion-header:has(.min_change.text-success) {
+  background-color: red;
+}
+
   @media screen and (max-width:1200px) {
     .filterrange_box .price-input {
       flex-wrap: wrap;

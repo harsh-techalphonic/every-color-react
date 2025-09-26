@@ -9,12 +9,14 @@ import {
   faStarHalfAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import { faCopy } from "@fortawesome/free-regular-svg-icons";
+import { toast, ToastContainer } from "react-toastify";
 import {
   faFacebook,
   faPinterest,
+  faWhatsapp,
   faXTwitter,
 } from "@fortawesome/free-brands-svg-icons";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { cartAction } from "../../store/Products/cartSlice";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -47,6 +49,40 @@ export default function Product_detail({ singleProduct }) {
   const [gettoken, setGettoken] = useState(null);
 
   const navigate = useNavigate();
+  // inside Product_detail component
+ 
+
+// SHARE HANDLERS
+const { slug } = useParams();
+const productUrl = `${window.location.origin}/product/${slug}`;
+
+const handleCopyLink = () => {
+  navigator.clipboard.writeText(productUrl)
+    .then(() => toast.success("Product link copied to clipboard!"))
+    .catch(() => toast.error("Failed to copy link."));
+};
+
+const handleShare = (platform) => {
+  let shareUrl = "";
+
+  switch (platform) {
+    case "facebook":
+      shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(productUrl)}`;
+      break;
+    case "twitter":
+      shareUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(productUrl)}&text=Check out this product!`;
+      break;
+    case "whatsapp":
+      shareUrl = `https://api.whatsapp.com/send?text=Check out this product: ${encodeURIComponent(productUrl)}`;
+      break;
+    default:
+      return;
+  }
+
+  window.open(shareUrl, "_blank", "noopener,noreferrer");
+};
+
+
 
   const increaseQuantity = () => setQuantity((q) => q + 1);
   const decreaseQuantity = () => setQuantity((q) => (q > 1 ? q - 1 : 1));
@@ -274,13 +310,19 @@ export default function Product_detail({ singleProduct }) {
     fade: true,
     asNavFor: navSlider,
   };
-  const sliderNavSettings = {
-    slidesToShow: 6,
-    slidesToScroll: 1,
-    asNavFor: mainSlider,
-    focusOnSelect: true,
-    arrows: true,
-  };
+const sliderNavSettings = {
+  slidesToShow: 6,
+  slidesToScroll: 1,
+  asNavFor: mainSlider,
+  focusOnSelect: true,
+  arrows: true,
+  dots: false,
+  infinite: getImageSlides.length > 1,
+  swipeToSlide: getImageSlides.length > 1,
+  centerMode: getImageSlides.length < 1,
+  centerPadding: getImageSlides.length < 6 ? "0px" : "0px", 
+};
+
   const renderStars = (rating) => {
     const stars = [];
     for (let i = 1; i <= 5; i++) {
@@ -413,6 +455,7 @@ export default function Product_detail({ singleProduct }) {
 
   return (
     <div className="product-detail-slider-content my-5">
+          <ToastContainer />
       <div className="container">
         <div className="row">
           {/* Left: Image sliders */}
@@ -671,20 +714,21 @@ export default function Product_detail({ singleProduct }) {
                 <div className="share-product d-flex align-items-center">
                   <p>Share product: </p>
                   <ul className="d-flex align-items-center gap-2 list-unstyled mb-0 ms-2">
-                    <li>
+                    <li style={{ cursor: "pointer" }} onClick={handleCopyLink}>
                       <FontAwesomeIcon icon={faCopy} />
                     </li>
-                    <li>
+                    <li style={{ cursor: "pointer" }} onClick={() => handleShare("facebook")}>
                       <FontAwesomeIcon icon={faFacebook} />
                     </li>
-                    <li>
+                    <li style={{ cursor: "pointer" }} onClick={() => handleShare("twitter")}>
                       <FontAwesomeIcon icon={faXTwitter} />
                     </li>
-                    <li>
-                      <FontAwesomeIcon icon={faPinterest} />
+                    <li style={{ cursor: "pointer" }} onClick={() => handleShare("whatsapp")}>
+                      <FontAwesomeIcon icon={faWhatsapp} />
                     </li>
                   </ul>
                 </div>
+
               </div>
 
               <div className="mt-3 Guarantee_Checkout border p-4 bg-light">

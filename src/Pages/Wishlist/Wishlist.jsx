@@ -22,7 +22,7 @@ import { DeleteWishList } from "../../Config/config";
 export default function Wishlist() {
   const AuthCheck = useSelector((store) => store.authcheck);
   const [products, setProducts] = useState([]);
-  console.log("products from wishlist", products)
+  // console.log("products from wishlist", products)
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -61,7 +61,7 @@ export default function Wishlist() {
         setProducts((prev) => prev.filter((p) => p?.id !== item?.id));
         dispatch(wishlistAction.removeWishlistItem(item));
 
-        console.log("Item removed successfully!");
+        // console.log("Item removed successfully!");
       }
     } catch (error) {
       console.error("Error deleting item:", error);

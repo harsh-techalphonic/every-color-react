@@ -35,7 +35,7 @@ export default function Footer() {
     try {
       setLoading(true);
       const response = await fetch(
-        "https://dimgrey-eel-688395.hostingersite.com/api/web/send-newslatter",
+        `${config.API_URL}/web/send-newslatter`,
         {
           method: "POST",
           headers: {

@@ -5,16 +5,16 @@ import MaxDicountProductAPi from '../../../API/MaxDicountProductApi'
 import { useSelector } from 'react-redux';
 export default function MultiBanners() {
     const maxDicountProduct = useSelector((store) => store.maxDicountProduct);
-    console.log("Multi banner", maxDicountProduct )
+    // console.log("Multi banner", maxDicountProduct )
     const products = maxDicountProduct?.data?.data || []; 
 
 const product_one   = products[0];
 const product_two   = products[1];
 const product_three = products[2];
 
-console.log("product one ", product_one);
-console.log("product two ", product_two);
-console.log("product three ", product_three);
+// console.log("product one ", product_one);
+// console.log("product two ", product_two);
+// console.log("product three ", product_three);
   return (
     <section className='multibanner '>
         <MaxDicountProductAPi/>
@@ -25,7 +25,7 @@ console.log("product three ", product_three);
                         <div className='banner-right-one'>
                             <Link to={`/product/${product_two.product.product_slug}`}>
                                 <div className='row align-items-center'>
-                                    <div className='col-lg-7  col-md-7'>
+                                    <div className='col-lg-7  col-7'>
                                         <div className='banner-right-content'>
                                             <span>{Math.round(product_two.product.percent_off
                                                 )}% OFF</span>
@@ -36,7 +36,7 @@ console.log("product three ", product_three);
                                                 </div>
                                         </div>
                                     </div>
-                                    <div className='col-lg-5  col-md-5'>
+                                    <div className='col-lg-5  col-5'>
                                         <div className='banner-right-img'>
                                             <img src={product_two.product.product_image} alt="" />
                                         </div>
@@ -47,7 +47,7 @@ console.log("product three ", product_three);
                         <div className='banner-right-one'>
                         <Link to={`/product/${product_three.product.product_slug}`}>
                                 <div className='row align-items-center'>
-                                    <div className='col-lg-7  col-md-7'>
+                                    <div className='col-lg-7 col-7'>
                                         <div className='banner-right-content'>
                                             <span>{Math.round(product_three.product.percent_off
                                                 )}% OFF</span>
@@ -58,7 +58,7 @@ console.log("product three ", product_three);
                                                 </div>
                                         </div>
                                     </div>
-                                    <div className='col-lg-5  col-md-5'>
+                                    <div className='col-lg-5 col-5'>
                                         <div className='banner-right-img'>
                                             <img src={product_three.product.product_image} alt="" />
                                         </div>

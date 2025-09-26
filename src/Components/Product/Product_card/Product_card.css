@@ -31,7 +31,7 @@
 }
 .Product_card .feature-card span.wishicon{
     position: absolute;
-    z-index: 99;
+    z-index: 9;
     top: 14px ;
     right: 16px;
     background-color: #ffffff;
@@ -71,25 +71,22 @@
     font-size: 17px;
     font-weight: 700;
     color: #020A13;
-    font-family: "Nunito", serif;
-    height: 61px;
+    height: 43px;
     display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 2;
   overflow: hidden;
 }
 .Product_card .feature-card .product-detail p{
     font-size: 15px;
     font-weight: 500;
     color: #666666;
-    font-family: "Nunito", serif;
     margin-bottom: 10px;
 }
 .Product_card .feature-card .product-detail p b{
     font-size: 15px;
     font-weight: 700;
     color: #000000;
-    font-family: "Nunito", serif;
 }
 .Product_card .feature-card .product-detail .rating svg{
     color: #FEB92D ;

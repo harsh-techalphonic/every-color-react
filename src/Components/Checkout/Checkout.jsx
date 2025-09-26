@@ -69,12 +69,12 @@ export default function Checkout() {
       })),
     };
 
-    console.log("🚀 Order Payload:", payload);
+    // console.log("🚀 Order Payload:", payload);
 
     if (paymentMethod === "cod") {
       try {
         const response = await PlaceOrderApis(payload);
-        console.log("Order Response:", response);
+        // console.log("Order Response:", response);
 
         if (response.message === "Order placed successfully") {
           alert("✅ Order Placed Successfully!");

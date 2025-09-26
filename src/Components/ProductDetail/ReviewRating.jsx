@@ -111,7 +111,7 @@ export default function ReviewRating({ singleProduct }) {
   const hasPurchased = orders?.some(order =>
     order.products?.some(p => p.product_id === singleProduct.id)
   );
-  console.log("reviews", reviews)
+  // console.log("reviews", reviews)
 
   return (
     <>

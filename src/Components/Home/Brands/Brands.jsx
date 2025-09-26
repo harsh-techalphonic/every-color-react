@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 
 export default function Brands() {
   const { data, brandImageUrl } = useSelector((store) => store.brands);
-  console.log("brands", data[0]?.image?.path)
+  // console.log("brands", data[0]?.image?.path)
   
     var settings = {
       dots: false,

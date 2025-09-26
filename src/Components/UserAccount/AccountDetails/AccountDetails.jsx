@@ -90,7 +90,7 @@ export default function AccountDetails() {
       );
 
       if (sendOtp?.data?.status === true) {
-        console.log("OTP sent by API:", sendOtp.data?.otp?.otp);
+        // console.log("OTP sent by API:", sendOtp.data?.otp?.otp);
         toast.success(sendOtp?.data?.message || "OTP sent successfully!");
         setOtpTimer(60);
         setOtpSent(true);

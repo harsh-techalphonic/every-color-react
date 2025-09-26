@@ -20,7 +20,7 @@ export default function RecentlyViewed() {
   const products = useSelector((store) => store.recentView?.products || []);
 const dispatch = useDispatch(); 
   const [singleProduct, setSingleProduct] = useState(null);
-  
+  // console.log("recently viewed", products)
   const { slug } = useParams();
 
   useEffect(() => {
@@ -44,22 +44,24 @@ const dispatch = useDispatch();
   //   }));
   // };
 
-  const settings = {
+  var settings = {
     dots: false,
-    infinite: true,
+    infinite: products.length > 1,
     speed: 500,
     slidesToShow: 5,
     slidesToScroll: 1,
-    swipeToSlide: true,
-    arrows: true,
-    autoplay: true,
+    swipeToSlide: products.length > 1,
+    arrows: products.length > 1,
+    autoplay: products.length > 1,
     autoplaySpeed: 3000,
+    centerMode: products.length < 5, 
+     centerPadding: products.length < 5 ? "0px" : "0px", 
     responsive: [
-      { breakpoint: 1200, settings: { slidesToShow: 4, slidesToScroll: 3 } },
-      { breakpoint: 992, settings: { slidesToShow: 3, slidesToScroll: 2 } },
-      { breakpoint: 768, settings: { slidesToShow: 2, slidesToScroll: 1 } },
-      { breakpoint: 576, settings: { slidesToShow: 2, slidesToScroll: 1 } },
-      { breakpoint: 360, settings: { slidesToShow: 1, slidesToScroll: 1 } },
+      { breakpoint: 1200, settings: { slidesToShow: 4, centerMode: products.length < 4 } },
+      { breakpoint: 992, settings: { slidesToShow: 3, centerMode: products.length < 3 } },
+      { breakpoint: 768, settings: { slidesToShow: 2, centerMode: products.length < 2 } },
+      { breakpoint: 576, settings: { slidesToShow: 2, centerMode: products.length < 2 } },
+      { breakpoint: 360, settings: { slidesToShow: 1, centerMode: false } },
     ],
   };
       useEffect(() => {
@@ -86,7 +88,7 @@ const dispatch = useDispatch();
         <div className="featureslider_one my-4">
           <Slider {...settings} className="xyzg-slider">
             {products.map((product, index) => (
-              <SingleProductSlide key={product?.id || index} product={product} />
+              <SingleProductSlide key={product?.id} product={product} />
             ))}
           </Slider>
         </div>

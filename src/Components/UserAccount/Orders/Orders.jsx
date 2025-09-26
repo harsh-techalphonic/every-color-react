@@ -146,10 +146,10 @@ export default function ReturnRefund() {
         formData.append(`images[]`, image);
       });
 
-      console.log("formData", formData);
+      // console.log("formData", formData);
       // Call your API function
       const response = await sendRefundAndReplaceApi(formData);
-      console.log("API Response:", response);
+      // console.log("API Response:", response);
 
       if (response?.success) {
         setSuccessMessage(

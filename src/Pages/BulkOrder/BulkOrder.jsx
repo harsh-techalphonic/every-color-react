@@ -40,7 +40,7 @@ export default function BulkOrder() {
         formData
       );
 
-      console.log("API Response:", response.data);
+      // console.log("API Response:", response.data);
 
       setApiResponse({
         status: response.data.status,

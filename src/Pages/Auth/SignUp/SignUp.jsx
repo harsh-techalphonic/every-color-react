@@ -86,7 +86,7 @@ export default function SignUp() {
                     );
     
                     const { email, otp } = otpResponse.data;
-                    console.log("OTP sent to email:", email, "OTP:", otp);
+                    // console.log("OTP sent to email:", email, "OTP:", otp);
     
                     navigate("/verify", {
                         state: { email, otp },

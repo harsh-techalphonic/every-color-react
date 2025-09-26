@@ -29,7 +29,7 @@ export default function ForgetPassword() {
 
   try {
     const response = await axios.post(`${config.API_URL}/auth/login`, { phone });
-    console.log("response login", response);
+    // console.log("response login", response);
 
     if (!response?.data) {
       toast.error("Unexpected response from server. Please try again later.");
@@ -43,7 +43,7 @@ export default function ForgetPassword() {
 
       try {
         const otpResponse = await axios.post(`${config.API_URL}/auth/send-otp`, { phone });
-        console.log("otpResponse", otpResponse);
+        // console.log("otpResponse", otpResponse);
 
         if (!otpResponse?.data) {
           toast.error("Failed to receive OTP response. Please try again.");

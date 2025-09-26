@@ -4,12 +4,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRightLong } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import ExploreBestSellerCard from './ExploreBestSellerCard';
+import config from '../../../Config/config.json'
 
 export default function ExploreBestSeller() {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    fetch('https://dimgrey-eel-688395.hostingersite.com/api/web/section/our-client')
+    fetch(`${config.API_URL}/web/section/our-client`)
       .then((res) => res.json())
       .then((data) => {
         // console.log("fatch dataw", data)

@@ -9,7 +9,7 @@ export default function ProductsApi() {
   useEffect(() => {
     if (products.status) return;
     axios
-      .get(`${config.API_URL}/products`)
+      .get(`${config.API_URL}/productsdata`)
       .then(function (response) {
         // console.log("product_data", response.data.data)
         dispatch(productsAction.getProduct(response.data));

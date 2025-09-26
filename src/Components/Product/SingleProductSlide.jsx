@@ -4,6 +4,7 @@ import { wishlistAction } from "../../store/Products/wishlistSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBagShopping,
+  faStar as faSolidStar,
   faStar,
   faStarHalfAlt,
 } from "@fortawesome/free-solid-svg-icons";
@@ -15,7 +16,7 @@ import {
   API_URL,
 } from "../../Config/config";
 
-import { faHeart as faRegularHeart } from "@fortawesome/free-regular-svg-icons";
+import { faHeart as faRegularHeart , faStar as faRegularStar} from "@fortawesome/free-regular-svg-icons";
 import { faHeart as faSolidHeart } from "@fortawesome/free-solid-svg-icons";
 
 export default function SingleProductSlide({ product }) {
@@ -32,6 +33,7 @@ export default function SingleProductSlide({ product }) {
     setGettoken(token);
   }, []);
 
+  // console.log("product recently viewed" ,product)
   useEffect(() => {
     if (localStorage.getItem("wishlist")) {
       setWishlist([...JSON.parse(localStorage.getItem("wishlist"))]);
@@ -97,7 +99,7 @@ export default function SingleProductSlide({ product }) {
       if (!response.ok) throw new Error("Failed to update wishlist.");
 
       const data = await response.json();
-      console.log("Wishlist API response:", data);
+      // console.log("Wishlist API response:", data);
 
       const id = item.id;
 
@@ -173,13 +175,27 @@ export default function SingleProductSlide({ product }) {
             {product?.product_name}
           </Link>
         </h3>
-        <div className="rating d-flex align-items-center ">
-          <FontAwesomeIcon icon={faStar} />
-          <FontAwesomeIcon icon={faStar} />
-          <FontAwesomeIcon icon={faStar} />
-          <FontAwesomeIcon icon={faStarHalfAlt} />
-          <span>({product?.reviews?.length})</span>
-        </div>
+        <div className="rating d-flex align-items-center">
+  {(() => {
+    const avg = parseFloat(product?.reviews_avg_star) || 0;
+    // round to nearest 0.5 for nicer UX (4.4 -> 4.5, 4.24 -> 4.0, etc.)
+    const rounded = Math.round(avg * 2) / 2;
+    const fullStars = Math.floor(rounded);
+    const hasHalf = rounded - fullStars === 0.5;
+
+    return Array.from({ length: 5 }, (_, i) => {
+      if (i < fullStars) {
+        return <FontAwesomeIcon key={i} icon={faSolidStar} />;
+      }
+      if (i === fullStars && hasHalf) {
+        return <FontAwesomeIcon key={i} icon={faStarHalfAlt} />;
+      }
+      return <FontAwesomeIcon key={i} icon={faRegularStar} />;
+    });
+  })()}
+  <span className="ms-1">({product?.reviews?.length || 0})</span>
+</div>
+
         <div className="Pricing d-flex align-items-center ">
           <p className="price">₹ {product?.product_discount_price}</p>
           <p className="slashPrice">₹ {product?.product_price} </p>

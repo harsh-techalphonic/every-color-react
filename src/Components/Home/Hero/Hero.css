@@ -50,7 +50,9 @@
     height: 500px;
 }
 .home_hero .main-content-box .image-box img{
-    width: -webkit-fill-available;
+    width: 100%;
+    /* width: -webkit-fill-available; */
+    max-width: max-content;
     height: 100%;
 }
 

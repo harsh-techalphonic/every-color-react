@@ -1,6 +1,5 @@
 import React from 'react'
 import Slider from "react-slick";
-
 import { faArrowRightLong } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import SingleProductSlide from '../Product/SingleProductSlide';
@@ -9,8 +8,6 @@ import { useSelector } from 'react-redux';
 export default function SimilarProducts({ singleProduct }) {
 
   const fetch_products = useSelector((store) => store.products) || { data: [], status: false };
-  console.log("similar all product", fetch_products.data);
-  console.log("first", singleProduct)
 
   // Filter products: same category, exclude the current product
   const products = fetch_products.data?.filter(
@@ -19,26 +16,26 @@ export default function SimilarProducts({ singleProduct }) {
       product.id !== singleProduct?.id
   ) || [];
 
-
   var settings = {
     dots: false,
-    infinite: true,
+    infinite: products.length > 1,
     speed: 500,
     slidesToShow: 5,
     slidesToScroll: 1,
-    swipeToSlide: true,
-    arrows: true,
-    autoplay: true,
+    swipeToSlide: products.length > 1,
+    arrows: products.length > 1,
+    autoplay: products.length > 1,
     autoplaySpeed: 3000,
+    centerMode: products.length < 5, 
+     centerPadding: products.length < 5 ? "0px" : "0px", 
     responsive: [
-      { breakpoint: 1200, settings: { slidesToShow: 4 } },
-      { breakpoint: 992, settings: { slidesToShow: 3 } },
-      { breakpoint: 768, settings: { slidesToShow: 2 } },
-      { breakpoint: 576, settings: { slidesToShow: 2 } },
-      { breakpoint: 360, settings: { slidesToShow: 1 } },
+      { breakpoint: 1200, settings: { slidesToShow: 4, centerMode: products.length < 4 } },
+      { breakpoint: 992, settings: { slidesToShow: 3, centerMode: products.length < 3 } },
+      { breakpoint: 768, settings: { slidesToShow: 2, centerMode: products.length < 2 } },
+      { breakpoint: 576, settings: { slidesToShow: 2, centerMode: products.length < 2 } },
+      { breakpoint: 360, settings: { slidesToShow: 1, centerMode: false } },
     ],
   };
-
 
   return (
     <section className='Best_selling my-5'>
@@ -47,9 +44,6 @@ export default function SimilarProducts({ singleProduct }) {
           <div className='title-box'>
             <h2><span>Similar</span> Products</h2>
           </div>
-          {/* <div className='title-box'>
-            <a href="/product">View All <FontAwesomeIcon icon={faArrowRightLong} /></a>
-          </div> */}
         </div>
 
         <div className='featureslider_one my-4'>

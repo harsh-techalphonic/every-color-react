@@ -5,7 +5,8 @@ import { faArrowRightLong } from '@fortawesome/free-solid-svg-icons';
 import { Link, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
-export default function HotOffer() {
+export default function HotOffer({uri }) {
+  console.log("data nad uri",  uri )
   const bannersStore = useSelector((store) => store.banners);
   const categoriesStore = useSelector((store) => store.categories);
   const { category } = useParams();
@@ -55,7 +56,7 @@ export default function HotOffer() {
               {sectionData?.title && <h2>{sectionData.title}</h2>}
               {sectionData?.description && <p>{sectionData.description}</p>}
               <div className="button-dark mt-4">
-                <Link to={`/product/${sectionData?.slug || ''}`}>
+                <Link to={`/product?category=${category}`}>
                   {sectionData?.button_text || 'Shop Now'}{' '}
                   <FontAwesomeIcon icon={faArrowRightLong} />
                 </Link>

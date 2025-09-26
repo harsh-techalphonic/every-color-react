@@ -38,7 +38,7 @@ export default function Export() {
     setLoading(true);
 
     try {
-      console.log("Submitting Bulk Order:", formData);
+      // console.log("Submitting Bulk Order:", formData);
 
       // ✅ API call
       const response = await axios.post(
@@ -46,7 +46,7 @@ export default function Export() {
         formData
       );
 
-      console.log("API Response:", response.data);
+      // console.log("API Response:", response.data);
 
       alert("Bulk order submitted successfully!");
       setFormData({

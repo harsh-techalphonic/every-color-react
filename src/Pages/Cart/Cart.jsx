@@ -188,7 +188,7 @@ export default function Cart() {
         fetchCart();
         setProducts((prev) => prev.filter((p) => p?.id !== item?.id));
 
-        console.log("Item removed successfully!");
+        // console.log("Item removed successfully!");
       } else {
         console.error("Failed to delete item from cart.");
       }

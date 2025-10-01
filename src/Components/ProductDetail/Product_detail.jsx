@@ -22,16 +22,14 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   AddOrDeleteWishlist,
   AddOrRemoveCart,
-  API_URL,
+  API_URL,ImageUrl
 } from "../../Config/config";
+
 import { wishlistAction } from "../../store/Products/wishlistSlice";
 
 import { faHeart as faRegularHeart } from "@fortawesome/free-regular-svg-icons";
 import { faHeart as faSolidHeart } from "@fortawesome/free-solid-svg-icons";
 
-// IMAGE URL FUNCTION
-const getVariationImage = (filename) =>
-  `https://dimgrey-eel-688395.hostingersite.com/uploads/${filename}`;
 
 // MAIN COMPONENT
 export default function Product_detail({ singleProduct }) {
@@ -44,12 +42,14 @@ export default function Product_detail({ singleProduct }) {
   const dispatch = useDispatch();
   const [mainSlider, setMainSlider] = useState(null);
   const [navSlider, setNavSlider] = useState(null);
-
+  
   const fetch_products = useSelector((store) => store.wishlist);
   const [gettoken, setGettoken] = useState(null);
-
+  
+  // IMAGE URL FUNCTION
+  const getVariationImage = (filename) =>
+    `${ImageUrl}${filename}`;
   const navigate = useNavigate();
-  // inside Product_detail component
  
 
 // SHARE HANDLERS
@@ -57,10 +57,30 @@ const { slug } = useParams();
 const productUrl = `${window.location.origin}/product/${slug}`;
 
 const handleCopyLink = () => {
-  navigator.clipboard.writeText(productUrl)
-    .then(() => toast.success("Product link copied to clipboard!"))
-    .catch(() => toast.error("Failed to copy link."));
+  if (navigator.clipboard && window.isSecureContext) {
+    // Modern secure way
+    navigator.clipboard.writeText(productUrl)
+      .then(() => toast.success("Product link copied to clipboard!"))
+      .catch(() => toast.error("Failed to copy link."));
+  } else {
+    // Fallback for insecure context or unsupported browsers
+    const textArea = document.createElement("textarea");
+    textArea.value = productUrl;
+    textArea.style.position = "fixed"; // avoid scrolling to bottom
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+
+    try {
+      document.execCommand("copy");
+      toast.success("Product link copied to clipboard!");
+    } catch (err) {
+      toast.error("Failed to copy link.");
+    }
+    document.body.removeChild(textArea);
+  }
 };
+
 
 const handleShare = (platform) => {
   let shareUrl = "";

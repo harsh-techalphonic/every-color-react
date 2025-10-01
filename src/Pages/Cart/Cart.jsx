@@ -9,7 +9,7 @@ import { useDispatch } from "react-redux";
 import { cartAction } from "../../store/Products/cartSlice";
 import config from "../../Config/config.json";
 import { deleteCartItem } from "../../API/AllApiCode";
-import { RemoveCart, UpdateCartQut } from "../../Config/config";
+import { RemoveCart } from "../../Config/config";
 import { updateCartItemQuantity } from "./CartValUpdateApi";
 
 // Utility to calculate prices
@@ -115,7 +115,8 @@ export default function Cart() {
   const [checkCart, setCheckCart] = useState(false);
   const [checkoutDetail, setCheckoutDetail] = useState({
     subTotal: 0,
-    discount: 0,
+    productDiscount: 0,
+    couponDiscount: 0,
     total: 0,
   });
   const [checkoutUrl, setCheckoutUrl] = useState("");
@@ -132,7 +133,6 @@ export default function Cart() {
   const fetchCart = async () => {
     try {
       const token = localStorage.getItem("token");
-
       const res = await fetch(`${config.API_URL}${config.GetCartList}`, {
         method: "GET",
         headers: {
@@ -162,12 +162,12 @@ export default function Cart() {
           };
         });
 
-        dispatch(cartAction.setCart(cartData)); // ✅ Update Redux in one go
+        dispatch(cartAction.setCart(cartData));
         setProducts(cartData);
         setCheckCart(false);
       } else {
         setCheckCart(true);
-        dispatch(cartAction.setCart([])); // ✅ Clear Redux if no cart
+        dispatch(cartAction.setCart([]));
       }
     } catch (error) {
       console.error("Error fetching cart:", error);
@@ -179,16 +179,13 @@ export default function Cart() {
     const confirmDelete = window.confirm(
       `Are you sure you want to remove product from your cart?`
     );
-
-    if (!confirmDelete) return; // User cancelled
+    if (!confirmDelete) return;
 
     try {
       const success = await deleteCartItem(item.cart_id, RemoveCart);
       if (success) {
         fetchCart();
         setProducts((prev) => prev.filter((p) => p?.id !== item?.id));
-
-        // console.log("Item removed successfully!");
       } else {
         console.error("Failed to delete item from cart.");
       }
@@ -204,51 +201,37 @@ export default function Cart() {
     setCheckoutUrl(encodedUrl);
   }, [checkoutDetail]);
 
-  // 3. Recalculate total when products change
+  // Recalculate totals
   useEffect(() => {
     if (products.length === 0) return;
 
     let totalSub = 0;
-    let totalDiscount = 0;
-    let totalFinal = 0;
+    let productDisc = 0;
 
     products.forEach((item) => {
-      const { subTotal, discount, total } = getPriceDetails(item);
+      const { subTotal, discount } = getPriceDetails(item);
       totalSub += subTotal;
-      totalDiscount += discount;
-      totalFinal += total;
+      productDisc += discount;
     });
 
-    setCheckoutDetail({
+    setCheckoutDetail((prev) => ({
+      ...prev,
       subTotal: totalSub,
-      discount: totalDiscount,
-      total: totalFinal,
-    });
+      productDiscount: productDisc,
+      total: totalSub - productDisc - prev.couponDiscount,
+    }));
   }, [products]);
-
-  // Quantity change
-  // const handleQuantityChange = (prd_id, newQuantity) => {
-  //   setProducts((prevItems) =>
-  //     prevItems.map((item) =>
-  //       item?.prd_id === prd_id ? { ...item, quantity: newQuantity } : item
-  //     )
-  //   );
-  //   dispatch(cartAction.updateCart({ prd_id, quantity: newQuantity }));
-  // };
 
   // Quantity change
   const handleQuantityChange = async (prd_id, newQuantity) => {
     try {
       const response = await updateCartItemQuantity(prd_id, newQuantity);
-
       if (response) {
-        // ✅ API success → update local state + Redux
         setProducts((prevItems) =>
           prevItems.map((item) =>
             item?.prd_id === prd_id ? { ...item, quantity: newQuantity } : item
           )
         );
-
         dispatch(cartAction.updateCart({ prd_id, quantity: newQuantity }));
       } else {
         alert("Failed to update cart quantity");
@@ -258,23 +241,54 @@ export default function Cart() {
     }
   };
 
-  // Remove item
-  // const handleRemove = (id) => {
-  //   let cartIds = JSON.parse(localStorage.getItem("cart")) || [];
-  //   cartIds = cartIds.filter((item) => item?.prd_id !== id);
-  //   localStorage.setItem("cart", JSON.stringify(cartIds));
-  //   const updatedProducts = products.filter((item) => item?.prd_id !== id);
-  //   setProducts(updatedProducts);
-  //   dispatch(cartAction.removeCart(updatedProducts));
-  // };
+  // Apply coupon
+  const applyCoupon = async () => {
+    try {
+      if (!coupon) {
+        setCouponMessage("Please enter a coupon code!");
+        setCouponMessageColor("red");
+        return;
+      }
 
-  const applyCoupon = () => {
-    if (coupon === "DISCOUNT180") {
-      setIsCouponApplied(true);
-      setCouponMessage("Coupon Applied! ₹180 discount added.");
-      setCouponMessageColor("green");
-    } else {
-      setCouponMessage("Invalid Coupon Code!");
+      const token = localStorage.getItem("token");
+      const productIds = products.map((item) => item.prd_id);
+
+      const payload = {
+        coupon_code: coupon,
+        cart_amount: checkoutDetail.subTotal - checkoutDetail.productDiscount,
+        product_ids: productIds,
+      };
+
+      const res = await fetch("https://dhanbet9.co/api/coupons/validate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const result = await res.json();
+      console.log("COUPON RESPONSE:", result);
+
+      if (result.status) {
+        setIsCouponApplied(true);
+        setCouponMessage(result.data.message || "Coupon applied successfully!");
+        setCouponMessageColor("green");
+
+        setCheckoutDetail((prev) => ({
+          ...prev,
+          couponDiscount: result.data.discount,
+          total: prev.subTotal - prev.productDiscount - result.data.discount,
+        }));
+      } else {
+        setCouponMessage(result?.message || "Invalid Coupon Code!");
+        setCouponMessageColor("#fe1e01");
+        setIsCouponApplied(false);
+      }
+    } catch (err) {
+      console.error("Coupon API error:", err);
+      setCouponMessage("Something went wrong! Try again.");
       setCouponMessageColor("red");
     }
   };
@@ -343,12 +357,12 @@ export default function Cart() {
                       <span>₹{checkoutDetail.subTotal.toFixed(2)}</span>
                     </div>
                     <div className="list-box d-flex justify-content-between mb-2">
-                      <span>Shipping</span>
-                      <span>Free</span>
+                      <span>Discount</span>
+                      <span>- ₹{checkoutDetail.productDiscount.toFixed(2)}</span>
                     </div>
                     <div className="list-box d-flex justify-content-between mb-2">
-                      <span>Discount</span>
-                      <span>- ₹{checkoutDetail.discount.toFixed(2)}</span>
+                      <span>Coupon</span>
+                      <span>- ₹{checkoutDetail.couponDiscount.toFixed(2)}</span>
                     </div>
                     <div className="list-box d-flex justify-content-between mb-3">
                       <span>Tax (18%)</span>
@@ -362,7 +376,7 @@ export default function Cart() {
                     <Link
                       to={`/checkout/${checkoutUrl}`}
                       className="btn btn-primary w-100 rounded-0 py-2"
-                      state={{ CartData: products,Total:checkoutDetail }}
+                      state={{ CartData: products, Total: checkoutDetail }}
                     >
                       PROCEED TO CHECKOUT →
                     </Link>

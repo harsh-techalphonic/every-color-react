@@ -47,7 +47,9 @@
 .home_hero .main-content-box .image-box{
     width: 100%;
     /* max-width: 500px; */
-    height: 500px;
+    /* height: 500px; */
+    display: flex;
+    justify-content: center;
 }
 .home_hero .main-content-box .image-box img{
     width: 100%;

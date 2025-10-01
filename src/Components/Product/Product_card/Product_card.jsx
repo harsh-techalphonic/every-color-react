@@ -181,3 +181,4 @@ export default function Product_card({ products }) {
     </div>
   );
 }
+ 

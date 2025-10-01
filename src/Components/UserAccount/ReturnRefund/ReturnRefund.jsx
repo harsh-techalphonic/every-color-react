@@ -8,7 +8,7 @@ export default function ReturnRefund() {
   const [refundRetunDta, setRefundRetunDta] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState("");
   const dispatch = useDispatch();
-
+console.log("refundRetunDta", refundRetunDta)
   useEffect(() => {
     OrderApi(dispatch);
   }, [dispatch]);
@@ -65,6 +65,7 @@ export default function ReturnRefund() {
                 ? JSON.parse(product.product_variation)
                 : null;
 
+                {console.log("return orders", order)}
               return (
                 <div
                   key={product.id}

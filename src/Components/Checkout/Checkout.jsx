@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { API_URL } from "../../Config/config";
-import { useLocation } from "react-router-dom";
 import { PlaceOrderApis } from "./CashPlaceOrderApi";
-import AddressModal from "../UserAccount/Addresses/AddressModal.";
+import AddressModal from "../UserAccount/Addresses/AddressModal";
 
 export default function Checkout() {
   const location = useLocation();
@@ -16,14 +15,31 @@ export default function Checkout() {
   const [error, setError] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState("cod");
 
-  // State for modal management
   const [showModal, setShowModal] = useState(false);
   const [editAddress, setEditAddress] = useState(null);
   const [refreshAddresses, setRefreshAddresses] = useState(false);
 
+  // ✅ Coupon states
+  const [coupon, setCoupon] = useState("");
+  const [isCouponApplied, setIsCouponApplied] = useState(false);
+  const [couponMessage, setCouponMessage] = useState("");
+  const [couponMessageColor, setCouponMessageColor] = useState("red");
+  const [finalTotal, setFinalTotal] = useState(Total?.total || 0);
+
   const token = localStorage.getItem("token");
 
-  // ✅ Fetch Address List
+  // ✅ Load Razorpay script
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.async = true;
+    document.body.appendChild(script);
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
+
+  // ✅ Fetch addresses
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -34,15 +50,93 @@ export default function Checkout() {
           },
         });
         setAddresses(response.data?.data || []);
-        setRefreshAddresses(false); // Reset refresh flag
+        setRefreshAddresses(false);
       } catch (err) {
         console.error("Error fetching data:", err);
         setError(err.message);
       }
     };
     fetchData();
-  }, [token, refreshAddresses]); // Add refreshAddresses as dependency
+  }, [token, refreshAddresses]);
 
+  // ✅ Apply Coupon
+  const applyCoupon = (e) => {
+    e.preventDefault();
+    if (coupon.trim().toUpperCase() === "DISCOUNT180") {
+      setIsCouponApplied(true);
+      setCouponMessage("Coupon Applied! ₹180 discount added.");
+      setCouponMessageColor("green");
+      setFinalTotal((prev) => Math.max(prev - 180, 0)); // update final total
+    } else {
+      setIsCouponApplied(false);
+      setCouponMessage("Invalid Coupon Code!");
+      setCouponMessageColor("red");
+      setFinalTotal(Total?.total || 0); // reset if wrong code
+    }
+  };
+
+  // ✅ Razorpay payment
+  const handleOnlinePayment = () => {
+    const weblogo =
+      document.querySelector(".header-top")?.dataset?.weblogo || "";
+    const userData = JSON.parse(localStorage.getItem("personalDetails") || "{}");
+
+    const options = {
+      key: "rzp_test_RLPCBCYerPsEnt", // Replace with your Razorpay Key
+      amount: finalTotal * 100, // use discounted total
+      currency: "INR",
+      name: "Enlive Trips Pvt. Ltd.",
+      image: weblogo,
+      handler: async function (response) {
+        const payload = {
+          first_name: selectedAddress?.name,
+          address_id: selectedAddress?.id,
+          phone: selectedAddress?.mobile,
+          payment_method: "ONLINE",
+          platform: "Website",
+          order_amount: finalTotal,
+          products: CartData.map((item) => ({
+            product_id: item?.id,
+            product_quantity: item?.quantity,
+            product_name: item?.product_name,
+            product_image: item?.product_image,
+            product_price:
+              item?.variation?.sale_price || item?.product_price,
+            product_variation: item?.variation
+              ? JSON.stringify(item.variation)
+              : null,
+          })),
+          payment_id: response.razorpay_payment_id,
+        };
+
+        try {
+          const orderResponse = await PlaceOrderApis(payload);
+          if (orderResponse.message === "Order placed successfully") {
+            alert("✅ Order Placed Successfully!");
+            navigate("/home");
+          } else {
+            alert("❌ Failed to place order");
+          }
+        } catch (err) {
+          console.error("Error placing order:", err);
+          alert("❌ Something went wrong");
+        }
+      },
+      prefill: {
+        name: userData.fullname || "",
+        email: userData.email || "",
+        contact: userData.phone || "",
+      },
+      theme: {
+        color: "#3399cc",
+      },
+    };
+
+    const rzp = new window.Razorpay(options);
+    rzp.open();
+  };
+
+  // ✅ Checkout submit
   const submitCheckOut = async (e) => {
     e.preventDefault();
 
@@ -51,31 +145,29 @@ export default function Checkout() {
       return;
     }
 
-    const payload = {
-      first_name: selectedAddress?.name,
-      address_id: selectedAddress?.id,
-      phone: selectedAddress?.mobile,
-      payment_method: paymentMethod === "cod" ? "COD" : "ONLINE",
-      order_amount: Total.total,
-      products: CartData.map((item) => ({
-        product_id: item?.id,
-        product_quantity: item?.quantity,
-        product_name: item?.product_name,
-        product_image: item?.product_image,
-        product_price: item?.variation?.sale_price || item?.product_price,
-        product_variation: item?.variation
-          ? JSON.stringify(item.variation)
-          : null,
-      })),
-    };
-
-    // console.log("🚀 Order Payload:", payload);
-
     if (paymentMethod === "cod") {
+      const payload = {
+        first_name: selectedAddress?.name,
+        address_id: selectedAddress?.id,
+        phone: selectedAddress?.mobile,
+        payment_method: "COD",
+        platform: "Website",
+        order_amount: finalTotal,
+        products: CartData.map((item) => ({
+          product_id: item?.id,
+          product_quantity: item?.quantity,
+          product_name: item?.product_name,
+          product_image: item?.product_image,
+          product_price:
+            item?.variation?.sale_price || item?.product_price,
+          product_variation: item?.variation
+            ? JSON.stringify(item.variation)
+            : null,
+        })),
+      };
+
       try {
         const response = await PlaceOrderApis(payload);
-        // console.log("Order Response:", response);
-
         if (response.message === "Order placed successfully") {
           alert("✅ Order Placed Successfully!");
           navigate("/home");
@@ -87,40 +179,32 @@ export default function Checkout() {
         alert("❌ Something went wrong");
       }
     } else {
-      alert("🌐 Redirecting to Online Payment Gateway...");
-      // later: integrate Razorpay / Stripe here
+      handleOnlinePayment();
     }
   };
 
-  // Function to handle opening modal for adding new address
+  // ✅ Address modal handlers
   const handleAddAddress = () => {
-    setEditAddress(null); // Clear any edit data
+    setEditAddress(null);
     setShowModal(true);
   };
-
-  // Function to handle opening modal for editing address
   const handleEditAddress = (address) => {
     setEditAddress(address);
     setShowModal(true);
   };
-
-  // Function to close modal
   const handleCloseModal = () => {
     setShowModal(false);
     setEditAddress(null);
   };
-
-  // Function to refresh addresses after adding/editing
-  const handleRefreshAddresses = () => {
-    setRefreshAddresses(true);
-  };
+  const handleRefreshAddresses = () => setRefreshAddresses(true);
 
   return (
     <div className="container checkout-container my-5">
       <form onSubmit={submitCheckOut} method="POST">
         <div className="row justify-content-between">
-          {/* ✅ Address + Payment Section */}
+          {/* Address + Payment Section */}
           <div className="col-md-7">
+            {/* Address selection */}
             <div className="address-box mb-4">
               <h4 className="mb-3">📍 Select Delivery Address</h4>
               {error && <p className="text-danger">{error}</p>}
@@ -152,7 +236,7 @@ export default function Checkout() {
                             type="button"
                             className="btn btn-sm btn-outline-secondary"
                             onClick={(e) => {
-                              e.stopPropagation(); // Prevent selecting the address
+                              e.stopPropagation();
                               handleEditAddress(addr);
                             }}
                           >
@@ -179,7 +263,7 @@ export default function Checkout() {
               </button>
             </div>
 
-            {/* ✅ Payment Section */}
+            {/* Payment Option */}
             <div className="payment-box mt-4">
               <h4 className="mb-3">💳 Payment Option</h4>
               <div className="pay-opt-box">
@@ -195,7 +279,6 @@ export default function Checkout() {
                         name="payment_method"
                         id="cod"
                         value="cod"
-                        defaultChecked
                         checked={paymentMethod === "cod"}
                         onChange={(e) => setPaymentMethod(e.target.value)}
                         disabled={!selectedAddress}
@@ -230,7 +313,7 @@ export default function Checkout() {
                       >
                         <img
                           src="/paypal.png"
-                          alt="COD Icon"
+                          alt="Online Icon"
                           style={{ width: "40px", marginRight: "10px" }}
                         />
                         Online Payment
@@ -242,40 +325,31 @@ export default function Checkout() {
             </div>
           </div>
 
-          {/* ✅ Order Summary */}
+          {/* Order Summary */}
           <div className="col-md-4">
             <div className="order-summary card p-3 shadow-sm">
               <h5 className="mb-3">🛒 Order Summary</h5>
-              <div className="summery-product">
-                <ul className="list-unstyled">
-                  {CartData.map((value, index) => (
-                    <li
-                      key={index}
-                      className="d-flex gap-3 my-2 border-bottom pb-2"
-                    >
-                      <img
-                        src={value.product_image}
-                        alt={value.product_name}
-                        style={{
-                          width: "60px",
-                          height: "60px",
-                          objectFit: "cover",
-                        }}
-                      />
-                      <div>
-                        <h6 className="mb-1">{value.product_name}</h6>
-                        <p className="mb-0">
-                          {value.quantity} ×{" "}
-                          <span>
-                            ₹
-                            {value.variation?.sale_price || value.product_price}
-                          </span>
-                        </p>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              <ul className="list-unstyled">
+                {CartData.map((value, index) => (
+                  <li
+                    key={index}
+                    className="d-flex gap-3 my-2 border-bottom pb-2"
+                  >
+                    <img
+                      src={value.product_image}
+                      alt={value.product_name}
+                      style={{ width: "60px", height: "60px", objectFit: "cover" }}
+                    />
+                    <div>
+                      <h6 className="mb-1">{value.product_name}</h6>
+                      <p className="mb-0">
+                        {value.quantity} × ₹
+                        {value.variation?.sale_price || value.product_price}
+                      </p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
 
               <table className="table table-sm mt-3">
                 <tbody>
@@ -289,7 +363,9 @@ export default function Checkout() {
                   </tr>
                   <tr>
                     <td>Discount</td>
-                    <td className="text-end">- ₹{Total?.discount}</td>
+                    <td className="text-end">
+                      - ₹{isCouponApplied ? (Total?.discount + 180) : Total?.discount}
+                    </td>
                   </tr>
                   <tr>
                     <td>Tax</td>
@@ -297,18 +373,41 @@ export default function Checkout() {
                   </tr>
                   <tr className="fw-bold border-top">
                     <td>Total</td>
-                    <td className="text-end">₹{Total?.total}</td>
+                    <td className="text-end">₹{finalTotal}</td>
                   </tr>
                 </tbody>
               </table>
 
               <button
                 type="submit"
-                className="btn btn-success w-100 mt-2 "
+                className="btn btn-success w-100 mt-2"
                 style={{ backgroundColor: "#DB3030", borderColor: "#DB3030" }}
                 disabled={!selectedAddress}
               >
                 PLACE ORDER
+              </button>
+            </div>
+
+            {/* Coupon Box */}
+            <div className="discount_box mt-4">
+              <h5>Have a Coupon?</h5>
+              <div className="mb-3">
+                <input
+                  type="text"
+                  className="form-control mb-2"
+                  placeholder="Enter coupon code"
+                  value={coupon}
+                  onChange={(e) => setCoupon(e.target.value)}
+                />
+                <span
+                  className="message_show"
+                  style={{ color: couponMessageColor }}
+                >
+                  {couponMessage}
+                </span>
+              </div>
+              <button className="btn btn-primary" onClick={applyCoupon}>
+                Apply Coupon
               </button>
             </div>
           </div>

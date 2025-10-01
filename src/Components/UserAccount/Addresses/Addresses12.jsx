@@ -55,7 +55,8 @@ export default function Addresses() {
 
   const fetchStates = async () => {
     try {
-      const response = await axios.get(`${config.City_State_URL}/state`);
+      const response = await axios.get(`https://dhanbet9.co/api/states`);
+      console.log(" state response", response)
       setStatedata(response.data.state || []);
     } catch (err) {
       setError(err.message);

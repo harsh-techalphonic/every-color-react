@@ -32,7 +32,7 @@ export default function ProductFilter({ updateFilters }) {
   // Rating filter
   const [selectedRating, setSelectedRating] = useState(null);
 
-  // Timers for debounce
+  // Debounce timers
   const minTimerRef = useRef(null);
   const ratingTimerRef = useRef(null);
 
@@ -40,27 +40,24 @@ export default function ProductFilter({ updateFilters }) {
   useEffect(() => {
     axios
       .get(`${config.API_URL}/category-with-sub-category`)
-      .then((response) => setCategories(response.data))
-      .catch((error) => console.log(error));
+      .then((res) => setCategories(res.data))
+      .catch((err) => console.error(err));
   }, []);
 
-  // Fetch dynamic min-max price
+  // Fetch min-max price dynamically
   useEffect(() => {
     const fetchPriceRange = async () => {
       try {
         const res = await axios.get(`${config.API_URL}/min-max-price`);
         if (res.data?.status) {
-          let  min = parseFloat(res.data.min_price);
-          let  max = parseFloat(res.data.max_price);
-
-              min = min - 1;
-              max = max + 1;
-
+          let min = parseFloat(res.data.min_price) - 1;
+          let max = parseFloat(res.data.max_price) + 1;
           setFixedMinPrice(min);
           setFixedMaxPrice(max);
           setMinPrice(min);
           setMaxPrice(max);
 
+          // Initialize filters
           updateFilters({ min_price: min, max_price: max });
         }
       } catch (err) {
@@ -70,7 +67,7 @@ export default function ProductFilter({ updateFilters }) {
     fetchPriceRange();
   }, []);
 
-  // Debounce price filter
+  // Debounce price filter changes
   useEffect(() => {
     if (minPrice == null || maxPrice == null) return;
     clearTimeout(minTimerRef.current);
@@ -106,30 +103,37 @@ export default function ProductFilter({ updateFilters }) {
     setMaxPrice(value);
   };
 
- const clearPriceFilters = () => {
-  setMinPrice(fixedMinPrice);
-  setMaxPrice(fixedMaxPrice);
-  updateFilters({ min_price: fixedMinPrice, max_price: fixedMaxPrice });
-};
+  const clearPriceFilters = () => {
+    setMinPrice(fixedMinPrice);
+    setMaxPrice(fixedMaxPrice);
+    updateFilters({ min_price: fixedMinPrice, max_price: fixedMaxPrice });
+  };
 
   const handleRatingSelect = (val) => {
     setSelectedRating(selectedRating === val ? null : val);
   };
 
   const clearRating = () => {
-  setSelectedRating(null);
-  updateFilters({ ratings: null }); // Make sure parent filter is also cleared
-};
+    setSelectedRating(null);
+    updateFilters({ ratings: null });
+  };
 
   const handleCategoryFilter = (category, sub_category = null) => {
+    updateFilters({ category_id: category, subcategory_id: sub_category || null });
+
+    // Update URL
     let query = `?category=${category}`;
     if (sub_category) query += `&subcategory=${sub_category}`;
     navigate(`/product${query}`);
   };
 
   const handleAccordionChange = (eventKey) => {
-    if (eventKey === null) navigate(`/product`);
-    else handleCategoryFilter(eventKey);
+    if (!eventKey) {
+      updateFilters({ category_id: null, subcategory_id: null });
+      navigate(`/product`);
+    } else {
+      handleCategoryFilter(eventKey);
+    }
   };
 
   return (
@@ -141,11 +145,7 @@ export default function ProductFilter({ updateFilters }) {
         </div>
         <div className="list-group">
           {categories.length === 0 && <div className="p-2">Loading categories...</div>}
-          <Accordion
-            defaultActiveKey={`${slug_category}`}
-            onSelect={handleAccordionChange}
-            className="category-item"
-          >
+          <Accordion defaultActiveKey={`${slug_category}`} onSelect={handleAccordionChange} className="category-item">
             {categories.map((category, index) => (
               <Accordion.Item eventKey={category.slug} key={index}>
                 <Accordion.Header className="accordion-header">
@@ -171,9 +171,8 @@ export default function ProductFilter({ updateFilters }) {
                       <li
                         key={subIndex}
                         onClick={() => handleCategoryFilter(category.slug, subcat.slug)}
-                        className={`mb-1 ${
-                          slug_sub_category === subcat.slug ? "text-success fw-bold" : ""
-                        }`}
+                        className={`mb-1 ${slug_sub_category === subcat.slug ? "text-success fw-bold" : ""}`}
+                        style={{ cursor: "pointer" }}
                       >
                         {subcat.name}
                       </li>
@@ -186,16 +185,15 @@ export default function ProductFilter({ updateFilters }) {
         </div>
       </div>
 
-      {/* Price Range Section */}
+      {/* Price Section */}
       <div className="card categories-card mb-3">
         <div className="categories-header d-flex justify-content-between align-items-center">
           <span>Price Range</span>
-          {/* Price Clear Button */}
-{minPrice !== fixedMinPrice || maxPrice !== fixedMaxPrice ? (
-  <button type="button" onClick={clearPriceFilters} className="btn btn-sm btn-link">
-    <FontAwesomeIcon icon={faXmark} /> Clear
-  </button>
-) : null}
+          {minPrice !== fixedMinPrice || maxPrice !== fixedMaxPrice ? (
+            <button type="button" onClick={clearPriceFilters} className="btn btn-sm btn-link">
+              <FontAwesomeIcon icon={faXmark} /> Clear
+            </button>
+          ) : null}
         </div>
         <div className="list-group p-2">
           {minPrice != null && maxPrice != null && (
@@ -203,23 +201,11 @@ export default function ProductFilter({ updateFilters }) {
               <div className="d-flex justify-content-between">
                 <div>
                   <small>Min:</small>{" "}
-                  <input
-                    type="number"
-                    value={minPrice}
-                    onChange={handleMinChange}
-                    min={fixedMinPrice}
-                    max={fixedMaxPrice}
-                  />
+                  <input type="number" value={minPrice} onChange={handleMinChange} min={fixedMinPrice} max={fixedMaxPrice} />
                 </div>
                 <div>
                   <small>Max:</small>{" "}
-                  <input
-                    type="number"
-                    value={maxPrice}
-                    onChange={handleMaxChange}
-                    min={fixedMinPrice}
-                    max={fixedMaxPrice}
-                  />
+                  <input type="number" value={maxPrice} onChange={handleMaxChange} min={fixedMinPrice} max={fixedMaxPrice} />
                 </div>
               </div>
               <div className="slider position-relative" style={{ height: 8, marginTop: 8 }}>
@@ -234,22 +220,8 @@ export default function ProductFilter({ updateFilters }) {
                 ></div>
               </div>
               <div className="range-input d-flex gap-2">
-                <input
-                  type="range"
-                  min={fixedMinPrice}
-                  max={fixedMaxPrice}
-                  value={minPrice}
-                  step={stepAmount}
-                  onChange={handleMinChange}
-                />
-                <input
-                  type="range"
-                  min={fixedMinPrice}
-                  max={fixedMaxPrice}
-                  value={maxPrice}
-                  step={stepAmount}
-                  onChange={handleMaxChange}
-                />
+                <input type="range" min={fixedMinPrice} max={fixedMaxPrice} value={minPrice} step={stepAmount} onChange={handleMinChange} />
+                <input type="range" min={fixedMinPrice} max={fixedMaxPrice} value={maxPrice} step={stepAmount} onChange={handleMaxChange} />
               </div>
               <div className="d-flex justify-content-between small">
                 <div>₹{minPrice}</div>
@@ -264,33 +236,24 @@ export default function ProductFilter({ updateFilters }) {
       <div className="card categories-card mb-3">
         <div className="categories-header d-flex justify-content-between align-items-center">
           <span>Customer Ratings</span>
-          {/* Rating Clear Button */}
-{selectedRating != null && (
-  <button type="button" onClick={clearRating} className="btn btn-sm btn-link">
-    <FontAwesomeIcon icon={faXmark} /> Clear
-  </button>
-)}
+          {selectedRating != null && (
+            <button type="button" onClick={clearRating} className="btn btn-sm btn-link">
+              <FontAwesomeIcon icon={faXmark} /> Clear
+            </button>
+          )}
         </div>
         <div className="list-group p-2">
           {RATING_OPTIONS.map(({ label, value }) => (
             <div className="rating-check-item" key={value}>
               <div className="form-check d-flex align-items-center">
-                <input
-                  className="form-check-input"
-                  id={value}
-                  type="checkbox"
-                  checked={selectedRating === value}
-                  onChange={() => handleRatingSelect(value)}
-                />
+                <input className="form-check-input" id={value} type="checkbox" checked={selectedRating === value} onChange={() => handleRatingSelect(value)} />
                 <label className="form-check-label ms-2" htmlFor={value}>
                   {label}
                 </label>
               </div>
             </div>
           ))}
-          {selectedRating != null && (
-            <div className="mt-1 small text-muted">Filtering for {selectedRating}★ & above</div>
-          )}
+          {selectedRating != null && <div className="mt-1 small text-muted">Filtering for {selectedRating}★ & above</div>}
         </div>
       </div>
     </div>

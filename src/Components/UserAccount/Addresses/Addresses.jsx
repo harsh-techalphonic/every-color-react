@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import config from "../../../Config/config.json";
-import AddressModal from "./AddressModal.";
+import AddressModal from "./AddressModal";
 
 export default function Addresses() {
   const [showModal, setShowModal] = useState(false);

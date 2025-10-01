@@ -11,7 +11,7 @@ export default function ReturnRefund() {
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState("");
   const [selectedProduct, setSelectedProduct] = useState(null);
-  console?.log("selectedProduct --->>", modalType);
+  // console?.log("selectedProduct --->>", modalType);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [selectedReason, setSelectedReason] = useState("");
   const [inputReason, setInputReason] = useState("");
@@ -23,6 +23,7 @@ export default function ReturnRefund() {
 
   const dispatch = useDispatch();
   const orders = useSelector((store) => store.orders.orders);
+  console.log("orders", orders)
   const token = localStorage.getItem("token");
 
   useEffect(() => {
@@ -212,7 +213,7 @@ export default function ReturnRefund() {
               const variation = product.product_variation
                 ? JSON.parse(product.product_variation)
                 : null;
-
+                    // {console.log("first product", product)}
               return (
                 <div
                   key={product.id}
@@ -230,7 +231,7 @@ export default function ReturnRefund() {
                   <div className="order-box_content">
                     <p className="bold">{product.product_name}</p>
                     <p className="pricing">
-                      ₹{product.product_price} /{" "}
+                      ₹{order.order_amount} /{" "}
                       <span>{order.payment_method}</span>{" "}
                     </p>
                     <p className="orderID">
@@ -272,6 +273,41 @@ export default function ReturnRefund() {
                       >
                         Refund
                       </button>
+                    </div>
+                  )}
+
+                  {order?.order_status === "pending" && (
+                    <div className="Rerun_ref_btn">
+                      <button
+                        className="RETURN mb-4"
+                        onClick={() =>
+                          handleShowModal("RETURN", product, order)
+                        }
+                      >
+                              Track Order
+                      </button>
+                      <button
+                        className="Refund"
+                        onClick={() =>
+                          handleShowModal("REFUND", product, order)
+                        }
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  )}
+
+                  {order?.order_status === "shipped" && (
+                    <div className="Rerun_ref_btn">
+                      <button
+                        className="RETURN mb-4"
+                        onClick={() =>
+                          handleShowModal("RETURN", product, order)
+                        }
+                      >
+                        Track Order
+                      </button>
+                     
                     </div>
                   )}
                 </div>

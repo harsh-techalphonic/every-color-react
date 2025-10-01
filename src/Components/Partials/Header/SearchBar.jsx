@@ -1,80 +1,95 @@
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useState, useRef, useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import { Link, useLocation } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function SearchBar() {
-  const fetch_products = useSelector((store) => store.products);
-  // console.log("searchbar searchbar", fetch_products)
+  const [tags, setTags] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [showsearchTerm, setshowsearchTerm] = useState(false);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const navigate = useNavigate();
   const wrapperRef = useRef(null);
-  const location = useLocation(); 
 
-  const productList = fetch_products?.data || [];
-
-  const filteredProducts = productList.filter((product) =>
-    product.product_name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-  // console.log("seacrhbar", filteredProducts)
+  // Fetch tags from API
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
-        setSearchTerm("");
+    const fetchTags = async () => {
+      try {
+        const res = await fetch("https://dhanbet9.co/api/tags");
+        const data = await res.json();
+        if (data.success && Array.isArray(data.tags)) {
+          // Remove empty strings
+          setTags(data.tags.filter(tag => tag.trim() !== ""));
+        }
+      } catch (err) {
+        console.error("Error fetching tags:", err);
       }
     };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    fetchTags();
   }, []);
 
-  const togglesearchTerm = () => {
-    setshowsearchTerm((prev) => !prev);
-  };
+  // Close suggestions when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
+        setShowSuggestions(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
-  const handleCategoriesClickOutside = (e) => {
-    if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
-      setshowsearchTerm(false);
+  // Handle submit
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchTerm.trim()) {
+      navigate(`/product?search=${encodeURIComponent(searchTerm)}`);
+      setShowSuggestions(false);
     }
   };
 
-  useEffect(() => {
-    document.addEventListener('mousedown', handleCategoriesClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleCategoriesClickOutside);
-    };
-  }, []);
-
-  useEffect(() => {
-    setSearchTerm("");
-    setshowsearchTerm(false);
-  }, [location.pathname]);
+  // Filter tags by typed input
+  const filteredTags = tags.filter(tag =>
+    tag.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
-    <div className="position-relative sraechbar-we" ref={wrapperRef} style={{ margin: "0 8px" }}>
+    <div ref={wrapperRef} className="position-relative sraechbar-we" style={{ margin: "0 8px" }}>
       <div className="input-group">
         <input
           type="text"
           className="form-control mx-0"
           placeholder="What are you looking for?"
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          onChange={(e) => {
+            setSearchTerm(e.target.value);
+            setShowSuggestions(true);
+          }}
           aria-label="Search"
         />
-        <span className="input-group-text">
+        <span
+          className="input-group-text"
+          onClick={handleSearch}
+          style={{ cursor: "pointer" }}
+        >
           <FontAwesomeIcon icon={faSearch} />
         </span>
       </div>
 
-      {searchTerm && (
-        <div className='searchbarOUTPut'>
-          <ul className='list-unstyled'>
-            {filteredProducts.length > 0 ? (
-              filteredProducts.map((product) => (
-                <li key={product.prd_id}>
-                  <Link to={`/product/${product.product_slug}`}>{product.product_name}</Link>
+      {showSuggestions && searchTerm && (
+        <div className="searchbarOUTPut">
+          <ul className="list-unstyled">
+            {filteredTags.length > 0 ? (
+              filteredTags.map((tag, index) => (
+                <li key={index}>
+                  <Link
+                    to={`/product?search=${encodeURIComponent(tag)}`}
+                    onClick={() => {
+                      setSearchTerm(tag);
+                      setShowSuggestions(false); // close on tag click
+                    }}
+                  >
+                    {tag}
+                  </Link>
                 </li>
               ))
             ) : (

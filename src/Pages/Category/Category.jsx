@@ -55,7 +55,7 @@ export default function Category() {
     navigate(`/product?category=${category}&subcategory=${subCatSlug}`);
   };
 
-
+  //  console.log("categroy page",subCategories )
   const Uri= "category/:${currentCategory.name}/:${subCatSlug}"
   return (
     <>

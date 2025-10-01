@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+import config from "../../../Config/config.json"
 
 export default function NewsletterForm({ simple = false }) {
   const [email, setEmail] = useState("");
@@ -26,6 +27,7 @@ export default function NewsletterForm({ simple = false }) {
           body: JSON.stringify({ email }),
         }
       );
+      console.log("NewsletterForm", response)
 
       const result = await response.json();
       if (response.ok) {

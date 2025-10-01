@@ -22,8 +22,9 @@ export default function HotOffer({uri }) {
     if (matchedCategory && matchedCategory.banner) {
       setSectionData({
         banner: matchedCategory.banner,
-        title: matchedCategory.name || '',
-        discount: matchedCategory.discount || '',
+        name : matchedCategory.name || '',
+        title: matchedCategory.title || '',
+        sub_title: matchedCategory.sub_title || '',
         description: matchedCategory.description || '',
         button_text: 'Shop Now',
         slug: matchedCategory.slug || '',
@@ -45,6 +46,7 @@ export default function HotOffer({uri }) {
 
     setSectionData({});
   }, [bannersStore, categoryItems, category]);
+  console.log( "section data ", sectionData)
 
   return (
     <section className="Hot_offers py-5">
@@ -52,7 +54,7 @@ export default function HotOffer({uri }) {
         <div className="row justify-content-between align-items-center">
           <div className="col-lg-5  mb-lg-0 mb-4">
             <div className="Hot_offer-Content">
-              {sectionData?.discount && <span>{sectionData.discount}</span>}
+              {sectionData?.sub_title && <span>{sectionData.sub_title}</span>}
               {sectionData?.title && <h2>{sectionData.title}</h2>}
               {sectionData?.description && <p>{sectionData.description}</p>}
               <div className="button-dark mt-4">

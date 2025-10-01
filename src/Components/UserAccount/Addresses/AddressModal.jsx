@@ -55,31 +55,33 @@ const AddressModal = ({
 
   const stateapi = async () => {
     try {
-      const response = await axios.get(`${config.City_State_URL}state`, {
+      const response = await axios.get(`${config.City_State_URL}states`, {
         headers: {
           "Content-Type": "application/json",
         },
       });
-      setStatedata(response.data.state);
+      console.log("state data" , response)
+      setStatedata(response.data);
     } catch (err) {
       console.error("Error fetching state data:", err);
     }
   };
 
   const cityapi = async () => {
-    try {
-      const response = await axios.post(`${config.City_State_URL}city`, {
-        state: state,
-      }, {
+  try {
+    const response = await axios.get(
+      `${config.City_State_URL}cities?state=${encodeURIComponent(state)}`,
+      {
         headers: {
           "Content-Type": "application/json",
         },
-      });
-      setCitydata(response.data.cities);
-    } catch (err) {
-      console.error("Error fetching city data:", err);
-    }
-  };
+      }
+    );
+    setCitydata(response.data);
+  } catch (err) {
+    console.error("Error fetching city data:", err);
+  }
+};
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -136,7 +138,7 @@ const AddressModal = ({
             </div>
             <div className="modal-body">
               <div className="row">
-                <div className="col-lg-12 mb-3">
+                <div className="col-lg-6 mb-3">
                   <label htmlFor="fullName" className="form-label">
                     Full Name
                   </label>
@@ -168,8 +170,34 @@ const AddressModal = ({
                     required
                   />
                 </div>
+                <div className="col-lg-12 mb-3">
+                  <label htmlFor="address" className="form-label">
+                    Address
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Road No. 13/x, House no. 1320/C, Flat No. 5D"
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="col-lg-8 mb-3">
+                  <label htmlFor="landmark" className="form-label">
+                    Landmark
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Landmark"
+                    value={landmark}
+                    onChange={(e) => setLandmark(e.target.value)}
+                    required
+                  />
+                </div>
 
-                <div className="col-lg-6 mb-3">
+                <div className="col-lg-4 mb-3">
                   <label htmlFor="state" className="form-label">
                     State
                   </label>
@@ -188,7 +216,7 @@ const AddressModal = ({
                   </select>
                 </div>
                 
-                <div className="col-lg-6 mb-3">
+                <div className="col-lg-4 mb-3">
                   <label htmlFor="city" className="form-label">
                     City
                   </label>
@@ -207,19 +235,7 @@ const AddressModal = ({
                   </select>
                 </div>
                 
-                <div className="col-lg-8 mb-3">
-                  <label htmlFor="landmark" className="form-label">
-                    Landmark
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Landmark"
-                    value={landmark}
-                    onChange={(e) => setLandmark(e.target.value)}
-                    required
-                  />
-                </div>
+                
                 
                 <div className="col-lg-4 mb-3">
                   <label htmlFor="zipCode" className="form-label">
@@ -240,19 +256,7 @@ const AddressModal = ({
                   />
                 </div>
                 
-                <div className="col-lg-12 mb-3">
-                  <label htmlFor="address" className="form-label">
-                    Address
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Road No. 13/x, House no. 1320/C, Flat No. 5D"
-                    value={address}
-                    onChange={(e) => setAddress(e.target.value)}
-                    required
-                  />
-                </div>
+                
               </div>
             </div>
             <div className="modal-footer">

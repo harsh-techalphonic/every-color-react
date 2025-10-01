@@ -19,20 +19,20 @@
 }
 .Rerun_ref_btn .RETURN{
 background-color: #DB3030;
-font-size: 15px;
+font-size: 12px;
 font-weight: 600;
 color: #ffffff;
-padding: 8px 12px;
+padding: 8px 8px;
 letter-spacing: 1px;
 width: 100px;
 border: 1px solid #DB3030;
 } 
 .Rerun_ref_btn .Refund{
     background-color: #ffffff;
-    font-size: 15px;
+    font-size: 12px;
     font-weight: 600;
     color: #727272;
-    padding: 8px 12px;
+    padding: 8px 8px;
     letter-spacing: 1px;
     width: 100px;
     border: 1px solid #727272; 
@@ -48,6 +48,9 @@ border: 1px solid #DB3030;
 
 .order-box-one {
   border: 2px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  
 }
 .order-box-one .order-box-img{
     width: 100%;

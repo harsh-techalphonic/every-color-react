@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar as faSolidStar } from '@fortawesome/free-solid-svg-icons';
 import { faStar as faRegularStar } from '@fortawesome/free-regular-svg-icons';
 import config from '../../Config/config.json';
+import { ImageUrl } from "../../Config/config";
 import { toast, ToastContainer } from 'react-toastify';
 import axios from 'axios';
 import { useSelector } from "react-redux";
@@ -157,7 +158,7 @@ export default function ReviewRating({ singleProduct }) {
                   <div className='d-flex align-items-top gap-4'>
                     <div className='reviewr-img'>
                       {review.user.profile ? (
-                        <img src={review.user.profile} alt={`${review.user?.name || "User"}'s review`} />
+                        <img src={`${ImageUrl}${review.user.profile}`} alt={`${review.user?.name || "User"}'s review`} />
                       ) : (
                         <span>{review.user?.name ? review.user.name.slice(0, 2).toUpperCase() : "AN"}</span>
                       )}

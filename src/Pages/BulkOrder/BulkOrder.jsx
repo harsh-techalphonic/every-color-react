@@ -89,7 +89,8 @@ export default function BulkOrder() {
             <div className="col-xl-5 col-lg-6 col-md-8 col-12 my-4">
               <div className="login-box">
                 <form onSubmit={handleSubmit}>
-                  <h2 className="my-4">Bulk Order</h2>
+                  <h2 className="my-4">Bulk Order Inquiry</h2>
+                  <p>Submit your bulk order details below, and our team will contact you with the best pricing and delivery options.</p>
 
                   {/* API Response Message */}
                   {apiResponse.message && (

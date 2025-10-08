@@ -1,17 +1,17 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
 import "../ReturnRefund/ReturnRefund.css";
-import { Link } from "react-router-dom";
+
 import { useDispatch, useSelector } from "react-redux";
 import OrderApi from "../../../API/OrderApi";
 import { Modal, Button, Alert } from "react-bootstrap";
 import { sendRefundAndReplaceApi } from "./ApiExportOrBulk";
+import { useNavigate } from "react-router-dom";
 
 export default function ReturnRefund() {
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState("");
   const [selectedProduct, setSelectedProduct] = useState(null);
-  // console?.log("selectedProduct --->>", modalType);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [selectedReason, setSelectedReason] = useState("");
   const [inputReason, setInputReason] = useState("");
@@ -20,42 +20,28 @@ export default function ReturnRefund() {
   const [statusFilter, setStatusFilter] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const navigate = useNavigate();
+
+  // Cancel Modal States
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [cancelReason, setCancelReason] = useState("");
+  const [cancelError, setCancelError] = useState("");
+  const [cancelSuccess, setCancelSuccess] = useState("");
+
+  // Track expanded orders
+  const [expandedOrders, setExpandedOrders] = useState({});
 
   const dispatch = useDispatch();
   const orders = useSelector((store) => store.orders.orders);
-  console.log("orders", orders)
   const token = localStorage.getItem("token");
 
   useEffect(() => {
     OrderApi(dispatch, token);
   }, [dispatch]);
 
-  // Get orders array from Redux
-  const user = orders.length > 0 ? orders[0].user : null;
-
-  // If no orders yet
   if (!orders || orders.length === 0) {
     return <p className="text-center mt-5">No orders found.</p>;
   }
-
-  const handleShowModal = (type, product, order) => {
-    setModalType(type);
-    setSelectedProduct(product);
-    setSelectedOrder(order);
-    setShowModal(true);
-    setErrorMessage("");
-    setSuccessMessage("");
-  };
-
-  const handleClose = () => {
-    setShowModal(false);
-    setUploadedImages([]);
-    setInputReason("");
-    setSelectedReason("");
-    setQuantity(1);
-    setErrorMessage("");
-    setSuccessMessage("");
-  };
 
   const refundReasons = [
     { key: "PRODUCT_NOT_DELIVERED", label: "Product not delivered" },
@@ -81,6 +67,7 @@ export default function ReturnRefund() {
     { key: "SHIPPING_DELAY", label: "Shipping delayed beyond promised date" },
     { key: "OTHER", label: "Other" },
   ];
+
   const returnReasons = [
     { key: "DAMAGED", label: "Damaged product received" },
     { key: "DEFECTIVE", label: "Defective or not working" },
@@ -100,58 +87,117 @@ export default function ReturnRefund() {
     { key: "OTHER", label: "Other" },
   ];
 
-  // Validate form inputs
+  // Refund / Return Modal Handlers
+  const handleShowModal = (type, product, order) => {
+    setModalType(type);
+    setSelectedProduct(product);
+    setSelectedOrder(order);
+    setShowModal(true);
+    setErrorMessage("");
+    setSuccessMessage("");
+  };
+
+  const handleClose = () => {
+    setShowModal(false);
+    setUploadedImages([]);
+    setInputReason("");
+    setSelectedReason("");
+    setQuantity(1);
+    setErrorMessage("");
+    setSuccessMessage("");
+  };
+
+  // Cancel Modal Handlers
+  const handleShowCancelModal = (order,product) => {
+    setSelectedOrder(order);
+    setSelectedProduct(product);
+    setCancelReason("");
+    setCancelError("");
+    setCancelSuccess("");
+    setShowCancelModal(true);
+  };
+
+  const handleCloseCancelModal = () => {
+    setShowCancelModal(false);
+    setCancelReason("");
+    setCancelError("");
+    setCancelSuccess("");
+  };
+
+  // Cancel Order API
+  const cancelOrderApi = async () => {
+    if (!cancelReason.trim()) {
+      setCancelError("Please enter a reason for cancellation");
+      return;
+    }
+    try {
+      setCancelError("");
+      const formData = new FormData();
+      formData.append("order_id", selectedOrder.shiprocket_order_id);
+      formData.append("product_id", selectedProduct.product_id);
+      formData.append("reason", cancelReason);
+
+      const response = await fetch(
+        "https://dhanbet9.co/api/order/cancel-order",
+        {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}` },
+          body: formData,
+        }
+      );
+
+      const result = await response.json();
+      if (result?.success) {
+        setCancelSuccess("Order cancelled successfully!");
+        setTimeout(() => {
+          handleCloseCancelModal();
+          OrderApi(dispatch, token);
+        }, 2000);
+      } else {
+        setCancelError(result?.message || "Failed to cancel order");
+      }
+    } catch (err) {
+      setCancelError(err.message || "Error while cancelling order");
+    }
+  };
+
+  // Validate form inputs (Refund / Return)
   const validateForm = () => {
     if (!selectedReason) {
       setErrorMessage("Please select a reason");
       return false;
     }
-
     if (!inputReason.trim()) {
       setErrorMessage("Please provide details about your request");
       return false;
     }
-
     if (quantity <= 0 || quantity > selectedProduct.product_quantity) {
       setErrorMessage(
         `Quantity must be between 1 and ${selectedProduct.product_quantity}`
       );
       return false;
     }
-
     if (modalType === "RETURN" && uploadedImages.length === 0) {
       setErrorMessage("Please upload at least one image for return requests");
       return false;
     }
-
     return true;
   };
 
-  // API call to submit refund/return request
   const submitRequest = async () => {
-    console?.log("qwe1w1212");
     try {
       setErrorMessage("");
-
-      // Prepare form data
       const formData = new FormData();
-      formData.append("type", modalType == "RETURN" ? "replace" : "refund");
+      formData.append("type", modalType === "RETURN" ? "replace" : "refund");
       formData.append("order_id", selectedProduct.order_id);
       formData.append("product_order_id", selectedProduct?.product_id);
       formData.append("reason_code", selectedReason);
       formData.append("reason", inputReason);
       formData.append("quantity", quantity);
-
-      // Append images if any
-      uploadedImages.forEach((image, index) => {
+      uploadedImages.forEach((image) => {
         formData.append(`images[]`, image);
       });
-
-      // console.log("formData", formData);
-      // Call your API function
       const response = await sendRefundAndReplaceApi(formData);
-      // console.log("API Response:", response);
-
       if (response?.success) {
         setSuccessMessage(
           `Your ${modalType.toLowerCase()} request has been submitted successfully!`
@@ -166,10 +212,7 @@ export default function ReturnRefund() {
         );
       }
     } catch (err) {
-      console.error("API Error details:", err);
-      setErrorMessage(
-        err.message || "An error occurred. Please try again later."
-      );
+      setErrorMessage(err.message || "An error occurred. Please try again.");
     }
   };
 
@@ -179,10 +222,81 @@ export default function ReturnRefund() {
     }
   };
 
-  // Filter orders according to selected status
+  // Filter Orders
   const filteredOrders = statusFilter
     ? orders.filter((order) => order.order_status === statusFilter)
     : orders;
+
+  // inside your toggleExpand function
+  const toggleExpand = (orderId) => {
+    setExpandedOrders((prev) => {
+      // If clicking the same order, toggle it
+      if (prev[orderId]) {
+        return {};
+      }
+      // Open only the clicked order, close others
+      return { [orderId]: true };
+    });
+  };
+  // const shipmentId = filteredOrders.shiprocket_shipment_id
+  const downloadInvoice = async (shipmentId) => {
+    try {
+      if (!shipmentId) throw new Error("Shipment ID not found");
+
+      const formData = new FormData();
+      formData.append("ids", `[${shipmentId}]`); 
+
+      const response = await fetch("https://dhanbet9.co/api/download-invoice", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+      
+
+      const data = await response.json();
+
+      if (data?.invoice_url) {
+        window.open(data.invoice_url, "_blank");
+      } else {
+        throw new Error("Invoice URL not found in response");
+      }
+    } catch (err) {
+      alert(err.message || "Error downloading invoice");
+    }
+  };
+
+
+  const handleTrackOrder = async (order) => {
+    try {
+      const shipmentId = order.shiprocket_shipment_id ;
+      if (!shipmentId) throw new Error("Shipment ID or AWB not found");
+
+      const url = order.shiprocket_shipment_id 
+    ? `https://dhanbet9.co/api/track-order?shipment_id=${order.shiprocket_shipment_id}` 
+    : `https://dhanbet9.co/api/track-order?awb=${order.shiprocket_awb}`;
+    console.log("track url", url)
+
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Redirect to TrackOrderDetail page with data
+        navigate("/track-order-detail", { state: { trackingData: data } });
+      } else {
+        alert(data.message || "Failed to fetch tracking details");
+      }
+    } catch (err) {
+      alert(err.message || "Error while tracking order");
+    }
+  };
 
   return (
     <div className="orders__box return_refund">
@@ -207,173 +321,186 @@ export default function ReturnRefund() {
             </select>
           </div>
 
-          {/* Render only filtered orders */}
-          {filteredOrders.map((order) =>
-            order.products.map((product) => {
-              const variation = product.product_variation
-                ? JSON.parse(product.product_variation)
-                : null;
-                    // {console.log("first product", product)}
-              return (
-                <div
-                  key={product.id}
-                  className="order-box-one d-flex align-items-center gap-4 mb-3"
-                >
-                  {/* Product Image */}
-                  <div className="order-box-img">
-                    <img
-                      src={product.product_image}
-                      alt={product.product_name}
-                    />
-                  </div>
 
-                  {/* Product Details */}
-                  <div className="order-box_content">
-                    <p className="bold">{product.product_name}</p>
-                    <p className="pricing">
-                      ₹{order.order_amount} /{" "}
-                      <span>{order.payment_method}</span>{" "}
-                    </p>
-                    <p className="orderID">
-                      <b>Delivered on :</b>{" "}
-                      {new Date(order.created_at).toLocaleDateString()}
-                    </p>
-                    <p className="orderID">
-                      <b>Status :</b> {order.order_status}
-                    </p>
-                    <p className="orderID">
-                      <b>Order ID :</b> {order.id}
-                    </p>
-                    <p className="orderID">
-                      <b>Quantity :</b> {product.product_quantity}
-                    </p>
-
-                    {variation && (
-                      <p className="orderID">
-                        <b>Variation :</b> {variation.color} | {variation.size}
-                      </p>
-                    )}
-                  </div>
-
-                  {order?.order_status === "delivered" && (
-                    <div className="Rerun_ref_btn">
-                      <button
-                        className="RETURN mb-4"
-                        onClick={() =>
-                          handleShowModal("RETURN", product, order)
-                        }
-                      >
-                        RETURN
-                      </button>
-                      <button
-                        className="Refund"
-                        onClick={() =>
-                          handleShowModal("REFUND", product, order)
-                        }
-                      >
-                        Refund
-                      </button>
-                    </div>
-                  )}
-
-                  {order?.order_status === "pending" && (
-                    <div className="Rerun_ref_btn">
-                      <button
-                        className="RETURN mb-4"
-                        onClick={() =>
-                          handleShowModal("RETURN", product, order)
-                        }
-                      >
-                              Track Order
-                      </button>
-                      <button
-                        className="Refund"
-                        onClick={() =>
-                          handleShowModal("REFUND", product, order)
-                        }
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  )}
-
-                  {order?.order_status === "shipped" && (
-                    <div className="Rerun_ref_btn">
-                      <button
-                        className="RETURN mb-4"
-                        onClick={() =>
-                          handleShowModal("RETURN", product, order)
-                        }
-                      >
-                        Track Order
-                      </button>
-                     
-                    </div>
-                  )}
+          {/* Render Orders */}
+          {filteredOrders.map((order) => (
+            <div key={order.id} className={`order-box mb-4 ${
+    expandedOrders[order.id] ? "border rounded p-3" : ""
+  }`}>
+              <div
+                className="order-summary d-flex justify-content-between align-items-center p-3 border rounded"
+                style={{ cursor: "default" }} // removed pointer here
+              >
+                <div>
+                  <p>
+                    <b>Order ID:</b> {order.id}{" "}
+                  </p>
+                  {/* <p><b>Order ID:</b> {order.shiprocket_shipment_id} </p> */}
+                  <p>
+                    <b>Status:</b> {order.order_status}
+                  </p>
+                  <p>
+                    <b>Amount:</b> ₹{order.order_amount}
+                  </p>
+                  <p>
+                    <b>Date:</b>{" "}
+                    {new Date(order.created_at).toLocaleDateString()}
+                  </p>
                 </div>
-              );
-            })
-          )}
+
+                <div className="d-flex flex-column Rerun_ref_btn align-items-end gap-2">
+                  {/* Toggle button ONLY here */}
+                  <button
+                    className="btn Refund "
+                    onClick={() => toggleExpand(order.id)}
+                  >
+                    {expandedOrders[order.id]
+                      ? "▲ Hide Products"
+                      : "▼ View Products"}
+                  </button>
+
+                  <button
+                    className="btn RETURN"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      downloadInvoice(order.shiprocket_order_id);
+                    }}
+                  >
+                    Download Invoice
+                  </button>
+                </div>
+              </div>
+
+              {/* Products inside the order */}
+              {expandedOrders[order.id] && (
+                <div className="mt-3">
+                  {order.products.map((product) => {
+                    const variation = product.product_variation
+                      ? JSON.parse(product.product_variation)
+                      : null;
+                    return (
+                      <div
+                        key={product.id}
+                        className="order-box-one d-flex align-items-center gap-4 mb-3 border p-2 rounded"
+                      >
+                        <div className="order-box-img">
+                          <img
+                            src={product.product_image}
+                            alt={product.product_name}
+                          />
+                        </div>
+
+                        <div className="order-box_content">
+                          <p className="bold">{product.product_name}</p>
+                          <p className="pricing">
+                            ₹{product.product_price} ×{" "}
+                            {product.product_quantity}
+                          </p>
+                          {variation && (
+                            <p className="orderID">
+                              <b>Variation:</b> {variation.color} |{" "}
+                              {variation.size}
+                            </p>
+                          )}
+                        </div>
+
+                        {order?.order_status === "delivered" && (
+                          <div className="Rerun_ref_btn">
+                            <button
+                              className="RETURN mb-2"
+                              onClick={() =>
+                                handleShowModal("RETURN", product, order)
+                              }
+                            >
+                              RETURN
+                            </button>
+                            <button
+                              className="Refund"
+                              onClick={() =>
+                                handleShowModal("REFUND", product, order)
+                              }
+                            >
+                              REFUND
+                            </button>
+                          </div>
+                        )}
+
+                        {order?.order_status === "pending" && (
+                          <div className="Rerun_ref_btn">
+                            <button className="RETURN mb-2" onClick={() => handleTrackOrder(order)}>Track Order</button>
+                            <button
+                              className="Refund"
+                              onClick={() => handleShowCancelModal(order, product)}
+                            >
+                              CANCEL
+                            </button>
+                          </div>
+                        )}
+
+                        {order?.order_status === "shipped" && (
+                          <div className="Rerun_ref_btn">
+                            <button className="RETURN mb-2" onClick={() => handleTrackOrder(order)}>Track Order</button>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          ))}
         </div>
 
-        {/* Right-side summary */}
-        <div className="col-lg-4">
-          <div className="container">
-            <div className="card bg-light p-3">
-              <h6>Order# (1 item)</h6>
-              <Link to="#" className="text-primary">
-                Order placed on 11th September 2024
-              </Link>
-              <p className="text-muted">Paid by Cash in Delivery</p>
-            </div>
+        {/* Cancel Modal */}
+        <Modal show={showCancelModal} onHide={handleCloseCancelModal}>
+          <Modal.Header closeButton>
+            <Modal.Title>Cancel Order</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            {cancelError && <Alert variant="danger">{cancelError}</Alert>}
+            {cancelSuccess && <Alert variant="success">{cancelSuccess}</Alert>}
 
-            <div className="card mt-3 p-3 ">
-              <h5 className="fw-bold">Order Payment Details</h5>
-              <div className="d-flex justify-content-between">
-                <span>Order Amount</span>
-                <span>&#8377;909.50</span>
-              </div>
-              <div className="d-flex justify-content-between">
-                <span>Order Saving</span>
-                <span>&#8377;909</span>
-              </div>
-              <div className="d-flex justify-content-between">
-                <span>Coupon Savings</span>
-                <span>&#8377;909</span>
-              </div>
-              <div className="d-flex justify-content-between">
-                <span>Convenience Fee</span>
-                <span>&#8377;909</span>
-              </div>
-              <hr />
-              <div className="d-flex justify-content-between fw-bold">
-                <span>Order Total</span>
-                <span>&#8377;90966.50</span>
-              </div>
-              <h6 className="mt-3 fw-bold">Payment Mode</h6>
-              <p>
-                Cash On Delivery{" "}
-                <span className="fw-bold float-end">&#8377;90966.50</span>
-              </p>
-            </div>
+            {selectedOrder && selectedProduct && (
+              <div className="d-flex gap-3 ">
+                <div className="trackorder-img ">
+                  <img src={selectedProduct.product_image} alt={selectedProduct.product_name} />
+                </div>
+                <div>
+                  <p>
+                    <b>Product Name:</b> {selectedProduct.product_name}
+                  </p>
+                  <p>
+                    <b>Order ID:</b> {selectedOrder.shiprocket_order_id}
+                  </p>
+                  <p>
+                    <b>Product ID:</b> {selectedProduct.product_id}
+                  </p>
 
-            <div className="card mt-3 p-3">
-              <h5 className="fw-bold">Deliver to</h5>
-              <p className="mb-1">
-                <strong>{user?.name}</strong>{" "}
-                <span className="badge bg-secondary">HOME</span>
-              </p>
-              <p className="mb-1">203, C Block, Sector 63, Noida,</p>
-              <p className="mb-1">Hazratpur Wajidpur,</p>
-              <p className="mb-1">Uttar Pradesh 201301</p>
-              <p>
-                <strong>Phone :</strong> {user?.phone}
-              </p>
-            </div>
-          </div>
-        </div>
+                </div>
 
-        {/* Modal */}
+              </div>
+            )}
+            <div className="mb-3">
+              <label className="form-label">Reason for cancellation</label>
+              <textarea
+                className="form-control"
+                rows={3}
+                value={cancelReason}
+                onChange={(e) => setCancelReason(e.target.value)}
+              />
+            </div>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleCloseCancelModal}>
+              Close
+            </Button>
+            <Button variant="danger" onClick={cancelOrderApi}>
+              Confirm Cancel
+            </Button>
+          </Modal.Footer>
+        </Modal>
+
+        {/* Refund/Return Modal */}
         <Modal show={showModal} onHide={handleClose}>
           <Modal.Header closeButton>
             <Modal.Title>{modalType} Request</Modal.Title>
@@ -399,11 +526,9 @@ export default function ReturnRefund() {
             )}
 
             {/* Image Upload - Only for returns */}
-            {modalType  && (
+            {modalType === "RETURN" && (
               <div className="mb-3">
-                <label className="form-label">
-                  Upload Images (required for returns)
-                </label>
+                <label className="form-label">Upload Images</label>
                 <input
                   type="file"
                   accept="image/*"

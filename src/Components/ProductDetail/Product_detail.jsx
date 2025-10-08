@@ -43,14 +43,35 @@ export default function Product_detail({ singleProduct }) {
   const [mainSlider, setMainSlider] = useState(null);
   const [navSlider, setNavSlider] = useState(null);
   
-  const fetch_products = useSelector((store) => store.wishlist);
+  const fetch_products = useSelector((store) => store.wishlist);  
   const [gettoken, setGettoken] = useState(null);
   
   // IMAGE URL FUNCTION
   const getVariationImage = (filename) =>
     `${ImageUrl}${filename}`;
   const navigate = useNavigate();
- 
+
+ const handleBuyNow = () => {
+  // build the product payload
+  const buyProduct = {
+  id: singleProduct.id,
+  product_name: singleProduct.product_name,
+  product_image: singleProduct.galleries?.[0]?.image || "",
+  price: productAmount
+    ? productAmount.reguler_price
+    : singleProduct.product_price, // original MRP
+  discount_price: productAmount
+    ? productAmount.sale_price
+    : singleProduct.product_discount_price, // discounted price
+  quantity,
+  variation:
+    Object.keys(productVarSelected).length > 0 ? productVarSelected : null,
+};
+
+
+  // navigate to checkout with this single product
+  navigate("/checkout", { state: { product: buyProduct, quantity } });
+};
 
 // SHARE HANDLERS
 const { slug } = useParams();
@@ -653,38 +674,29 @@ const sliderNavSettings = {
                 </div>
 
                 <button
-                  type={
-                    addTocart.some((item) => item?.id === singleProduct.id)
-                      ? "button"
-                      : "submit"
-                  }
-                  name="action_type"
-                  value="add_to_cart"
-                  onClick={() =>
-                    addTocart.some((item) => item?.id === singleProduct.id)
-                      ? toggleCart(singleProduct)
-                      : null
-                  }
-                  className={`btn btn-success w-50 ${
-                    addTocart.some((item) => item?.id === singleProduct.id)
-                      ? "bg-dark"
-                      : ""
-                  }`}
-                >
-                  {addTocart.some((item) => item?.id === singleProduct.id)
-                    ? "Remove from Cart"
-                    : "Add to Cart"}
-                  <FontAwesomeIcon icon={faCartShopping} className="ms-2" />
-                </button>
+  type="button" // always button to prevent form submit
+  onClick={() => toggleCart(singleProduct)}
+  className={`btn btn-success w-50 ${
+    addTocart.some((item) => item?.id === singleProduct.id)
+      ? "bg-dark"
+      : ""
+  }`}
+>
+  {addTocart.some((item) => item?.id === singleProduct.id)
+    ? "Remove from Cart"
+    : "Add to Cart"}
+  <FontAwesomeIcon icon={faCartShopping} className="ms-2" />
+</button>
 
-                <Link
-                  type="submit"
+                <button
+                  type="button"
                   name="action_type"
                   value="buy_now"
                   className="btn btn-outline-dark w-50"
+                  onClick={handleBuyNow}
                 >
                   BUY NOW
-                </Link>
+                </button>
               </div>
 
               <div className="mt-3 wishlist-sec-prodet d-flex align-items-center gap-3 justify-content-between">

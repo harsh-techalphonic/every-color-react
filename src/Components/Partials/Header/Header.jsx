@@ -2,6 +2,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import {
   faBarsStaggered,
+  faEnvelope,
   faLocationDot,
   faPhoneVolume,
   faUser,
@@ -111,7 +112,7 @@ export default function Header() {
 
   // Sticky header functionality
   const handleScroll = () => {
-    if (window.scrollY > 180) {
+    if (window.scrollY > 160) {
       setIsSticky(true);
     } else {
       setIsSticky(false);
@@ -137,9 +138,9 @@ export default function Header() {
               <li className="d-flex align-items-center flex-wrap gap-lg-5 gap-md-4 gap-2">
                 <Link to="#!">
                   <i className="me-2">
-                    <FontAwesomeIcon icon={faLocationDot} />
+                    <FontAwesomeIcon icon={faEnvelope} />
                   </i>{" "}
-                  Store location
+                  info@everycoloruniverse.com
                 </Link>
                 <Link to="#!">
                   <i className="me-2">

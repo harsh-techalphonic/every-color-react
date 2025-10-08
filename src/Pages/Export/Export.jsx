@@ -86,10 +86,9 @@ export default function Export() {
             <div className="col-xl-5 col-lg-6 col-md-12 col-12 my-5">
               <div className="login-box">
                 <form onSubmit={handleSubmit}>
-                  <h2 className="my-4">Export</h2>
+                  <h2 className="my-4">Export Inquiry Form</h2>
                   <p className="mb-4">
-                    Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                    Suscipit delectus quos voluptates!
+                    Grow your business worldwide with our easy export solutions. Fill the form and our experts will contact you for bulk orders, shipping, and pricing.
                   </p>
 
                   {/* Company Name */}

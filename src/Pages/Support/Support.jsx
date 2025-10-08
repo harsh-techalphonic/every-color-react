@@ -1,75 +1,145 @@
-import React from 'react'
-import "./Support.css"
-import Header from '../../Components/Partials/Header/Header'
-import Footer from '../../Components/Partials/Footer/Footer'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowRight } from '@fortawesome/free-solid-svg-icons'
+import React, { useEffect, useState } from 'react';
+import "./Support.css";
+import Header from '../../Components/Partials/Header/Header';
+import Footer from '../../Components/Partials/Footer/Footer';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
 
 export default function Support() {
+  const [supportData, setSupportData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("https://dhanbet9.co/api/web/support-page")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) {
+          setSupportData(data);
+        }
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Error fetching support data:", err);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="text-center py-5">
+        <h4>Loading Support Page...</h4>
+      </div>
+    );
+  }
+
+  if (!supportData) {
+    return (
+      <div className="text-center py-5">
+        <h4>Failed to load support content.</h4>
+      </div>
+    );
+  }
+
+  const banner = supportData.banner?.[0];
+  const contacts = supportData.contact || [];
+
   return (
     <>
-    <Header/>
+      <Header />
 
-    <div className='support_banner py-5' >
-        <div className='container'>
-            <div className='row align-items-center'>
-                <div className='col-lg-6'>
-                    <div className='contnet-left'>
-                        <h2>How we can help you!</h2>
-                        <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quae, deserunt!</p>
-                    </div>
-                </div>
-                <div className='col-lg-6'>
-                    <div className='image-right'>
-                        <img src="/support_img.png" alt="" />
-                    </div>
-                </div>
+      {/* Banner Section */}
+      <div className="support_banner py-5">
+        <div className="container">
+          <div className="row align-items-center">
+            <div className="col-lg-6">
+              <div className="contnet-left">
+                <h2>{banner?.heading}</h2>
+                <p>{banner?.content}</p>
+              </div>
             </div>
+            <div className="col-lg-6">
+              <div className="image-right">
+                <img
+                  src={banner?.image}
+                  alt="Support Banner"
+                  className="img-fluid rounded"
+                />
+              </div>
+            </div>
+          </div>
         </div>
-    </div>
+      </div>
 
-    <div className='support_content'>
-        <div className='container'>
-            <div className='support_title'>
-                <span>CONTACT US</span>
-                <h2>Don’t find your answer. Contact with us</h2>
-            </div>
-            <div className='row justify-content-center mt-4'>
-                <div className='col-lg-5'>
-                    <div className='support_box d-flex  gap-4'>
-                        <div className='support_box_img a1'>
-                            <img src="/PhoneCall.png" alt="" />
-                        </div>
-                        <div className='support_box_content'>
-                            <h2>Call us now</h2>
-                            <p>we are available online from 9:00 AM to 5:00 PM (GMT95:45) Talk with use now</p>
-                            <a href="" className='call-redi'>+1-202-555-0126</a>
-                            <a href="tel:+1-202-555-0126" className='call_btn_tbn'>Call now <FontAwesomeIcon icon={faArrowRight}/></a>
-                        </div>
+      {/* Contact Section */}
+      <div className="support_content">
+        <div className="container">
+          <div className="support_title">
+            <span>CONTACT US</span>
+            <h2>Don’t find your answer? Contact with us</h2>
+          </div>
 
-                    </div>
+          <div className="row justify-content-center mt-4">
+            {contacts.map((item, index) => (
+              <div className="col-lg-5 mb-4" key={index}>
+                <div className="support_box d-flex gap-4">
+                  <div className={`support_box_img a${index + 1}`}>
+                    <img
+                      src={
+                        index === 0
+                          ? "/PhoneCall.png"
+                          : "/ChatCircleDots.png"
+                      }
+                      alt=""
+                    />
+                  </div>
+
+                  <div className="support_box_content">
+                    <h2>{item.heading}</h2>
+                    <p>{item.content}</p>
+
+                    {/* For Phone */}
+                    {index === 0 ? (
+                      <>
+                        <a href={`tel:${item.sub_heading}`} className="call-redi">
+                          {item.sub_heading}
+                        </a>
+                        <a
+                          href={`tel:${item.sub_heading}`}
+                          className="call_btn_tbn"
+                        >
+                          Call now <FontAwesomeIcon icon={faArrowRight} />
+                        </a>
+                      </>
+                    ) : (
+                      <>
+                        {/* For WhatsApp Chat */}
+                        <a
+                          href={`https://api.whatsapp.com/send?phone=${item.sub_heading}`}
+                          className="call-redi"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          Whatsapp Support
+                        </a>
+                        <a
+                          href={`https://api.whatsapp.com/send?phone=${item.sub_heading}`}
+                          className="call_btn_ttbn"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          Whatsapp <FontAwesomeIcon icon={faArrowRight} />
+                        </a>
+                      </>
+                    )}
+                  </div>
                 </div>
-                <div className='col-lg-5'>
-                    <div className='support_box d-flex gap-4'>
-                        <div className='support_box_img a2'>
-                            <img src="/ChatCircleDots.png" alt="" />
-                        </div>
-                        <div className='support_box_content'>
-                            <h2>Chat with us</h2>
-                            <p>we are available online from 9:00 AM to 5:00 PM (GMT95:45) Talk with use now</p>
-                            <a href=""  className='call-redi'>Support.com</a>
-                            <a href="tel:+1-202-555-0126" className='call_btn_ttbn'>Whatsapp <FontAwesomeIcon icon={faArrowRight}/></a>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
+              </div>
+            ))}
+          </div>
         </div>
-    </div>
+      </div>
 
-
-    <Footer/>
-
+      <Footer />
     </>
-  )
+  );
 }

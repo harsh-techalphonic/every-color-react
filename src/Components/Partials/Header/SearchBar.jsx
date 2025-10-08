@@ -82,7 +82,7 @@ export default function SearchBar() {
               filteredTags.map((tag, index) => (
                 <li key={index}>
                   <Link
-                    to={`/product?search=${encodeURIComponent(tag)}`}
+                      to={`/product?category_id=null&subcategory_id=null&home_type=null&search=${encodeURIComponent(tag)}&sort=new&min_price=21&max_price=7434&ratings=null`}
                     onClick={() => {
                       setSearchTerm(tag);
                       setShowSuggestions(false); // close on tag click

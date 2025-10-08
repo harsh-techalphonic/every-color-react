@@ -34,6 +34,7 @@ import PrivateRoute from "./Components/UserAccount/PrivateRoute";
 import BulkOrder from "./Pages/BulkOrder/BulkOrder";
 import Export from "./Pages/Export/Export";
 import TrackOrder from "./Pages/TrackOrder/TrackOrder";
+import TrackingPage from "./Pages/TrackOrder/TrackingPage";
 
 const router = createBrowserRouter([
   {
@@ -129,7 +130,7 @@ const router = createBrowserRouter([
     element: <TermCondition_vendor />,
   },
   {
-    path: "/checkout/:data",
+    path: "/checkout",
     element: <Checkout_page />,
   },
   {
@@ -147,6 +148,10 @@ const router = createBrowserRouter([
    {
     path: "/track-order",
     element: <TrackOrder/>
+  },
+  {
+    path: "/track-order-detail",
+    element: <TrackingPage/>
   },
   {
     path: "*",

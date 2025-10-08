@@ -48,6 +48,18 @@ export default function Product({ category_type }) {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+  // 👇 Add this effect
+useEffect(() => {
+  const newSearch = searchParams.get("search") || "";
+  if (newSearch !== filters.search) {
+    const updatedFilters = { ...filters, search: newSearch };
+    setFilters(updatedFilters);
+    setProducts({ status: false, data: [] });
+    setPage(1);
+    setHasMore(true);
+    fetchProducts(1, false, updatedFilters);
+  }
+}, [searchParams]);
 
   // Build API URL dynamically
   const buildApiUrl = (pageNum = 1, currentFilters = filters) => {
@@ -71,10 +83,12 @@ export default function Product({ category_type }) {
       cancelTokenSource.current.cancel("New request started, canceling old one.");
     }
     cancelTokenSource.current = axios.CancelToken.source();
-
+const token = localStorage.getItem("token");
     try {
       const url = buildApiUrl(pageNum, currentFilters);
-      const response = await axios.get(url, { cancelToken: cancelTokenSource.current.token });
+      const response = await axios.get(url,  { cancelToken: cancelTokenSource.current.token,  headers: {
+          Authorization: `Bearer ${token}`,
+        }, });
 
       if (response.data?.data?.length > 0) {
         setProducts((prev) => ({

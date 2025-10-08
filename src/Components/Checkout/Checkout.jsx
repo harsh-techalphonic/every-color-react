@@ -7,83 +7,150 @@ import AddressModal from "../UserAccount/Addresses/AddressModal";
 
 export default function Checkout() {
   const location = useLocation();
-  const { CartData, Total } = location.state || {};
-
+  const { CartData = [], Total = {}, product, quantity } = location.state || {};
   const navigate = useNavigate();
   const [addresses, setAddresses] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [error, setError] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState("cod");
-
   const [showModal, setShowModal] = useState(false);
   const [editAddress, setEditAddress] = useState(null);
   const [refreshAddresses, setRefreshAddresses] = useState(false);
 
-  // ✅ Coupon states
+  // Coupon states
   const [coupon, setCoupon] = useState("");
   const [isCouponApplied, setIsCouponApplied] = useState(false);
   const [couponMessage, setCouponMessage] = useState("");
   const [couponMessageColor, setCouponMessageColor] = useState("red");
-  const [finalTotal, setFinalTotal] = useState(Total?.total || 0);
 
   const token = localStorage.getItem("token");
 
-  // ✅ Load Razorpay script
+
+
+  // Derived CartData (handle Buy Now or Cart)
+  const derivedCartData = product
+    ? [
+        {
+          ...product,
+          quantity: quantity || 1,
+        },
+      ]
+    : CartData;
+
+  // ✅ Calculate total product discount dynamically
+  const totalProductDiscount = derivedCartData.reduce((acc, item) => {
+    const price = parseFloat(item.price) || 0;
+    const discountPrice = parseFloat(item.discount_price) || price;
+    const qty = item.quantity || 1;
+    return acc + (price - discountPrice) * qty;
+  }, 0);
+
+  // Checkout detail state
+  const [checkoutDetail, setCheckoutDetail] = useState({
+    subTotal:
+      Total?.subTotal ||
+      derivedCartData.reduce(
+        (acc, item) => acc + (item.price || 0) * (item.quantity || 1),
+        0
+      ),
+    productDiscount: totalProductDiscount,
+    couponDiscount: 0,
+    tax:0,
+    total: Total?.total || 0,
+  });
+
+  const [finalTotal, setFinalTotal] = useState(
+    checkoutDetail.subTotal - checkoutDetail.productDiscount + checkoutDetail.tax
+  );
+
+  // Update finalTotal whenever checkoutDetail changes
+  useEffect(() => {
+    setFinalTotal(
+      checkoutDetail.subTotal -
+        checkoutDetail.productDiscount -
+        checkoutDetail.couponDiscount +
+        checkoutDetail.tax
+    );
+  }, [checkoutDetail]);
+
+  // Load Razorpay script
   useEffect(() => {
     const script = document.createElement("script");
     script.src = "https://checkout.razorpay.com/v1/checkout.js";
     script.async = true;
     document.body.appendChild(script);
-    return () => {
-      document.body.removeChild(script);
-    };
+    return () => document.body.removeChild(script);
   }, []);
 
-  // ✅ Fetch addresses
+  // Fetch addresses
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.get(`${API_URL}/order/get-address`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
+          headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
         });
         setAddresses(response.data?.data || []);
         setRefreshAddresses(false);
       } catch (err) {
-        console.error("Error fetching data:", err);
+        console.error("Error fetching addresses:", err);
         setError(err.message);
       }
     };
     fetchData();
   }, [token, refreshAddresses]);
 
-  // ✅ Apply Coupon
-  const applyCoupon = (e) => {
+  // Apply coupon
+  const applyCoupon = async (e) => {
     e.preventDefault();
-    if (coupon.trim().toUpperCase() === "DISCOUNT180") {
-      setIsCouponApplied(true);
-      setCouponMessage("Coupon Applied! ₹180 discount added.");
-      setCouponMessageColor("green");
-      setFinalTotal((prev) => Math.max(prev - 180, 0)); // update final total
-    } else {
-      setIsCouponApplied(false);
-      setCouponMessage("Invalid Coupon Code!");
+    if (!coupon) {
+      setCouponMessage("Please enter a coupon code!");
       setCouponMessageColor("red");
-      setFinalTotal(Total?.total || 0); // reset if wrong code
+      return;
+    }
+
+    try {
+      const productIds = derivedCartData.map((item) => item.id);
+      const payload = {
+        coupon_code: coupon,
+        cart_amount: checkoutDetail.subTotal - checkoutDetail.productDiscount,
+        product_ids: productIds,
+      };
+
+      const res = await fetch("https://dhanbet9.co/api/coupons/validate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify(payload),
+      });
+
+      const result = await res.json();
+      if (result.status) {
+        setIsCouponApplied(true);
+        setCouponMessage(result.data.message || "Coupon applied successfully!");
+        setCouponMessageColor("green");
+        setCheckoutDetail((prev) => ({
+          ...prev,
+          couponDiscount: result.data.discount,
+        }));
+      } else {
+        setCouponMessage(result?.message || "Invalid Coupon Code!");
+        setCouponMessageColor("#fe1e01");
+        setIsCouponApplied(false);
+      }
+    } catch (err) {
+      console.error("Coupon API error:", err);
+      setCouponMessage("Something went wrong! Try again.");
+      setCouponMessageColor("red");
     }
   };
 
-  // ✅ Razorpay payment
+  // Razorpay payment
   const handleOnlinePayment = () => {
-    const weblogo =
-      document.querySelector(".header-top")?.dataset?.weblogo || "";
+    const weblogo = document.querySelector(".header-top")?.dataset?.weblogo || "";
     const userData = JSON.parse(localStorage.getItem("personalDetails") || "{}");
 
     const options = {
-      key: "rzp_test_RLPCBCYerPsEnt", // Replace with your Razorpay Key
-      amount: finalTotal * 100, // use discounted total
+      key: "rzp_test_RLPCBCYerPsEnt",
+      amount: finalTotal * 100,
       currency: "INR",
       name: "Enlive Trips Pvt. Ltd.",
       image: weblogo,
@@ -95,16 +162,13 @@ export default function Checkout() {
           payment_method: "ONLINE",
           platform: "Website",
           order_amount: finalTotal,
-          products: CartData.map((item) => ({
+          products: derivedCartData.map((item) => ({
             product_id: item?.id,
             product_quantity: item?.quantity,
             product_name: item?.product_name,
             product_image: item?.product_image,
-            product_price:
-              item?.variation?.sale_price || item?.product_price,
-            product_variation: item?.variation
-              ? JSON.stringify(item.variation)
-              : null,
+            product_price: item?.discount_price || item?.price,
+            product_variation: item?.variation ? JSON.stringify(item.variation) : null,
           })),
           payment_id: response.razorpay_payment_id,
         };
@@ -113,7 +177,7 @@ export default function Checkout() {
           const orderResponse = await PlaceOrderApis(payload);
           if (orderResponse.message === "Order placed successfully") {
             alert("✅ Order Placed Successfully!");
-            navigate("/home");
+            navigate("/");
           } else {
             alert("❌ Failed to place order");
           }
@@ -127,63 +191,57 @@ export default function Checkout() {
         email: userData.email || "",
         contact: userData.phone || "",
       },
-      theme: {
-        color: "#3399cc",
-      },
+      theme: { color: "#3399cc" },
     };
 
     const rzp = new window.Razorpay(options);
     rzp.open();
   };
 
-  // ✅ Checkout submit
+  // Checkout submit
   const submitCheckOut = async (e) => {
     e.preventDefault();
-
     if (!selectedAddress) {
       alert("⚠️ Please select an address before placing the order!");
       return;
     }
 
-    if (paymentMethod === "cod") {
-      const payload = {
-        first_name: selectedAddress?.name,
-        address_id: selectedAddress?.id,
-        phone: selectedAddress?.mobile,
-        payment_method: "COD",
-        platform: "Website",
-        order_amount: finalTotal,
-        products: CartData.map((item) => ({
-          product_id: item?.id,
-          product_quantity: item?.quantity,
-          product_name: item?.product_name,
-          product_image: item?.product_image,
-          product_price:
-            item?.variation?.sale_price || item?.product_price,
-          product_variation: item?.variation
-            ? JSON.stringify(item.variation)
-            : null,
-        })),
-      };
+    const payload = {
+      first_name: selectedAddress?.name,
+      address_id: selectedAddress?.id,
+      phone: selectedAddress?.mobile,
+      payment_method: paymentMethod === "cod" ? "COD" : "ONLINE",
+      platform: "Website",
+      order_amount: finalTotal,
+      products: derivedCartData.map((item) => ({
+        product_id: item?.id,
+        product_quantity: item?.quantity,
+        product_name: item?.product_name,
+        product_image: item?.product_image,
+        product_price: item?.discount_price || item?.price,
+        product_variation: item?.variation ? JSON.stringify(item.variation) : null,
+      })),
+    };
 
-      try {
+    try {
+      if (paymentMethod === "cod") {
         const response = await PlaceOrderApis(payload);
         if (response.message === "Order placed successfully") {
           alert("✅ Order Placed Successfully!");
-          navigate("/home");
+          navigate("/");
         } else {
           alert("❌ Failed to place order");
         }
-      } catch (err) {
-        console.error("Error placing order:", err);
-        alert("❌ Something went wrong");
+      } else {
+        handleOnlinePayment();
       }
-    } else {
-      handleOnlinePayment();
+    } catch (err) {
+      console.error("Error placing order:", err);
+      alert("❌ Something went wrong");
     }
   };
 
-  // ✅ Address modal handlers
+  // Address modal handlers
   const handleAddAddress = () => {
     setEditAddress(null);
     setShowModal(true);
@@ -198,13 +256,25 @@ export default function Checkout() {
   };
   const handleRefreshAddresses = () => setRefreshAddresses(true);
 
+
+  const TAX_RATE = 5; // 5%
+  useEffect(() => {
+  const calculatedTax =
+    (checkoutDetail.subTotal - checkoutDetail.productDiscount - checkoutDetail.couponDiscount) *
+    TAX_RATE/100;
+
+  setCheckoutDetail((prev) => ({
+    ...prev,
+    tax: calculatedTax,
+  }));
+}, [checkoutDetail.subTotal, checkoutDetail.productDiscount, checkoutDetail.couponDiscount]);
+
   return (
     <div className="container checkout-container my-5">
-      <form onSubmit={submitCheckOut} method="POST">
+      <form onSubmit={submitCheckOut}>
         <div className="row justify-content-between">
           {/* Address + Payment Section */}
           <div className="col-md-7">
-            {/* Address selection */}
             <div className="address-box mb-4">
               <h4 className="mb-3">📍 Select Delivery Address</h4>
               {error && <p className="text-danger">{error}</p>}
@@ -222,10 +292,7 @@ export default function Checkout() {
                         style={{
                           cursor: "pointer",
                           borderWidth: "2px",
-                          borderColor:
-                            selectedAddress?.id === addr.id
-                              ? "#DB3030"
-                              : "#ddd",
+                          borderColor: selectedAddress?.id === addr.id ? "#DB3030" : "#ddd",
                         }}
                       >
                         <div className="d-flex justify-content-between align-items-start">
@@ -267,11 +334,7 @@ export default function Checkout() {
             <div className="payment-box mt-4">
               <h4 className="mb-3">💳 Payment Option</h4>
               <div className="pay-opt-box">
-                <div
-                  className={`card p-3 shadow-sm ${
-                    !selectedAddress ? "bg-light text-muted" : ""
-                  }`}
-                >
+                <div className={`card p-3 shadow-sm ${!selectedAddress ? "bg-light text-muted" : ""}`}>
                   <div className="d-flex gap-4">
                     <div className="form-check d-flex align-items-center">
                       <input
@@ -284,15 +347,8 @@ export default function Checkout() {
                         disabled={!selectedAddress}
                         className="form-check-input"
                       />
-                      <label
-                        htmlFor="cod"
-                        className="form-check-label ms-2 d-flex align-items-center"
-                      >
-                        <img
-                          src="/paypal.png"
-                          alt="COD Icon"
-                          style={{ width: "40px", marginRight: "10px" }}
-                        />
+                      <label htmlFor="cod" className="form-check-label ms-2 d-flex align-items-center">
+                        <img src="/paypal.png" alt="COD Icon" style={{ width: "40px", marginRight: "10px" }} />
                         Cash on Delivery
                       </label>
                     </div>
@@ -307,15 +363,8 @@ export default function Checkout() {
                         disabled={!selectedAddress}
                         className="form-check-input"
                       />
-                      <label
-                        htmlFor="online"
-                        className="form-check-label ms-2 d-flex align-items-center"
-                      >
-                        <img
-                          src="/paypal.png"
-                          alt="Online Icon"
-                          style={{ width: "40px", marginRight: "10px" }}
-                        />
+                      <label htmlFor="online" className="form-check-label ms-2 d-flex align-items-center">
+                        <img src="/paypal.png" alt="Online Icon" style={{ width: "40px", marginRight: "10px" }} />
                         Online Payment
                       </label>
                     </div>
@@ -327,14 +376,31 @@ export default function Checkout() {
 
           {/* Order Summary */}
           <div className="col-md-4">
+            {/* Coupon Box */}
+            <div className="discount_box mb-3 mt-4 w-100" style={{ maxWidth: "100%" }}>
+              <h5>If You Have a Coupon?</h5>
+              <div className="mb-3">
+                <input
+                  type="text"
+                  className="form-control mb-2"
+                  placeholder="Enter coupon code"
+                  value={coupon}
+                  onChange={(e) => setCoupon(e.target.value)}
+                />
+                <span className="message_show" style={{ color: couponMessageColor }}>
+                  {couponMessage}
+                </span>
+              </div>
+              <button className="btn btn-primary" onClick={applyCoupon}>
+                Apply Coupon
+              </button>
+            </div>
+
             <div className="order-summary card p-3 shadow-sm">
               <h5 className="mb-3">🛒 Order Summary</h5>
               <ul className="list-unstyled">
-                {CartData.map((value, index) => (
-                  <li
-                    key={index}
-                    className="d-flex gap-3 my-2 border-bottom pb-2"
-                  >
+                {derivedCartData.map((value, index) => (
+                  <li key={index} className="d-flex gap-3 my-2 border-bottom pb-2">
                     <img
                       src={value.product_image}
                       alt={value.product_name}
@@ -343,8 +409,7 @@ export default function Checkout() {
                     <div>
                       <h6 className="mb-1">{value.product_name}</h6>
                       <p className="mb-0">
-                        {value.quantity} × ₹
-                        {value.variation?.sale_price || value.product_price}
+                        {value.quantity} × ₹{  value.price}
                       </p>
                     </div>
                   </li>
@@ -355,7 +420,7 @@ export default function Checkout() {
                 <tbody>
                   <tr>
                     <td>Subtotal</td>
-                    <td className="text-end">₹{Total?.subTotal}</td>
+                    <td className="text-end">₹{checkoutDetail.subTotal.toFixed(2)}</td>
                   </tr>
                   <tr>
                     <td>Shipping</td>
@@ -363,17 +428,25 @@ export default function Checkout() {
                   </tr>
                   <tr>
                     <td>Discount</td>
+                    <td className="text-end">- ₹{checkoutDetail.productDiscount.toFixed(2)}</td>
+                  </tr>
+                  <tr>
+                    <td>Coupon</td>
+                    <td className="text-end">- ₹{checkoutDetail.couponDiscount.toFixed(2)}</td>
+                  </tr>
+                  <tr className="fw-bold text-success">
+                    <td>Total Discount</td>
                     <td className="text-end">
-                      - ₹{isCouponApplied ? (Total?.discount + 180) : Total?.discount}
+                      - ₹{(checkoutDetail.productDiscount + checkoutDetail.couponDiscount).toFixed(2)}
                     </td>
                   </tr>
                   <tr>
                     <td>Tax</td>
-                    <td className="text-end">₹{Total?.tax}</td>
+                    <td className="text-end"> (GST {TAX_RATE}%) ₹{checkoutDetail.tax.toFixed(2)}</td>
                   </tr>
                   <tr className="fw-bold border-top">
                     <td>Total</td>
-                    <td className="text-end">₹{finalTotal}</td>
+                    <td className="text-end">₹{finalTotal.toFixed(2)}</td>
                   </tr>
                 </tbody>
               </table>
@@ -385,29 +458,6 @@ export default function Checkout() {
                 disabled={!selectedAddress}
               >
                 PLACE ORDER
-              </button>
-            </div>
-
-            {/* Coupon Box */}
-            <div className="discount_box mt-4">
-              <h5>Have a Coupon?</h5>
-              <div className="mb-3">
-                <input
-                  type="text"
-                  className="form-control mb-2"
-                  placeholder="Enter coupon code"
-                  value={coupon}
-                  onChange={(e) => setCoupon(e.target.value)}
-                />
-                <span
-                  className="message_show"
-                  style={{ color: couponMessageColor }}
-                >
-                  {couponMessage}
-                </span>
-              </div>
-              <button className="btn btn-primary" onClick={applyCoupon}>
-                Apply Coupon
               </button>
             </div>
           </div>

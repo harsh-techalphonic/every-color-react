@@ -126,7 +126,8 @@ export default function Wishlist() {
                       >
                         <FontAwesomeIcon icon={faTrashAlt} />
                       </span>
-                      <Link to={product.link}>
+                      {/* {console.log("prodyct wishlist", product)} */}
+                      <Link to={`/product/${product?.product?.product_slug}`}>
                         <div className="card-img">
                           <img
                             src={product?.product?.product_image}
@@ -136,7 +137,7 @@ export default function Wishlist() {
                       </Link>
                       <div className="product-detail">
                         <h3>
-                          <Link to={`/product/${product.slug}`}>
+                          <Link to={`/product/${product?.product?.product_slug}`}>
                             {product?.product?.product_name}
                           </Link>
                         </h3>

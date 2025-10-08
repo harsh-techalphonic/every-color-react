@@ -3,20 +3,31 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import config from "../Config/config.json";
 import { productsAction } from "../store/Products/productsSlice";
+
 export default function ProductsApi() {
   const products = useSelector((store) => store.products);
   const dispatch = useDispatch();
+
   useEffect(() => {
     if (products.status) return;
+
+    // Get token from localStorage or Redux (adjust as per your app)
+    const token = localStorage.getItem("token"); 
+
     axios
-      .get(`${config.API_URL}/productsdata`)
+      .get(`${config.API_URL}/productsdata`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then(function (response) {
-        // console.log("product_data", response.data.data)
+        console.log("product_data", response.data.data);
         dispatch(productsAction.getProduct(response.data));
       })
       .catch(function (error) {
         console.log(error);
       });
   }, [products.status]);
+
   return true;
 }

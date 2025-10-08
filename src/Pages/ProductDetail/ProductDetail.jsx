@@ -13,6 +13,28 @@ import ScrollToTop from '../ScrollToTop';
 import axios from 'axios';
 import config from '../../Config/config.json';
 import RecentViewApi from '../../API/RecentViewApi';
+import './ProductLoader.css';
+
+// Simple Loader Skeleton Component
+const ProductLoader = () => {
+  return (
+    <div className="product-loader">
+      <div className="image-loader"></div>
+      <div className="product-info">
+        <div className="title-loader"></div>
+        <div className="price-loader"></div>
+        <div className="availability-loader"></div>
+        <div className="button-loader">
+          <div className="add-to-cart-loader"></div>
+          <div className="buy-now-loader"></div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+
+
 
 export default function ProductDetail() {
   const fetch_singleProduct = useSelector((store) => store.singleProduct);
@@ -43,18 +65,15 @@ export default function ProductDetail() {
           return;
         }
 
-        // POST request with product_id in query params
-        const response = await axios.post(
+        await axios.post(
           `${config.API_URL}/add-recent-view?product_id=${singleProduct.id}`,
-          {}, // No body needed since product_id is in query params
+          {},
           {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           }
         );
-
-        // console.log('Recent view added:', response.data);
       } catch (error) {
         console.error('Error adding recent view:', error);
       }
@@ -75,10 +94,10 @@ export default function ProductDetail() {
           <Product_descrtiption singleProduct={singleProduct} />
           <ReviewRating singleProduct={singleProduct} />
           <SimilarProducts singleProduct={singleProduct} />
-          <RecentlyViewed  singleProduct={singleProduct} />
+          <RecentlyViewed singleProduct={singleProduct} />
         </>
       ) : (
-        <>Hello</>
+        <ProductLoader />
       )}
       <Footer />
     </>

@@ -116,14 +116,9 @@ export default function Cart() {
   const [checkoutDetail, setCheckoutDetail] = useState({
     subTotal: 0,
     productDiscount: 0,
-    couponDiscount: 0,
     total: 0,
   });
   const [checkoutUrl, setCheckoutUrl] = useState("");
-  const [coupon, setCoupon] = useState("");
-  const [isCouponApplied, setIsCouponApplied] = useState(false);
-  const [couponMessage, setCouponMessage] = useState("");
-  const [couponMessageColor, setCouponMessageColor] = useState("");
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -218,7 +213,7 @@ export default function Cart() {
       ...prev,
       subTotal: totalSub,
       productDiscount: productDisc,
-      total: totalSub - productDisc - prev.couponDiscount,
+      total: totalSub - productDisc,
     }));
   }, [products]);
 
@@ -238,58 +233,6 @@ export default function Cart() {
       }
     } catch (err) {
       console.error("Quantity update error:", err);
-    }
-  };
-
-  // Apply coupon
-  const applyCoupon = async () => {
-    try {
-      if (!coupon) {
-        setCouponMessage("Please enter a coupon code!");
-        setCouponMessageColor("red");
-        return;
-      }
-
-      const token = localStorage.getItem("token");
-      const productIds = products.map((item) => item.prd_id);
-
-      const payload = {
-        coupon_code: coupon,
-        cart_amount: checkoutDetail.subTotal - checkoutDetail.productDiscount,
-        product_ids: productIds,
-      };
-
-      const res = await fetch("https://dhanbet9.co/api/coupons/validate", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(payload),
-      });
-
-      const result = await res.json();
-      console.log("COUPON RESPONSE:", result);
-
-      if (result.status) {
-        setIsCouponApplied(true);
-        setCouponMessage(result.data.message || "Coupon applied successfully!");
-        setCouponMessageColor("green");
-
-        setCheckoutDetail((prev) => ({
-          ...prev,
-          couponDiscount: result.data.discount,
-          total: prev.subTotal - prev.productDiscount - result.data.discount,
-        }));
-      } else {
-        setCouponMessage(result?.message || "Invalid Coupon Code!");
-        setCouponMessageColor("#fe1e01");
-        setIsCouponApplied(false);
-      }
-    } catch (err) {
-      console.error("Coupon API error:", err);
-      setCouponMessage("Something went wrong! Try again.");
-      setCouponMessageColor("red");
     }
   };
 
@@ -360,10 +303,6 @@ export default function Cart() {
                       <span>Discount</span>
                       <span>- ₹{checkoutDetail.productDiscount.toFixed(2)}</span>
                     </div>
-                    <div className="list-box d-flex justify-content-between mb-2">
-                      <span>Coupon</span>
-                      <span>- ₹{checkoutDetail.couponDiscount.toFixed(2)}</span>
-                    </div>
                     <div className="list-box d-flex justify-content-between mb-3">
                       <span>Tax (18%)</span>
                       <span>₹0</span>
@@ -374,34 +313,12 @@ export default function Cart() {
                       <h5>₹{checkoutDetail.total.toFixed(2)}</h5>
                     </div>
                     <Link
-                      to={`/checkout/${checkoutUrl}`}
+                      to={`/checkout`}
                       className="btn btn-primary w-100 rounded-0 py-2"
                       state={{ CartData: products, Total: checkoutDetail }}
                     >
                       PROCEED TO CHECKOUT →
                     </Link>
-                  </div>
-
-                  <div className="discount_box mt-4">
-                    <h5>Have a Coupon?</h5>
-                    <div className="mb-3">
-                      <input
-                        type="text"
-                        className="form-control mb-2"
-                        placeholder="Enter coupon code"
-                        value={coupon}
-                        onChange={(e) => setCoupon(e.target.value)}
-                      />
-                      <span
-                        className="message_show"
-                        style={{ color: couponMessageColor }}
-                      >
-                        {couponMessage}
-                      </span>
-                    </div>
-                    <button className="btn btn-primary" onClick={applyCoupon}>
-                      Apply Coupon
-                    </button>
                   </div>
                 </div>
               </>

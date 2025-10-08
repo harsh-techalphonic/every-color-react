@@ -11,15 +11,10 @@ export default function ProductsApi() {
   useEffect(() => {
     if (products.status) return;
 
-    // Get token from localStorage or Redux (adjust as per your app)
     const token = localStorage.getItem("token"); 
 
     axios
-      .get(`${config.API_URL}/productsdata`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
+      .get(`${config.API_URL}/productsdata`)
       .then(function (response) {
         console.log("product_data", response.data.data);
         dispatch(productsAction.getProduct(response.data));

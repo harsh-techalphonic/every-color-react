@@ -22,6 +22,11 @@ const AddressModal = ({
   const [statedata, setStatedata] = useState([]);
   const [citydata, setCitydata] = useState([]);
 
+  // 🔹 New: For coordinates
+  const [coords, setCoords] = useState(null);
+  const [error, setError] = useState("");
+  const OPENCAGE_API_KEY = "cb0de6644faf4d018b50b37f629eda1c"; // replace with your key
+
   useEffect(() => {
     stateapi();
   }, []);
@@ -60,7 +65,6 @@ const AddressModal = ({
           "Content-Type": "application/json",
         },
       });
-      console.log("state data" , response)
       setStatedata(response.data);
     } catch (err) {
       console.error("Error fetching state data:", err);
@@ -68,56 +72,107 @@ const AddressModal = ({
   };
 
   const cityapi = async () => {
-  try {
-    const response = await axios.get(
-      `${config.City_State_URL}cities?state=${encodeURIComponent(state)}`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    setCitydata(response.data);
-  } catch (err) {
-    console.error("Error fetching city data:", err);
-  }
-};
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    let form_data = {
-      address_id: editVal?.id ? editVal.id : "",
-      mobile: phonenumber,
-      full_address: address,
-      country: "India",
-      city: city,
-      state: state,
-      zip: zipcode?.toString(),
-      landmark: landmark,
-      name: fullname,
-    };
-
     try {
-      const response = await axios.post(
-        `${API_URL}${editVal?.id ? EditAddress : AddAddress}`,
-        form_data,
+      const response = await axios.get(
+        `${config.City_State_URL}cities?state=${encodeURIComponent(state)}`,
         {
           headers: {
-            Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
         }
       );
-      
-      if (refreshAddresses) {
-        refreshAddresses();
-      }
-      
-      handleCloseModal();
+      setCitydata(response.data);
     } catch (err) {
-      console.error("Error saving address:", err);
+      console.error("Error fetching city data:", err);
     }
   };
+
+  // 🔹 Function to fetch coordinates from OpenCage
+  const getCoordinates = async (fullAddress) => {
+    setError("");
+    setCoords(null);
+
+    try {
+      const response = await axios.get(
+        `https://api.opencagedata.com/geocode/v1/json`,
+        {
+          params: {
+            q: fullAddress,
+            key: OPENCAGE_API_KEY,
+          },
+        }
+      );
+      console.log("cordinates data", response ) 
+      if (response.data.results.length > 0) {
+          const firstResult = response.data.results[0].geometry;
+         const { lat, lng } = firstResult;
+         console.log("lat", lat)
+         console.log("lng", lng)
+        setCoords({ lat, lng });
+        return { lat, lng };
+      } else {
+        setError("No coordinates found for this address");
+        return null;
+      }
+    } catch (err) {
+      setError("Error fetching coordinates");
+      console.error(err);
+      return null;
+    }
+  };
+
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  // Build full address string for geocoding
+  const fullAddress = `${address} ${landmark} ${city} ${state} ${zipcode} India`;
+
+  // 🔹 First, get coordinates from OpenCage
+  const geoCoords = await getCoordinates(fullAddress);
+
+  if (!geoCoords) {
+    // If coordinates are not found, show message and stop saving
+    alert("❌ Could not fetch coordinates for this address. Please try again.");
+    return;
+  }
+
+  let form_data = {
+    address_id: editVal?.id ? editVal.id : "",
+    mobile: phonenumber,
+    full_address: address,
+    country: "India",
+    city: city,
+    state: state,
+    zip: zipcode?.toString(),
+    landmark: landmark,
+    name: fullname,
+    latitude: geoCoords.lat,   // ✅ use fresh geoCoords
+    longitude: geoCoords.lng,  // ✅ use fresh geoCoords
+  };
+
+  try {
+    const response = await axios.post(
+      `${API_URL}${editVal?.id ? EditAddress : AddAddress}`,
+      form_data,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (refreshAddresses) {
+      refreshAddresses();
+    }
+
+    handleCloseModal();
+  } catch (err) {
+    console.error("Error saving address:", err);
+    alert("❌ Failed to save address. Please try again later.");
+  }
+};
+
 
   if (!showModal) return null;
 
@@ -138,10 +193,9 @@ const AddressModal = ({
             </div>
             <div className="modal-body">
               <div className="row">
+                {/* Full Name */}
                 <div className="col-lg-6 mb-3">
-                  <label htmlFor="fullName" className="form-label">
-                    Full Name
-                  </label>
+                  <label className="form-label">Full Name</label>
                   <input
                     type="text"
                     className="form-control"
@@ -152,10 +206,9 @@ const AddressModal = ({
                   />
                 </div>
 
+                {/* Phone Number */}
                 <div className="col-lg-6 mb-3">
-                  <label htmlFor="phoneNumber" className="form-label">
-                    Phone Number
-                  </label>
+                  <label className="form-label">Phone Number</label>
                   <input
                     type="tel"
                     className="form-control"
@@ -170,10 +223,10 @@ const AddressModal = ({
                     required
                   />
                 </div>
+
+                {/* Address */}
                 <div className="col-lg-12 mb-3">
-                  <label htmlFor="address" className="form-label">
-                    Address
-                  </label>
+                  <label className="form-label">Address</label>
                   <input
                     type="text"
                     className="form-control"
@@ -183,10 +236,10 @@ const AddressModal = ({
                     required
                   />
                 </div>
+
+                {/* Landmark */}
                 <div className="col-lg-8 mb-3">
-                  <label htmlFor="landmark" className="form-label">
-                    Landmark
-                  </label>
+                  <label className="form-label">Landmark</label>
                   <input
                     type="text"
                     className="form-control"
@@ -197,10 +250,9 @@ const AddressModal = ({
                   />
                 </div>
 
+                {/* State */}
                 <div className="col-lg-4 mb-3">
-                  <label htmlFor="state" className="form-label">
-                    State
-                  </label>
+                  <label className="form-label">State</label>
                   <select
                     className="form-select"
                     value={state}
@@ -215,11 +267,10 @@ const AddressModal = ({
                     ))}
                   </select>
                 </div>
-                
+
+                {/* City */}
                 <div className="col-lg-4 mb-3">
-                  <label htmlFor="city" className="form-label">
-                    City
-                  </label>
+                  <label className="form-label">City</label>
                   <select
                     className="form-select"
                     value={city}
@@ -234,13 +285,10 @@ const AddressModal = ({
                     ))}
                   </select>
                 </div>
-                
-                
-                
+
+                {/* Zip */}
                 <div className="col-lg-4 mb-3">
-                  <label htmlFor="zipCode" className="form-label">
-                    Zip Code
-                  </label>
+                  <label className="form-label">Zip Code</label>
                   <input
                     type="tel"
                     className="form-control"
@@ -255,10 +303,9 @@ const AddressModal = ({
                     required
                   />
                 </div>
-                
-                
               </div>
             </div>
+
             <div className="modal-footer">
               <button
                 type="button"

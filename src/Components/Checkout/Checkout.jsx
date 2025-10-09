@@ -36,6 +36,7 @@ export default function Checkout() {
         },
       ]
     : CartData;
+    console.log( "derivedCartData" , derivedCartData)
 
   // ✅ Calculate total product discount dynamically
   const totalProductDiscount = derivedCartData.reduce((acc, item) => {
@@ -149,10 +150,10 @@ export default function Checkout() {
     const userData = JSON.parse(localStorage.getItem("personalDetails") || "{}");
 
     const options = {
-      key: "rzp_test_RLPCBCYerPsEnt",
+      key: "rzp_live_RCepcGhiyZJNSz",
       amount: finalTotal * 100,
       currency: "INR",
-      name: "Enlive Trips Pvt. Ltd.",
+      name: "Every Color",
       image: weblogo,
       handler: async function (response) {
         const payload = {
@@ -164,6 +165,7 @@ export default function Checkout() {
           order_amount: finalTotal,
           products: derivedCartData.map((item) => ({
             product_id: item?.id,
+            customization: item?.customization || null,
             product_quantity: item?.quantity,
             product_name: item?.product_name,
             product_image: item?.product_image,
@@ -215,6 +217,7 @@ export default function Checkout() {
       order_amount: finalTotal,
       products: derivedCartData.map((item) => ({
         product_id: item?.id,
+        customization: item?.customization || null,
         product_quantity: item?.quantity,
         product_name: item?.product_name,
         product_image: item?.product_image,
@@ -412,6 +415,12 @@ export default function Checkout() {
                         {value.quantity} × ₹{  value.price}
                       </p>
                     </div>
+                    {/* <div>
+                      <h6 className="mb-1">{value.product_name}</h6>
+                      <p className="mb-0">
+                        {value.customization}
+                      </p>
+                    </div> */}
                   </li>
                 ))}
               </ul>

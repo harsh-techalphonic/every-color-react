@@ -117,7 +117,7 @@ export default function ReviewRating({ singleProduct }) {
   return (
     <>
       <ToastContainer />
-      <div className='reviewer-sec'>
+      <div className='reviewer-sec mb-3'>
         <div className='container'>
           <div className='reviewer-main-box'>
             <div className='tititle d-flex align-items-center justify-content-between p-4'>

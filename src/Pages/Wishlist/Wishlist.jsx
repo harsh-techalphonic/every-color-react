@@ -11,7 +11,7 @@ import {
   faStar,
   faStarHalfAlt,
 } from "@fortawesome/free-solid-svg-icons";
-import { faTrashAlt } from "@fortawesome/free-regular-svg-icons";
+import { faEye, faTrashAlt } from "@fortawesome/free-regular-svg-icons";
 import { useDispatch, useSelector } from "react-redux";
 import ProductsApi from "../../API/ProductsApi";
 import { wishlistAction } from "../../store/Products/wishlistSlice";
@@ -22,7 +22,7 @@ import { DeleteWishList } from "../../Config/config";
 export default function Wishlist() {
   const AuthCheck = useSelector((store) => store.authcheck);
   const [products, setProducts] = useState([]);
-  // console.log("products from wishlist", products)
+  console.log("products from wishlist", products)
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -156,9 +156,15 @@ export default function Wishlist() {
                             ₹ {product?.product?.product_price}{" "}
                           </p>
                         </div>
-                        <a href="/cart" className="cart-btn">
-                          Add to Cart <FontAwesomeIcon icon={faBagShopping} />
-                        </a>
+                        {product?.product?.customization === 0 ? (
+                          <Link to="/cart" className="cart-btn">
+                            Add to Cart <FontAwesomeIcon icon={faBagShopping} />
+                          </Link>
+                         ) : (
+                          <Link to={`/product/${product?.product?.product_slug}`} className="cart-btn border-0">
+                            View Product <FontAwesomeIcon icon={faEye} />
+                          </Link>
+                        )}
                       </div>
                     </div>
                   </div>

@@ -16,7 +16,7 @@ import {
   API_URL,
 } from "../../Config/config";
 
-import { faHeart as faRegularHeart , faStar as faRegularStar} from "@fortawesome/free-regular-svg-icons";
+import { faEye, faHeart as faRegularHeart , faStar as faRegularStar} from "@fortawesome/free-regular-svg-icons";
 import { faHeart as faSolidHeart } from "@fortawesome/free-solid-svg-icons";
 
 export default function SingleProductSlide({ product }) {
@@ -24,6 +24,7 @@ export default function SingleProductSlide({ product }) {
   const [addTocart, setaddTocart] = useState([]);
   const [gettoken, setGettoken] = useState(null);
   const fetch_products = useSelector((store) => store.wishlist);
+  // console.log(product)
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -202,17 +203,23 @@ export default function SingleProductSlide({ product }) {
         </div>
       </div>
 
-      <a
-        onClick={() => toggleCart(product)}
-        className={`cart-btn ${
-          addTocart.some((item) => item?.id === product?.id) ? "bg-dark" : ""
-        }`}
-      >
-        {addTocart.some((item) => item?.id === product?.id)
-          ? "Remove from Cart"
-          : "Add to Cart"}
-        <FontAwesomeIcon icon={faBagShopping} className="ms-2" />
-      </a>
+              {product?.customization === 0 ? (
+                    <Link
+                      onClick={() => toggleCart(product)}
+                      className={`cart-btn ${
+                        addTocart.some((item) => item?.id === product?.id) ? "bg-dark" : ""
+                      }`}
+                    >
+                      {addTocart.some((item) => item?.id === product?.id)
+                        ? "Remove from Cart"
+                        : "Add to Cart"}
+                      <FontAwesomeIcon icon={faBagShopping} className="ms-2" />
+                    </Link>
+                    ) : (
+                <Link to={`/product/${product.product_slug}`} className="cart-btn border-0">
+                  View Product <FontAwesomeIcon icon={faEye} />
+                </Link>
+              )}
     </div>
   );
 }

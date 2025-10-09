@@ -34,13 +34,12 @@ const ProductLoader = () => {
 };
 
 
-
-
 export default function ProductDetail() {
   const fetch_singleProduct = useSelector((store) => store.singleProduct);
   const [singleProduct, setSingleProduct] = useState(false);
   const { slug } = useParams();
 
+const token = localStorage.getItem('token');
   useEffect(() => {
     if (fetch_singleProduct.length === 0) return;
 
@@ -94,7 +93,7 @@ export default function ProductDetail() {
           <Product_descrtiption singleProduct={singleProduct} />
           <ReviewRating singleProduct={singleProduct} />
           <SimilarProducts singleProduct={singleProduct} />
-          <RecentlyViewed singleProduct={singleProduct} />
+          {token && <RecentlyViewed singleProduct={singleProduct} />}
         </>
       ) : (
         <ProductLoader />

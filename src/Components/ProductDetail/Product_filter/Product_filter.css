@@ -299,7 +299,7 @@
       flex-wrap: wrap;
     }
   }
-  @media screen and (max-width:768px) {
+  @media screen and (max-width:991px) {
     .filter-contaienr{
       position: absolute;
       top: 36px;
@@ -322,6 +322,13 @@
     .filter-categoy.my-4 .card {
       width: 100%;
       max-width: calc(100% / 2 - 10px);
+  }
+  }
+   @media screen and (max-width:576px) {
+    
+    .filter-categoy.my-4 .card {
+      width: 100%;
+      max-width: calc(100% / 1 - 10px);
   }
   }
   .filter-contaienr.show{

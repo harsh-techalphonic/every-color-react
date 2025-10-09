@@ -25,13 +25,14 @@ import HotOfferHome from "../../Components/Home/HotOffer/HotOfferHome.jsx";
 import { wishlistAction } from "../../store/Products/wishlistSlice.js";
 import { fetchUserDataApi, fetchWishListApi } from "../../API/AllApiCode.js";
 import { userAction } from "../../store/User/userSlice.js";
+import GeocodeDemo from "../../Components/Home/GeocodeDemo/GeocodeDemo.jsx";
 
 export default function Home() {
   const dispatch = useDispatch();
   useEffect(() => {
     AOS.init({ duration: 1000 });
   }, []);
-
+    const token = localStorage.getItem("token")
   useEffect(() => {
     const fetchCart = async () => {
       try {
@@ -101,13 +102,14 @@ export default function Home() {
       <Gprscertified />
       {/* <Brands /> */}
       <Categories />
-
+      <GeocodeDemo/>
       <ExploreBestSeller />
       <BestSelling />
+      
       <HotOfferHome />
       <SuperSaving />
       <MultiBanners />
-      <DealsOfDay />
+      {token && <DealsOfDay />}
       {/* <CategoryBestSellers /> */}
       {/* <Category/> */}
       <Press />

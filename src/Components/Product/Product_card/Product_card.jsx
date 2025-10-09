@@ -3,7 +3,7 @@ import "./Product_card.css";
 import { Link, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBagShopping, faStar as faSolidStar, faStarHalfAlt, faHeart as faSolidHeart } from "@fortawesome/free-solid-svg-icons";
-import { faHeart as faRegularHeart, faStar as faRegularStar } from "@fortawesome/free-regular-svg-icons";
+import { faEye, faHeart as faRegularHeart, faStar as faRegularStar } from "@fortawesome/free-regular-svg-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { wishlistAction } from "../../../store/Products/wishlistSlice";
 import { cartAction } from "../../../store/Products/cartSlice";
@@ -167,6 +167,7 @@ export default function Product_card({ products }) {
                 </div>
               </div>
 
+              {/* {product?.customization === 0 && (
               <button
                 onClick={() => toggleCart(product)}
                 className={`cart-btn border-0 ${addTocart.some((item) => item?.id === product?.id) ? "bg-dark " : ""}`}
@@ -174,6 +175,26 @@ export default function Product_card({ products }) {
                 {addTocart.some((item) => item?.id === product?.id) ? "Remove from Cart" : "Add to Cart"}
                 <FontAwesomeIcon icon={faBagShopping} className="ms-2" />
               </button>
+              )} */}
+
+
+              {product?.customization === 0 ? (
+                <button
+                  onClick={() => toggleCart(product)}
+                  className={`cart-btn border-0 ${
+                    addTocart.some((item) => item?.id === product?.id) ? "bg-dark" : ""
+                  }`}
+                >
+                  {addTocart.some((item) => item?.id === product?.id)
+                    ? "Remove from Cart"
+                    : "Add to Cart"}
+                  <FontAwesomeIcon icon={faBagShopping} className="ms-2" />
+                </button>
+              ) : (
+                <Link to={`/product/${product.product_slug}`} className="cart-btn border-0">
+                  View Product <FontAwesomeIcon icon={faEye} />
+                </Link>
+              )}
             </div>
           </div>
         );

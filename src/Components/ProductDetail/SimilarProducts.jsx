@@ -37,7 +37,12 @@ export default function SimilarProducts({ singleProduct }) {
     ],
   };
 
+   if (products.length === 0) {
+    return null;
+  }
+
   return (
+    
     <section className='Best_selling my-5'>
       <div className='container'>
         <div className='feature-product-tile d-flex align-items-center justify-content-between'>

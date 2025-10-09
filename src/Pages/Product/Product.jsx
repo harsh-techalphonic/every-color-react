@@ -83,12 +83,10 @@ useEffect(() => {
       cancelTokenSource.current.cancel("New request started, canceling old one.");
     }
     cancelTokenSource.current = axios.CancelToken.source();
-const token = localStorage.getItem("token");
+// const token = localStorage.getItem("token");
     try {
       const url = buildApiUrl(pageNum, currentFilters);
-      const response = await axios.get(url,  { cancelToken: cancelTokenSource.current.token,  headers: {
-          Authorization: `Bearer ${token}`,
-        }, });
+      const response = await axios.get(url,  { cancelToken: cancelTokenSource.current.token, });
 
       if (response.data?.data?.length > 0) {
         setProducts((prev) => ({

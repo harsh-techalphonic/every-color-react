@@ -56,13 +56,14 @@ export default function Product_detail({ singleProduct }) {
   const buyProduct = {
   id: singleProduct.id,
   product_name: singleProduct.product_name,
+  customization: singleProduct.customization,
   product_image: singleProduct.galleries?.[0]?.image || "",
   price: productAmount
     ? productAmount.reguler_price
-    : singleProduct.product_price, // original MRP
+    : singleProduct.product_price,
   discount_price: productAmount
     ? productAmount.sale_price
-    : singleProduct.product_discount_price, // discounted price
+    : singleProduct.product_discount_price, 
   quantity,
   variation:
     Object.keys(productVarSelected).length > 0 ? productVarSelected : null,
@@ -647,7 +648,7 @@ const sliderNavSettings = {
               <hr className="my-5" />
 
               {/* Purchase buttons */}
-              <div className="purchase-btns mt-4 d-flex gap-3 align-items-center justify-content-between w-100">
+              <div className="purchase-btns mt-4 d-flex gap-3 align-items-center  w-100">
                 <div className="d-flex">
                   <button
                     type="button"
@@ -672,21 +673,22 @@ const sliderNavSettings = {
                     +
                   </button>
                 </div>
-
-                <button
-  type="button" // always button to prevent form submit
-  onClick={() => toggleCart(singleProduct)}
-  className={`btn btn-success w-50 ${
-    addTocart.some((item) => item?.id === singleProduct.id)
-      ? "bg-dark"
-      : ""
-  }`}
->
-  {addTocart.some((item) => item?.id === singleProduct.id)
-    ? "Remove from Cart"
-    : "Add to Cart"}
-  <FontAwesomeIcon icon={faCartShopping} className="ms-2" />
-</button>
+                {singleProduct?.customization === 0 && (
+                  <button
+                    type="button" // always button to prevent form submit
+                    onClick={() => toggleCart(singleProduct)}
+                    className={`btn btn-success w-50 ${
+                      addTocart.some((item) => item?.id === singleProduct.id)
+                        ? "bg-dark"
+                        : ""
+                    }`}
+                  >
+                    {addTocart.some((item) => item?.id === singleProduct.id)
+                      ? "Remove from Cart"
+                      : "Add to Cart"}
+                    <FontAwesomeIcon icon={faCartShopping} className="ms-2" />
+                  </button>
+                )} 
 
                 <button
                   type="button"

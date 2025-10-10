@@ -5,6 +5,8 @@ import ScrollToTop from "../ScrollToTop";
 import config from "../../Config/config.json";
 import axios from "axios";
 import exportimg from "../../../public/export.jpg";
+import HelmetComponent from "../../Components/HelmetComponent/HelmetComponent";
+import logo from '../../assets/EveryColourLogo.png'
 
 export default function Export() {
   const [loading, setLoading] = useState(false);
@@ -73,6 +75,12 @@ export default function Export() {
   return (
     <>
       <ScrollToTop />
+      <HelmetComponent
+              title="Export Inquiry Form | Bulk Orders, Global Shipping & Pricing Solutions"
+              description="Submit your export inquiry today! Connect with our experts for bulk orders, international shipping, and competitive pricing. Grow your business worldwide with our easy export solutions."
+              keywords="export inquiry form, bulk order export, international shipping solutions, export business India, wholesale export inquiry, export pricing, global trade solutions, export contact form, export company India"
+              image={logo}
+            />
       <Header />
 
       <section className="login-sec bulk_order">

@@ -11,12 +11,11 @@ export default function ProductsApi() {
   useEffect(() => {
     if (products.status) return;
 
-    const token = localStorage.getItem("token"); 
+    // const token = localStorage.getItem("token"); 
 
     axios
       .get(`${config.API_URL}/productsdata`)
       .then(function (response) {
-        console.log("product_data", response.data.data);
         dispatch(productsAction.getProduct(response.data));
       })
       .catch(function (error) {

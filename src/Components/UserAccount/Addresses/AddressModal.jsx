@@ -102,12 +102,12 @@ const AddressModal = ({
           },
         }
       );
-      console.log("cordinates data", response ) 
+      // console.log("cordinates data", response ) 
       if (response.data.results.length > 0) {
           const firstResult = response.data.results[0].geometry;
          const { lat, lng } = firstResult;
-         console.log("lat", lat)
-         console.log("lng", lng)
+        //  console.log("lat", lat)
+        //  console.log("lng", lng)
         setCoords({ lat, lng });
         return { lat, lng };
       } else {

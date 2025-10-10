@@ -4,6 +4,8 @@ import Footer from '../../Components/Partials/Footer/Footer'
 import { useSelector } from 'react-redux';
 import TcpprcApi from '../../API/TcpprcApi'
 import ScrollToTop from '../ScrollToTop';
+import logo from '../../assets/EveryColourLogo.png'
+import HelmetComponent from '../../Components/HelmetComponent/HelmetComponent';
 
 
 export default function Privacy_policy_vendor() {
@@ -12,6 +14,12 @@ export default function Privacy_policy_vendor() {
     <>
     <ScrollToTop/>
       <Header/>
+      {/* <HelmetComponent
+              title={banner?.meta_title}
+              description={banner?.meta_description}
+              keywords={banner?.meta_keyword}
+              image={logo}
+            /> */}
       <TcpprcApi/>
         <div className='term-Conditons_sec my-5'> 
           <div className='container'>

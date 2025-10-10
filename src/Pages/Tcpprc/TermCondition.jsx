@@ -7,12 +7,14 @@ import TcpprcApi from "../../API/TcpprcApi";
 import ScrollToTop from "../ScrollToTop";
 import { getPrivacyPolicy } from "../../API/AllApiCode";
 import { TermsCondition } from "../../Config/config";
+import HelmetComponent from "../../Components/HelmetComponent/HelmetComponent";
+import logo from '../../assets/EveryColourLogo.png'
 
 export default function TermCondition() {
   const tcpprc = useSelector((store) => store.Tcpprc);
 
   const [policy, setPolicy] = useState([]);
-  console?.log("policy", policy?.content);
+  console?.log("policy", policy);
 
   useEffect(() => {
     getPrivacyPolicy(setPolicy, TermsCondition);
@@ -22,6 +24,12 @@ export default function TermCondition() {
     <>
       <ScrollToTop />
       <Header />
+      <HelmetComponent
+              title={policy?.meta_title}
+              description={policy?.meta_description}
+              keywords={policy?.meta_keyword}
+              image={logo}
+            />
       <TcpprcApi />
       <div className="term-Conditons_sec my-5">
         <div className="container">

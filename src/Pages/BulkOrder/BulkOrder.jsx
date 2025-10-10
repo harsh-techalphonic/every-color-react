@@ -5,6 +5,8 @@ import ScrollToTop from "../ScrollToTop";
 import config from "../../Config/config.json";
 import axios from "axios";
 import exportimg from "../../../public/export.jpg";
+import HelmetComponent from "../../Components/HelmetComponent/HelmetComponent";
+import logo from '../../assets/EveryColourLogo.png'
 
 export default function BulkOrder() {
   const [loading, setLoading] = useState(false);
@@ -76,6 +78,12 @@ export default function BulkOrder() {
   return (
     <>
       <ScrollToTop />
+      <HelmetComponent
+                    title="Bulk Order Online | Wholesale Pricing & Large Quantity Purchases"
+                    description="Place bulk orders easily with our wholesale solutions. Get the best deals on large quantity purchases, secure packaging, and doorstep delivery at competitive prices."
+                    keywords="bulk order, wholesale purchase, bulk buying India, large quantity order, wholesale deals, bulk pricing, order in bulk online, wholesale suppliers"
+                    image={logo}
+                  />
       <Header />
 
       <section className="login-sec bulk_order">

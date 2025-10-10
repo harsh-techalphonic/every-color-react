@@ -11,6 +11,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBarsStaggered, faClose } from "@fortawesome/free-solid-svg-icons";
 import config from '../../Config/config.json'
 import axios from "axios";
+import logo from '../../assets/EveryColourLogo.png'
+import HelmetComponent from "../../Components/HelmetComponent/HelmetComponent";
+import { useSelector } from "react-redux";
 
 export default function Product({ category_type }) {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 991);
@@ -19,6 +22,7 @@ export default function Product({ category_type }) {
   const [fetching, setFetching] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);
+    const [prodata, setProdata] = useState([]);
 
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -190,10 +194,32 @@ useEffect(() => {
     fetchProducts(1, false, filters);
   }, []);
 
+ useEffect(() => {
+    if (products.status) return; // don’t fetch if products already available
+
+    axios
+      .get(`${config.API_URL}/productsdata`)
+      .then(function (response) {
+        setProdata(response.data); // ✅ save API response into state
+      })
+      .catch(function (error) {
+        console.log("Error fetching products:", error);
+      });
+  }, [products.status]);
+
+
   return (
     <>
       <ScrollToTop />
       <Header />
+
+      <HelmetComponent
+              title={prodata?.meta?.meta_title}
+              description={prodata?.meta?.meta_description}
+              keywords={prodata?.meta?.meta_keyword}
+              image={logo}
+            />
+
 
       <section className="All_Products">
         <div className="container">

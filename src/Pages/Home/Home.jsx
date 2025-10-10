@@ -18,17 +18,19 @@ import ScrollToTop from "../ScrollToTop";
 import Press from "../../Components/Home/Press/Press";
 import TestimonialSlider from "../../Components/Home/Testimonial/Testimonial";
 import ExploreBestSeller from "../../Components/Home/ExploreBestSeller/ExploreBestSeller";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { cartAction } from "../../store/Products/cartSlice";
 import { API_URL, GetCartList } from "../../Config/config.js";
 import HotOfferHome from "../../Components/Home/HotOffer/HotOfferHome.jsx";
 import { wishlistAction } from "../../store/Products/wishlistSlice.js";
 import { fetchUserDataApi, fetchWishListApi } from "../../API/AllApiCode.js";
 import { userAction } from "../../store/User/userSlice.js";
-import GeocodeDemo from "../../Components/Home/GeocodeDemo/GeocodeDemo.jsx";
+import HelmetComponent from "../../Components/HelmetComponent/HelmetComponent.jsx";
+// import { bannersAction } from "../../store/HomesSection/bannerSlice";
+import logo from '../../assets/EveryColourLogo.png'
+
 
 export default function Home() {
-  const dispatch = useDispatch();
   useEffect(() => {
     AOS.init({ duration: 1000 });
   }, []);
@@ -93,16 +95,23 @@ export default function Home() {
     getWishlist();
     getUserProfile();
   }, []);
-
+   const banners = useSelector((store) => store?.banners);
+   const dispatch = useDispatch();
+  console.log("Home Meta Title", banners);
   return (
     <>
       <ScrollToTop />
-      <Header />
-      <Hero />
+      <HelmetComponent
+        title={banners.data[0]?.meta_title}
+        description={banners.data[0]?.meta_description}
+        keywords={banners.data[0]?.meta_keyword}
+        image={logo}
+      />  
+      <Header/>
+      <Hero/>
       <Gprscertified />
       {/* <Brands /> */}
       <Categories />
-      <GeocodeDemo/>
       <ExploreBestSeller />
       <BestSelling />
       

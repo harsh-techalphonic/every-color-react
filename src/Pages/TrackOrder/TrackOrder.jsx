@@ -5,6 +5,8 @@ import Footer from '../../Components/Partials/Footer/Footer';
 import axios from 'axios';
 import config from "../../Config/config.json";
 import { useNavigate } from 'react-router-dom';
+import HelmetComponent from '../../Components/HelmetComponent/HelmetComponent';
+import logo from '../../assets/EveryColourLogo.png'
 
 export default function TrackOrder() {
   const navigate = useNavigate();
@@ -32,7 +34,6 @@ export default function TrackOrder() {
         headers: { "Content-Type": "application/json" },
       });
 
-      console.log("API Response:", response.data);
 
       const data = response.data;
 
@@ -60,6 +61,12 @@ export default function TrackOrder() {
   return (
     <>
       <ScrollToTop />
+      <HelmetComponent
+              title="Track Your Order | Real-Time Shipping & Delivery Updates"
+              description="Easily track your order status online. Get real-time updates on shipping, dispatch, and delivery details to know exactly when your package will arrive."
+              keywords="track order, order status, track shipment, delivery tracking, online order tracking, shipping updates, package tracking, real-time order status"
+              image={logo}
+            />
       <Header />
 
       <section className="login-sec bulk_order my-5">
@@ -99,7 +106,7 @@ export default function TrackOrder() {
                   </div>
 
                   <button
-                    className="btn btn-primary w-100"
+                    className="btn  w-100"
                     type="submit"
                     disabled={loading}
                   >

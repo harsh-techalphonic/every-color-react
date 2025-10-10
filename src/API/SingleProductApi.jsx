@@ -14,7 +14,6 @@ export default function SingleProductApi() {
     axios
       .get(`${config.API_URL}/products/${slug}`)
       .then(function (response) {
-        console.log("send dara", response.data)
         dispatch(singleProductAction.addProduct(response.data));
       })
       .catch(function (error) {

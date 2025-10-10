@@ -3,19 +3,22 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom"; 
 import config from '../../Config/config.json'
-
 import Header from "../../Components/Partials/Header/Header";
 import Footer from "../../Components/Partials/Footer/Footer";
 import HotOffer from "../../Components/Home/HotOffer/HotOffer";
 import CategoryCard from "../../Components/Home/Categories/CategoryCard";
+import HelmetComponent from "../../Components/HelmetComponent/HelmetComponent";
+import logo from '../../assets/EveryColourLogo.png'
 
 export default function Category() {
   const { category } = useParams();
   const navigate = useNavigate(); 
   const [subCategories, setSubCategories] = useState([]);
-  const [categoryName, setCategoryName] = useState("");  
-
+  const [categoryName, setCategoryName] = useState(""); 
   const fetch_categories = useSelector((store) => store.categories);
+   const [banner, setBanner] = useState({});  
+
+
 
   useEffect(() => {
     if (!fetch_categories.status) return;
@@ -23,7 +26,6 @@ export default function Category() {
     const currentCategory = fetch_categories.data.find(
       (cat) => cat.slug === category
     );
-    // console.log("currentCategory", currentCategory)
 
     if (currentCategory) {
       setCategoryName(currentCategory.name);
@@ -41,6 +43,7 @@ export default function Category() {
     }
   }, [category, fetch_categories]);
 
+
   const categoryTitle =
     categoryName ||
     category?.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
@@ -55,12 +58,19 @@ export default function Category() {
     navigate(`/product?category=${category}&subcategory=${subCatSlug}`);
   };
 
-  //  console.log("categroy page",subCategories )
   const Uri= "category/:${currentCategory.name}/:${subCatSlug}"
   return (
     <>
       <Header />
-      <HotOffer uri={Uri} />
+
+      <HelmetComponent
+        title={banner?.meta_title}
+        description={banner?.meta_description}
+        keywords={banner?.meta_keyword}
+        image={logo}
+      /> 
+
+      <HotOffer uri={Uri} onSectionDataChange={setBanner} />
 
       <section className="Shop_by_health bg-white">
         <div className="container">

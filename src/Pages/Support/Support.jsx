@@ -4,6 +4,8 @@ import Header from '../../Components/Partials/Header/Header';
 import Footer from '../../Components/Partials/Footer/Footer';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
+import logo from '../../assets/EveryColourLogo.png'
+import HelmetComponent from '../../Components/HelmetComponent/HelmetComponent';
 
 export default function Support() {
   const [supportData, setSupportData] = useState(null);
@@ -42,10 +44,16 @@ export default function Support() {
 
   const banner = supportData.banner?.[0];
   const contacts = supportData.contact || [];
-
+    // console.log("banner", banner)
   return (
     <>
       <Header />
+      <HelmetComponent
+                    title={banner?.meta_title}
+                    description={banner?.meta_description}
+                    keywords={banner?.meta_keyword}
+                    image={logo}
+                  /> 
 
       {/* Banner Section */}
       <div className="support_banner py-5">

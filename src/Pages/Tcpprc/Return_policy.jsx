@@ -6,13 +6,15 @@ import TcpprcApi from '../../API/TcpprcApi';
 import ScrollToTop from '../ScrollToTop';
 import {getReturnCancelation} from "../../API/AllApiCode";
 import {ReturnCancelation } from "../../Config/config";
+import HelmetComponent from '../../Components/HelmetComponent/HelmetComponent';
+import logo from '../../assets/EveryColourLogo.png'
 
 export default function Return_policy() {
   // const tcpprc = useSelector((store) => store.Tcpprc); 
   const tcpprc = useSelector((store) => store.Tcpprc);
 
   const [policy, setPolicy] = useState([]);
-  // console?.log("policy", policy?.content);
+  // console?.log("policy", policy);
 
   useEffect(() => {
     getReturnCancelation(setPolicy, ReturnCancelation);
@@ -22,6 +24,12 @@ export default function Return_policy() {
     <>
     <ScrollToTop/>
           <Header />
+          <HelmetComponent
+              title={policy?.meta_title}
+              description={policy?.meta_description}
+              keywords={policy?.meta_keyword}
+              image={logo}
+            />
           <TcpprcApi/>
           <div className='term-Conditons_sec my-5'>
             <div className='container'>

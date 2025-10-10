@@ -6,6 +6,8 @@ import { useSelector } from "react-redux";
 import AboutApi from "../../API/AboutApi";
 import ScrollToTop from "../ScrollToTop";
 import NewsletterForm from "../../Components/Partials/Footer/NewsletterForm";
+import HelmetComponent from "../../Components/HelmetComponent/HelmetComponent";
+import logo from '../../assets/EveryColourLogo.png'
 
 export default function About() {
   const About = useSelector((store) => store.About);
@@ -18,12 +20,19 @@ export default function About() {
     (item) => item.type === "about-page"
   );
 
+  console.log( "about meta", aboutPageSections)
 
 
   return (
     <>
       <ScrollToTop />
       <Header />
+      <HelmetComponent
+              title={aboutPageSections[0]?.meta_title}
+              description={aboutPageSections[0]?.meta_description}
+              keywords={aboutPageSections[0]?.meta_keyword}
+              image={logo}
+            /> 
       <AboutApi />
       {/* <ToastContainer /> */}
       <section className="about_banner">

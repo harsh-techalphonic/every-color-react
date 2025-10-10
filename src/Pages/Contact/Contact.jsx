@@ -9,9 +9,12 @@ import config from "../../Config/config.json";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import ScrollToTop from "../ScrollToTop";
+import HelmetComponent from "../../Components/HelmetComponent/HelmetComponent";
+import logo from '../../assets/EveryColourLogo.png'
 
 export default function Contact() {
   const Contact = useSelector((store) => store.Contact);
+  console.log( "contact meta", Contact)
 
   const [formData, setFormData] = useState({
     full_name: "",
@@ -48,6 +51,12 @@ export default function Contact() {
     <>
       <ScrollToTop />
       <Header />
+      <HelmetComponent
+                    title={Contact?.data[0]?.meta_title}
+                    description={Contact?.data[0]?.meta_description}
+                    keywords={Contact?.data[0]?.meta_keyword}
+                    image={logo}
+                  /> 
       <ContactApi />
       <section className="contact_sec my-5">
         <div className="container">

@@ -5,11 +5,12 @@ import { faArrowRightLong } from '@fortawesome/free-solid-svg-icons';
 import { Link, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
-export default function HotOffer({uri }) {
-  console.log("data nad uri",  uri )
+export default function HotOffer({uri,onSectionDataChange  }) {
+  // console.log("data nad uri",  uri )
   const bannersStore = useSelector((store) => store.banners);
   const categoriesStore = useSelector((store) => store.categories);
   const { category } = useParams();
+
 
   const [sectionData, setSectionData] = useState({});
 
@@ -20,15 +21,20 @@ export default function HotOffer({uri }) {
     const matchedCategory = categoryItems.find((c) => String(c.slug) === String(category));
 
     if (matchedCategory && matchedCategory.banner) {
-      setSectionData({
+      const data =({
         banner: matchedCategory.banner,
         name : matchedCategory.name || '',
         title: matchedCategory.title || '',
         sub_title: matchedCategory.sub_title || '',
         description: matchedCategory.description || '',
+        meta_title: matchedCategory.meta_title,
+        meta_description: matchedCategory.meta_description,
+        meta_keyword:matchedCategory.meta_keyword,        
         button_text: 'Shop Now',
         slug: matchedCategory.slug || '',
       });
+       setSectionData(data);
+      onSectionDataChange?.(data);
       return;
     }
 
@@ -36,16 +42,19 @@ export default function HotOffer({uri }) {
       const hotBanners = bannerItems.filter((b) => String(b.type) === '1');
       if (hotBanners.length > 0) {
         const first = hotBanners[0];
-        setSectionData({
+        const data =({
           ...first,
           banner: first.banner || first.image || first.url || '',
         });
+        setSectionData(data);
+        onSectionDataChange?.(data); 
         return;
       }
     }
 
     setSectionData({});
   }, [bannersStore, categoryItems, category]);
+
   console.log( "section data ", sectionData)
 
   return (

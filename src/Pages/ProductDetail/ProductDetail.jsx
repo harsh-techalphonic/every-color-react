@@ -14,6 +14,8 @@ import axios from 'axios';
 import config from '../../Config/config.json';
 import RecentViewApi from '../../API/RecentViewApi';
 import './ProductLoader.css';
+import HelmetComponent from '../../Components/HelmetComponent/HelmetComponent';
+import logo from '../../assets/EveryColourLogo.png'
 
 // Simple Loader Skeleton Component
 const ProductLoader = () => {
@@ -38,6 +40,8 @@ export default function ProductDetail() {
   const fetch_singleProduct = useSelector((store) => store.singleProduct);
   const [singleProduct, setSingleProduct] = useState(false);
   const { slug } = useParams();
+
+  console.log("single product data" , singleProduct)
 
 const token = localStorage.getItem('token');
   useEffect(() => {
@@ -85,6 +89,13 @@ const token = localStorage.getItem('token');
     <>
       <ScrollToTop />
       <Header />
+      <HelmetComponent
+                    title={singleProduct?.meta_title}
+                    description={singleProduct?.meta_description}
+                    keywords={singleProduct?.meta_keyword}
+                    image={logo}
+                  />
+
       <SingleProductApi />
       <RecentViewApi />
       {singleProduct ? (

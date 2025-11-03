@@ -13,21 +13,21 @@ export const cartSlice = createSlice({
       localStorage.setItem("cart", JSON.stringify(action.payload));
       return action.payload;
     },
-    // removeCart: (store, action) => {
-    //   const updatedCart = store.filter(
-    //     (item) => item?.id !== action.payload?.id
-    //   );
-    //   localStorage.setItem("cart", JSON.stringify(updatedCart));
-    //   return updatedCart;
-    // },
-
     removeCart: (store, action) => {
       const updatedCart = store.filter(
-        (item) => item?.id !== action.payload
+        (item) => item?.id !== action.payload?.id
       );
       localStorage.setItem("cart", JSON.stringify(updatedCart));
       return updatedCart;
     },
+
+    // removeCart: (store, action) => {
+    //   const updatedCart = store.filter(
+    //     (item) => item?.id !== action.payload
+    //   );
+    //   localStorage.setItem("cart", JSON.stringify(updatedCart));
+    //   return updatedCart;
+    // },
     
 
     addCart: (store, action) => {

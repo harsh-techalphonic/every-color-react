@@ -27,14 +27,13 @@ import { fetchUserDataApi, fetchWishListApi } from "../../API/AllApiCode.js";
 import { userAction } from "../../store/User/userSlice.js";
 import HelmetComponent from "../../Components/HelmetComponent/HelmetComponent.jsx";
 // import { bannersAction } from "../../store/HomesSection/bannerSlice";
-import logo from '../../assets/EveryColourLogo.png'
-
+import logo from "../../assets/EveryColourLogo.png";
 
 export default function Home() {
   useEffect(() => {
     AOS.init({ duration: 1000 });
   }, []);
-    const token = localStorage.getItem("token")
+  const token = localStorage.getItem("token");
   useEffect(() => {
     const fetchCart = async () => {
       try {
@@ -95,8 +94,8 @@ export default function Home() {
     getWishlist();
     getUserProfile();
   }, []);
-   const banners = useSelector((store) => store?.banners);
-   const dispatch = useDispatch();
+  const banners = useSelector((store) => store?.banners);
+  const dispatch = useDispatch();
   console.log("Home Meta Title", banners);
   return (
     <>
@@ -106,18 +105,18 @@ export default function Home() {
         description={banners.data[0]?.meta_description}
         keywords={banners.data[0]?.meta_keyword}
         image={logo}
-      />  
-      <Header/>
-      <Hero/>
+      />
+      <Header />
+      <Hero />
       <Gprscertified />
       {/* <Brands /> */}
       <Categories />
       <ExploreBestSeller />
       <BestSelling />
-      
+
       <HotOfferHome />
       <SuperSaving />
-      <MultiBanners />
+      {/* <MultiBanners /> */}
       {token && <DealsOfDay />}
       {/* <CategoryBestSellers /> */}
       {/* <Category/> */}

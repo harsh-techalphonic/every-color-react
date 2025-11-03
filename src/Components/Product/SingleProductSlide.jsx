@@ -16,7 +16,11 @@ import {
   API_URL,
 } from "../../Config/config";
 
-import { faEye, faHeart as faRegularHeart , faStar as faRegularStar} from "@fortawesome/free-regular-svg-icons";
+import {
+  faEye,
+  faHeart as faRegularHeart,
+  faStar as faRegularStar,
+} from "@fortawesome/free-regular-svg-icons";
 import { faHeart as faSolidHeart } from "@fortawesome/free-solid-svg-icons";
 
 export default function SingleProductSlide({ product }) {
@@ -177,25 +181,25 @@ export default function SingleProductSlide({ product }) {
           </Link>
         </h3>
         <div className="rating d-flex align-items-center">
-  {(() => {
-    const avg = parseFloat(product?.reviews_avg_star) || 0;
-    // round to nearest 0.5 for nicer UX (4.4 -> 4.5, 4.24 -> 4.0, etc.)
-    const rounded = Math.round(avg * 2) / 2;
-    const fullStars = Math.floor(rounded);
-    const hasHalf = rounded - fullStars === 0.5;
+          {(() => {
+            const avg = parseFloat(product?.reviews_avg_star) || 0;
+            // round to nearest 0.5 for nicer UX (4.4 -> 4.5, 4.24 -> 4.0, etc.)
+            const rounded = Math.round(avg * 2) / 2;
+            const fullStars = Math.floor(rounded);
+            const hasHalf = rounded - fullStars === 0.5;
 
-    return Array.from({ length: 5 }, (_, i) => {
-      if (i < fullStars) {
-        return <FontAwesomeIcon key={i} icon={faSolidStar} />;
-      }
-      if (i === fullStars && hasHalf) {
-        return <FontAwesomeIcon key={i} icon={faStarHalfAlt} />;
-      }
-      return <FontAwesomeIcon key={i} icon={faRegularStar} />;
-    });
-  })()}
-  <span className="ms-1">({product?.reviews?.length || 0})</span>
-</div>
+            return Array.from({ length: 5 }, (_, i) => {
+              if (i < fullStars) {
+                return <FontAwesomeIcon key={i} icon={faSolidStar} />;
+              }
+              if (i === fullStars && hasHalf) {
+                return <FontAwesomeIcon key={i} icon={faStarHalfAlt} />;
+              }
+              return <FontAwesomeIcon key={i} icon={faRegularStar} />;
+            });
+          })()}
+          <span className="ms-1">({product?.reviews?.length || 0})</span>
+        </div>
 
         <div className="Pricing d-flex align-items-center ">
           <p className="price">₹ {product?.product_discount_price}</p>
@@ -203,23 +207,26 @@ export default function SingleProductSlide({ product }) {
         </div>
       </div>
 
-              {product?.customization === 0 ? (
-                    <Link
-                      onClick={() => toggleCart(product)}
-                      className={`cart-btn ${
-                        addTocart.some((item) => item?.id === product?.id) ? "bg-dark" : ""
-                      }`}
-                    >
-                      {addTocart.some((item) => item?.id === product?.id)
-                        ? "Remove from Cart"
-                        : "Add to Cart"}
-                      <FontAwesomeIcon icon={faBagShopping} className="ms-2" />
-                    </Link>
-                    ) : (
-                <Link to={`/product/${product.product_slug}`} className="cart-btn border-0">
-                  View Product <FontAwesomeIcon icon={faEye} />
-                </Link>
-              )}
+      {product?.customization === 0 ? (
+        <Link
+          onClick={() => toggleCart(product)}
+          className={`cart-btn ${
+            addTocart.some((item) => item?.id === product?.id) ? "bg-dark" : ""
+          }`}
+        >
+          {addTocart.some((item) => item?.id === product?.id)
+            ? "Remove from Cart"
+            : "Add to Cart"}
+          <FontAwesomeIcon icon={faBagShopping} className="ms-2" />
+        </Link>
+      ) : (
+        <Link
+          to={`/product/${product.product_slug}`}
+          className="cart-btn border-0"
+        >
+          View Product <FontAwesomeIcon icon={faEye} />
+        </Link>
+      )}
     </div>
   );
 }

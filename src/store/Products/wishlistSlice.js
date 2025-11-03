@@ -25,8 +25,6 @@ export const wishlistSlice = createSlice({
     removeFromWishlist: (state, action) => {
       state.items = state.items.filter((p) => p.product_id !== action.payload);
     },
-
-    
   },
 });
 

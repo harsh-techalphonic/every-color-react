@@ -27,7 +27,7 @@ const dispatch = useDispatch();
     if (!Array.isArray(fetch_singleProduct) || fetch_singleProduct.length === 0) return;
 
     const existingProduct = fetch_singleProduct.find(
-      (product) => product.product_slug === slug
+      (product) => product?.product_slug === slug
     );
 
     if (existingProduct) {

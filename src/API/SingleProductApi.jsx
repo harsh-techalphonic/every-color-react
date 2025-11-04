@@ -10,7 +10,7 @@ export default function SingleProductApi() {
   const dispatch = useDispatch();
   const { slug } = useParams();
   useEffect(() => {
-    if(singleProduct.find((product) => product.product_slug === slug)) return;
+    if(singleProduct.find((product) => product?.product_slug === slug)) return;
     axios
       .get(`${config.API_URL}/products/${slug}`)
       .then(function (response) {

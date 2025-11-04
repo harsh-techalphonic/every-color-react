@@ -221,7 +221,7 @@ export default function SingleProductSlide({ product }) {
         </Link>
       ) : (
         <Link
-          to={`/product/${product.product_slug}`}
+          to={`/product/${product?.product_slug}`}
           className="cart-btn border-0"
         >
           View Product <FontAwesomeIcon icon={faEye} />

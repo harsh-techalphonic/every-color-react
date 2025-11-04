@@ -7,6 +7,7 @@ import OrderApi from "../../../API/OrderApi";
 import { Modal, Button, Alert } from "react-bootstrap";
 import { sendRefundAndReplaceApi } from "./ApiExportOrBulk";
 import { useNavigate } from "react-router-dom";
+import { API_URL } from "../../../Config/config";
 
 export default function ReturnRefund() {
   const [showModal, setShowModal] = useState(false);
@@ -138,7 +139,7 @@ export default function ReturnRefund() {
       formData.append("reason", cancelReason);
 
       const response = await fetch(
-        "https://dhanbet9.co/api/order/cancel-order",
+        `${API_URL}/order/cancel-order`,
         {
           method: "POST",
           headers: { Authorization: `Bearer ${token}` },
@@ -246,7 +247,7 @@ export default function ReturnRefund() {
       const formData = new FormData();
       formData.append("ids", `[${shipmentId}]`); 
 
-      const response = await fetch("https://dhanbet9.co/api/download-invoice", {
+      const response = await fetch(`${API_URL}/download-invoice`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -274,8 +275,8 @@ export default function ReturnRefund() {
       if (!shipmentId) throw new Error("Shipment ID or AWB not found");
 
       const url = order.shiprocket_shipment_id 
-    ? `https://dhanbet9.co/api/track-order?shipment_id=${order.shiprocket_shipment_id}` 
-    : `https://dhanbet9.co/api/track-order?awb=${order.shiprocket_awb}`;
+    ? `${API_URL}/track-order?shipment_id=${order.shiprocket_shipment_id}` 
+    : `${API_URL}/track-order?awb=${order.shiprocket_awb}`;
     console.log("track url", url)
 
       const response = await fetch(url, {
@@ -286,8 +287,9 @@ export default function ReturnRefund() {
       });
 
       const data = await response.json();
+      console.log( "fata fagta" , data)
 
-      if (data.success) {
+      if (data.status) {
         // Redirect to TrackOrderDetail page with data
         navigate("/track-order-detail", { state: { trackingData: data } });
       } else {
@@ -297,6 +299,7 @@ export default function ReturnRefund() {
       alert(err.message || "Error while tracking order");
     }
   };
+
 
   return (
     <div className="orders__box return_refund">
@@ -327,15 +330,17 @@ export default function ReturnRefund() {
             <div key={order.id} className={`order-box mb-4 ${
     expandedOrders[order.id] ? "border rounded p-3" : ""
   }`}>
+
+   {/* { console.log( "product order",order)} */}
               <div
                 className="order-summary d-flex justify-content-between align-items-center p-3 border rounded"
                 style={{ cursor: "default" }} // removed pointer here
               >
                 <div>
                   <p>
-                    <b>Order ID:</b> {order.id}{" "}
+                    <b>Order ID:</b> {order.shiprocket_order_id}{" "}
                   </p>
-                  {/* <p><b>Order ID:</b> {order.shiprocket_shipment_id} </p> */}
+                  <p><b>Shipment ID:</b> {order.shiprocket_shipment_id} </p>
                   <p>
                     <b>Status:</b> {order.order_status}
                   </p>

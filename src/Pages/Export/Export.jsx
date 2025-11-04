@@ -10,6 +10,7 @@ import logo from '../../assets/EveryColourLogo.png'
 
 export default function Export() {
   const [loading, setLoading] = useState(false);
+  const [apiResponse, setApiResponse] = useState({ status: null, message: "" });
 
   // ✅ Bulk Order form data (snake_case keys to match backend)
   const [formData, setFormData] = useState({
@@ -48,9 +49,13 @@ export default function Export() {
         formData
       );
 
+       setApiResponse({
+        status: response.data.status,
+        message: response.data.message,
+      });
       // console.log("API Response:", response.data);
 
-      alert("Bulk order submitted successfully!");
+      // alert("Order submitted successfully!");
       setFormData({
         company_name: "",
         contact_person: "",
@@ -98,6 +103,17 @@ export default function Export() {
                   <p className="mb-4">
                     Grow your business worldwide with our easy export solutions. Fill the form and our experts will contact you for bulk orders, shipping, and pricing.
                   </p>
+
+                  {apiResponse.message && (
+                    <p
+                      style={{
+                        color: apiResponse.status ? "green" : "red",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {apiResponse.message}
+                    </p>
+                  )}
 
                   {/* Company Name */}
                   <div className="mb-3">
@@ -213,7 +229,7 @@ export default function Export() {
                     type="submit"
                     disabled={loading}
                   >
-                    {loading ? "Submitting..." : "Submit Bulk Order"}
+                    {loading ? "Submitting..." : "Submit"}
                   </button>
                 </form>
               </div>

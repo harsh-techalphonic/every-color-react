@@ -91,14 +91,14 @@ export default function TrackOrder() {
                   {/* Order Id Input */}
                   <div className="mb-3">
                     <label htmlFor="shipment_id" className="form-label fw-semibold">
-                      Order ID
+                      Shipment Id
                     </label>
                     <input
                       type="text"
                       className="form-control"
                       id="shipment_id"
-                      name="shipment_id"
-                      placeholder="Enter your Order ID"
+                      name="shipment_id"  
+                      placeholder="Enter your Shipment Id"
                       value={formData.shipment_id}
                       onChange={handleChange}
                       required

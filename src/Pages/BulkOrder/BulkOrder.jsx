@@ -209,7 +209,7 @@ export default function BulkOrder() {
                     type="submit"
                     disabled={loading}
                   >
-                    {loading ? "Submitting..." : "Submit Bulk Order"}
+                    {loading ? "Submitting..." : "Submit "}
                   </button>
                 </form>
               </div>

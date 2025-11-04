@@ -2,6 +2,7 @@ import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { API_URL } from '../../../Config/config';
 
 export default function SearchBar() {
   const [tags, setTags] = useState([]);
@@ -14,7 +15,7 @@ export default function SearchBar() {
   useEffect(() => {
     const fetchTags = async () => {
       try {
-        const res = await fetch("https://dhanbet9.co/api/tags");
+        const res = await fetch(`${API_URL}/tags`);
         const data = await res.json();
         if (data.success && Array.isArray(data.tags)) {
           // Remove empty strings

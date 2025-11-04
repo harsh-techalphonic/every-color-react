@@ -197,7 +197,7 @@ const TrackingCard = () => {
         {/* Status Info Banner */}
         <div className="alert alert-info d-flex gap-3 flex-lg-nowrap flex-wrap justify-content-between align-items-center">
           <span>
-            <strong>Order Status Updates</strong> – Click the status button to
+            <strong>Order Status Updates</strong> - Click the status button to
             check more tracking details and stay updated every step of the way.
           </span>
           <Button
@@ -247,7 +247,7 @@ const TrackingCard = () => {
                     <div
                       key={index}
                       className={`rounded-circle d-flex align-items-center justify-content-center ${
-                        index <= order.currentStep
+                        index <= order.currentStep -1
                           ? "bg-primary text-white"
                           : "bg-light border"
                       }`}

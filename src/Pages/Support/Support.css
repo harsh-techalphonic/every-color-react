@@ -50,6 +50,9 @@
 .support_box .support_box_img.a2{
     background-color: #EAF7E9;
 }
+.support_box .support_box_img.a3{
+    background-color: #f7e9e9;
+}
 .support_box .support_box_img img {
     width: 48px;
     height: 48px;   
@@ -87,6 +90,14 @@
     font-size: 16px;
     font-weight: 400;
     background-color: #2DB224;
+    padding: 12px 18px ;
+    margin-top: 20px;
+}
+.call_btn_tttbn{
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 400;
+    background-color: #db3030;
     padding: 12px 18px ;
     margin-top: 20px;
 }

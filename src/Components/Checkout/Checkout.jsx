@@ -117,7 +117,7 @@ export default function Checkout() {
         product_ids: productIds,
       };
 
-      const res = await fetch("https://dhanbet9.co/api/coupons/validate", {
+      const res = await fetch(`${API_URL}/coupons/validate`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify(payload),

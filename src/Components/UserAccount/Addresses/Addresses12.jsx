@@ -5,6 +5,7 @@ import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import config from "../../../Config/config.json";
+import { API_URL } from "../../../Config/config";
 
 export default function Addresses() {
   const [showModal, setShowModal] = useState(false);
@@ -55,7 +56,7 @@ export default function Addresses() {
 
   const fetchStates = async () => {
     try {
-      const response = await axios.get(`https://dhanbet9.co/api/states`);
+      const response = await axios.get(`${API_URL}/states`);
       console.log(" state response", response)
       setStatedata(response.data.state || []);
     } catch (err) {

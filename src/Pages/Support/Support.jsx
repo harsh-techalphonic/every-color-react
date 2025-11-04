@@ -6,13 +6,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import logo from '../../assets/EveryColourLogo.png'
 import HelmetComponent from '../../Components/HelmetComponent/HelmetComponent';
+import { API_URL } from '../../Config/config';
 
 export default function Support() {
   const [supportData, setSupportData] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("https://dhanbet9.co/api/web/support-page")
+    fetch(`${API_URL}/web/support-page`)
       .then((res) => res.json())
       .then((data) => {
         if (data.success) {
@@ -95,50 +96,71 @@ export default function Support() {
                       src={
                         index === 0
                           ? "/PhoneCall.png"
-                          : "/ChatCircleDots.png"
+                          : index === 1
+                          ? "/ChatCircleDots.png"
+                          : "/Mail.png"
                       }
                       alt=""
                     />
                   </div>
 
                   <div className="support_box_content">
-                    <h2>{item.heading}</h2>
+                    <h2 className='text-uppercase'>{item.heading}</h2>
                     <p>{item.content}</p>
 
                     {/* For Phone */}
                     {index === 0 ? (
-                      <>
-                        <a href={`tel:${item.sub_heading}`} className="call-redi">
-                          {item.sub_heading}
-                        </a>
-                        <a
-                          href={`tel:${item.sub_heading}`}
-                          className="call_btn_tbn"
-                        >
-                          Call now <FontAwesomeIcon icon={faArrowRight} />
-                        </a>
-                      </>
-                    ) : (
-                      <>
-                        {/* For WhatsApp Chat */}
-                        <a
-                          href={`https://api.whatsapp.com/send?phone=${item.sub_heading}`}
-                          className="call-redi"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          Whatsapp Support
-                        </a>
-                        <a
-                          href={`https://api.whatsapp.com/send?phone=${item.sub_heading}`}
-                          className="call_btn_ttbn"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          Whatsapp <FontAwesomeIcon icon={faArrowRight} />
-                        </a>
-                      </>
-                    )}
+                        // Call buttons
+                        <>
+                          <a href={`tel:${item.sub_heading}`} className="call-redi">
+                            {item.sub_heading}
+                          </a>
+                          <a href={`tel:${item.sub_heading}`} className="call_btn_tbn">
+                            Call now <FontAwesomeIcon icon={faArrowRight} />
+                          </a>
+                        </>
+                      ) : index === 1 ? (
+                        // WhatsApp buttons
+                        <>
+                          <a
+                            href={`https://api.whatsapp.com/send?phone=${item.sub_heading}`}
+                            className="call-redi"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            Whatsapp Support
+                          </a>
+                          <a
+                            href={`https://api.whatsapp.com/send?phone=${item.sub_heading}`}
+                            className="call_btn_ttbn"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            Whatsapp <FontAwesomeIcon icon={faArrowRight} />
+                          </a>
+                        </>
+                      ) : (
+                        // Mail buttons (fallback)
+                        <>
+                          <a
+                            href={`mailto:${item.sub_heading}`}
+                            className="call-redi"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            Mail Support
+                          </a>
+                          <a
+                            href={`mailto:${item.sub_heading}`}
+                            className="call_btn_tttbn"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            Mail <FontAwesomeIcon icon={faArrowRight} />
+                          </a>
+                        </>
+                      )}
+
                   </div>
                 </div>
               </div>

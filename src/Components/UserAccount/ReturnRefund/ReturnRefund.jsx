@@ -38,12 +38,16 @@ export default function ReturnRefund() {
     ? refundRetunDta.filter(order => order.status === selectedStatus)
     : refundRetunDta;
 
+
+
+    console.log("data out put" ,refundRetunDta)
+
   return (
     <div className="orders__box return_refund">
       <div className="row">
         <div className="col-lg-7 p-3">
           <div className="order-title12 mb-3 d-flex align-items-center justify-content-between">
-            <h2>Return/Refund</h2>
+            <h2>Replace/Refund</h2>
             <select
               className="form-select w-auto"
               value={selectedStatus}
@@ -85,7 +89,7 @@ export default function ReturnRefund() {
                       {new Date(order.created_at).toLocaleDateString()}
                     </p>
                     <p className="orderID">
-                      <b>Status :</b> {order.status}
+                      <b>Status :</b> {order.status}/<b style={{textTransform:'capitalize'}}>{order?.type}</b>
                     </p>
                     <p className="orderID">
                       <b>Order ID :</b> {order?.order?.shiprocket_order_id}

@@ -191,13 +191,15 @@ export default function ReturnRefund() {
       const formData = new FormData();
       formData.append("type", modalType === "RETURN" ? "replace" : "refund");
       formData.append("order_id", selectedProduct.order_id);
-      formData.append("product_order_id", selectedProduct?.product_id);
+      formData.append("product_order_id", selectedProduct?.id);
       formData.append("reason_code", selectedReason);
       formData.append("reason", inputReason);
       formData.append("quantity", quantity);
       uploadedImages.forEach((image) => {
         formData.append(`images[]`, image);
       });
+
+      // console.log(prod)
       const response = await sendRefundAndReplaceApi(formData);
       if (response?.success) {
         setSuccessMessage(
@@ -216,6 +218,10 @@ export default function ReturnRefund() {
       setErrorMessage(err.message || "An error occurred. Please try again.");
     }
   };
+
+
+
+
 
   const handleConfirm = () => {
     if (validateForm()) {
@@ -328,8 +334,8 @@ export default function ReturnRefund() {
           {/* Render Orders */}
           {filteredOrders.map((order) => (
             <div key={order.id} className={`order-box mb-4 ${
-    expandedOrders[order.id] ? "border rounded p-3" : ""
-  }`}>
+              expandedOrders[order.id] ? "border rounded p-3" : ""
+            }`}>
 
    {/* { console.log( "product order",order)} */}
               <div
@@ -414,10 +420,10 @@ export default function ReturnRefund() {
                             <button
                               className="RETURN mb-2"
                               onClick={() =>
-                                handleShowModal("RETURN", product, order)
+                                handleShowModal("Replace", product, order)
                               }
                             >
-                              RETURN
+                              Replace
                             </button>
                             <button
                               className="Refund"

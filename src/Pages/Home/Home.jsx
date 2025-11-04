@@ -116,7 +116,7 @@ export default function Home() {
 
       <HotOfferHome />
       <SuperSaving />
-      {/* <MultiBanners /> */}
+      <MultiBanners />
       {token && <DealsOfDay />}
       {/* <CategoryBestSellers /> */}
       {/* <Category/> */}

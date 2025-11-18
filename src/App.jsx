@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./App.css";
 
@@ -36,132 +36,140 @@ import Export from "./Pages/Export/Export";
 import TrackOrder from "./Pages/TrackOrder/TrackOrder";
 import TrackingPage from "./Pages/TrackOrder/TrackingPage";
 
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <Home />,
-  },
-  {
-    path: "/about",
-    element: <About />,
-  },
-  {
-    path: "/product",
-    element: <Product/>,
-  },
-  {
-    path: "/product/category/:sub_category",
-    element: <Product category_type="sub_category"/>,
-  },
-  {
-    path: "/product/:slug",
-    element: <ProductDetail />,
-  },
-  // {
-  //   path : '/category/:category',
-  //   element : <Product />
-  // },
-  {
-    path: "/category/:category",
-    element: <Category category_type="sub_category" />,
-  },
-   {
-    path : '/category/:category/:sub_category',
-    element : <Product category_type="sub_category"/>
-  },
-  {
-    path: "/cart",
-    element: <Cart />,
-  },
-  {
-    path: "/wishlist",
-    element: <Wishlist />,
-  },
-  {
-    path: "/login",
-    element: <Login />,
-  },
-  {
-    path: "/signup",
-    element: <SignUp />,
-  },
-  {
-    path: "/forget-password",
-    element: <ForgetPassword />,
-  },
-  {
-    path: "/reset-password",
-    element: <ResetPassword />,
-  },
-  {
-    path: "/verify",
-    element: <VerifyAccount />,
-  },
-  {
-    path: "/user-account",
-    element: (
-      <PrivateRoute>
-        <UserAccount />
-      </PrivateRoute>
-    ),
-  },
-  {
-    path: "/contact-us",
-    element: <Contact />,
-  },
-  {
-    path: "/term&conditons",
-    element: <TermCondition />,
-  },
-  {
-    path: "/privacy-policy",
-    element: <Privacy_policy />,
-  },
-  {
-    path: "/return-policy",
-    element: <Return_policy />,
-  },
-  {
-    path: "/vendor-privacy-policy",
-    element: <Privacy_policy_vendor />,
-  },
-  {
-    path: "/vendor-terms-conditions",
-    element: <TermCondition_vendor />,
-  },
-  {
-    path: "/checkout",
-    element: <Checkout_page />,
-  },
-  {
-    path: "/support",
-    element: <Support />,
-  },
-   {
-    path: "/bulk-order",
-    element: <BulkOrder/>
-  },
-  {
-    path: "/export",
-    element: <Export/>
-  },
-   {
-    path: "/track-order",
-    element: <TrackOrder/>
-  },
-  {
-    path: "/track-order-detail",
-    element: <TrackingPage/>
-  },
-  {
-    path: "*",
-    element: <Home />,
-  },
-]);
+
 
 function App() {
+  const [headerHeight, setHeaderHeight] = useState(0);
+  
+  const handleHeaderHeight = (height) => {
+    console.log("Dynamic Header Height:", height);
+    setHeaderHeight(height);
+  };
+  console.log( "header heiight =", headerHeight)
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: <Home  onHeaderHeight={handleHeaderHeight} />,
+    },
+    {
+      path: "/about",
+      element: <About onHeaderHeight={handleHeaderHeight} />,
+    },
+    {
+      path: "/product",
+      element: <Product onHeaderHeight={handleHeaderHeight}/>,
+    },
+    {
+      path: "/product/category/:sub_category",
+      element: <Product category_type="sub_category" onHeaderHeight={handleHeaderHeight}/>,
+    },
+    {
+      path: "/product/:slug",
+      element: <ProductDetail  onHeaderHeight={handleHeaderHeight}/>,
+    },
+    // {
+    //   path : '/category/:category',
+    //   element : <Product />
+    // },
+    {
+      path: "/category/:category",
+      element: <Category category_type="sub_category" onHeaderHeight={handleHeaderHeight} />,
+    },
+     {
+      path : '/category/:category/:sub_category',
+      element : <Product category_type="sub_category" onHeaderHeight={handleHeaderHeight}/>
+    },
+    {
+      path: "/cart",
+      element: <Cart onHeaderHeight={handleHeaderHeight} />,
+    },
+    {
+      path: "/wishlist",
+      element: <Wishlist onHeaderHeight={handleHeaderHeight} />,
+    },
+    {
+      path: "/login",
+      element: <Login  onHeaderHeight={handleHeaderHeight}/>,
+    },
+    {
+      path: "/signup",
+      element: <SignUp onHeaderHeight={handleHeaderHeight} />,
+    },
+    {
+      path: "/forget-password",
+      element: <ForgetPassword onHeaderHeight={handleHeaderHeight} />,
+    },
+    {
+      path: "/reset-password",
+      element: <ResetPassword  onHeaderHeight={handleHeaderHeight}/>,
+    },
+    {
+      path: "/verify",
+      element: <VerifyAccount  onHeaderHeight={handleHeaderHeight}/>,
+    },
+    {
+      path: "/user-account",
+      element: (
+        <PrivateRoute>
+          <UserAccount  onHeaderHeight={handleHeaderHeight} />
+        </PrivateRoute>
+      ),  
+    },
+    {
+      path: "/contact-us",
+      element: <Contact  onHeaderHeight={handleHeaderHeight}/>,
+    },
+    {
+      path: "/term&conditons",
+      element: <TermCondition  onHeaderHeight={handleHeaderHeight}/>,
+    },
+    {
+      path: "/privacy-policy",
+      element: <Privacy_policy onHeaderHeight={handleHeaderHeight} />,
+    },
+    {
+      path: "/return-policy",
+      element: <Return_policy onHeaderHeight={handleHeaderHeight} />,
+    },
+    {
+      path: "/vendor-privacy-policy",
+      element: <Privacy_policy_vendor onHeaderHeight={handleHeaderHeight} />,
+    },
+    {
+      path: "/vendor-terms-conditions",
+      element: <TermCondition_vendor onHeaderHeight={handleHeaderHeight} />,
+    },
+    {
+      path: "/checkout",
+      element: <Checkout_page  onHeaderHeight={handleHeaderHeight}/>,
+    },
+    {
+      path: "/support",
+      element: <Support  onHeaderHeight={handleHeaderHeight}/>,
+    },
+     {
+      path: "/bulk-order",
+      element: <BulkOrder  onHeaderHeight={handleHeaderHeight}/>
+    },
+    {
+      path: "/export",
+      element: <Export  onHeaderHeight={handleHeaderHeight}/>
+    },
+     {
+      path: "/track-order",
+      element: <TrackOrder  onHeaderHeight={handleHeaderHeight}/>
+    },
+    {
+      path: "/track-order-detail",
+      element: <TrackingPage  onHeaderHeight={handleHeaderHeight}/>
+    },
+    {
+      path: "*",
+      element: <Home onHeaderHeight={handleHeaderHeight} />,
+    },
+  ]);
   return (
-    <main>
+    <main style={{paddingTop:headerHeight}}>
       <Provider store={ecommerceStore}>
         <RouterProvider router={router}></RouterProvider>
       </Provider>

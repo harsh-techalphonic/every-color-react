@@ -188,7 +188,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { cartAction } from "../../store/Products/cartSlice";
 import ChangePassword from "../../Components/UserAccount/ChangePassword/ChangePassword";
 
-export default function UserAccount() {
+export default function UserAccount({ onHeaderHeight }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   // const authcheck = useSelector((store) => store.authcheck);
@@ -211,7 +211,7 @@ export default function UserAccount() {
   return (
     <>
       <ScrollToTop />
-      <Header />
+      <Header onHeight={onHeaderHeight} />
       <div className="breadcrum_box mt-2">
         <nav aria-label="breadcrumb">
           <div className="container">

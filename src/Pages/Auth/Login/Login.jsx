@@ -12,7 +12,7 @@ import ScrollToTop from "../../ScrollToTop";
 import { useDispatch } from "react-redux";
 import { AuthCheckAction } from "../../../store/Auth/AuthCheckSlice";
 
-export default function Login() {
+export default function Login({ onHeaderHeight }) {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
@@ -199,7 +199,7 @@ export default function Login() {
     <>
       <ScrollToTop />
       <ToastContainer />
-      <Header />
+      <Header onHeight={onHeaderHeight} />
 
       <section className="login-sec">
         <div className="container h-100">

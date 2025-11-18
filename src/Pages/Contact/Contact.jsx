@@ -12,7 +12,7 @@ import ScrollToTop from "../ScrollToTop";
 import HelmetComponent from "../../Components/HelmetComponent/HelmetComponent";
 import logo from '../../assets/EveryColourLogo.png'
 
-export default function Contact() {
+export default function Contact({ onHeaderHeight }) {
   const Contact = useSelector((store) => store.Contact);
   console.log( "contact meta", Contact)
 
@@ -50,7 +50,7 @@ export default function Contact() {
   return (
     <>
       <ScrollToTop />
-      <Header />
+      <Header onHeight={onHeaderHeight} />
       <HelmetComponent
                     title={Contact?.data[0]?.meta_title}
                     description={Contact?.data[0]?.meta_description}

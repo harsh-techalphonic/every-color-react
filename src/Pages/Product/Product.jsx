@@ -15,7 +15,7 @@ import logo from '../../assets/EveryColourLogo.png'
 import HelmetComponent from "../../Components/HelmetComponent/HelmetComponent";
 import { useSelector } from "react-redux";
 
-export default function Product({ category_type }) {
+export default function Product({ category_type, onHeaderHeight }) {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 991);
   const [showFilter, setShowFilter] = useState(false);
   const [products, setProducts] = useState({ status: false, data: [] });
@@ -211,7 +211,7 @@ useEffect(() => {
   return (
     <>
       <ScrollToTop />
-      <Header />
+      <Header onHeight={onHeaderHeight}/>
 
       <HelmetComponent
               title={prodata?.meta?.meta_title}

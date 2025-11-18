@@ -10,7 +10,7 @@ import Footer from "../../Components/Partials/Footer/Footer";
 import Header from "../../Components/Partials/Header/Header";
 import { useLocation, useNavigate } from "react-router-dom";
 
-const TrackingCard = () => {
+const TrackingCard = ({ onHeaderHeight }) => {
 
 
 
@@ -184,7 +184,7 @@ const TrackingCard = () => {
 
   return (
     <>
-      <Header />
+      <Header onHeight={onHeaderHeight} />
       <div className="container my-5">
         {/* Order Header */}
         <div className="mb-3">

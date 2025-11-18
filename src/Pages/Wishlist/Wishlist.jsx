@@ -208,7 +208,7 @@ import ScrollToTop from "../ScrollToTop";
 import { deleteCartItem, fetchWishListApi } from "../../API/AllApiCode";
 import { DeleteWishList, AddOrRemoveCart, API_URL } from "../../Config/config";
 
-export default function Wishlist() {
+export default function Wishlist({ onHeaderHeight }) {
   const AuthCheck = useSelector((store) => store.authcheck);
   const [products, setProducts] = useState([]);
   const [addTocart, setaddTocart] = useState([]);
@@ -309,7 +309,7 @@ export default function Wishlist() {
   return (
     <>
       <ScrollToTop />
-      <Header />
+      <Header onHeight={onHeaderHeight} />
       <div className="breadcrum_box mt-2">
         <nav aria-label="breadcrumb">
           <div className="container">

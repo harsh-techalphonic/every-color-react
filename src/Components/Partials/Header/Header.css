@@ -52,7 +52,7 @@
 }
 .Header .logo-serach .brand-name{
     width: 100%;
-    max-width: 80px;
+    max-width: 120px;
 }
 
 .Header .menu-box{
@@ -176,6 +176,7 @@
         width: 30px;
         font-size: 12px;
     }
+ 
   
 }
 @media screen and (max-width:576px) {
@@ -372,3 +373,24 @@
       .Header.sticky .infobox{
         display: none;
       }
+
+
+
+
+      .Header {
+        
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 999;
+  transition: transform 0.3s ease-in-out, background 0.3s ease;
+  background-color: white;
+}
+
+.Header.sticky {
+  transform: translateY(0);
+}
+
+.Header.not-sticky {
+  transform: translateY(0px);   
+}

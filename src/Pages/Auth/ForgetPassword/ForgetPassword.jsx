@@ -8,7 +8,7 @@ import config from '../../../Config/config.json';
 import { toast, ToastContainer } from 'react-toastify';
 import ScrollToTop from '../../ScrollToTop';
 
-export default function ForgetPassword() {
+export default function ForgetPassword({ onHeaderHeight }) {
   const [phone, setPhone] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -91,7 +91,7 @@ export default function ForgetPassword() {
     <>
       <ScrollToTop />
       <ToastContainer />
-      <Header />
+      <Header onHeight={onHeaderHeight} />
       <section className="forget_sec">
         <div className="container h-100">
           <div className="row justify-content-center align-items-center h-100">

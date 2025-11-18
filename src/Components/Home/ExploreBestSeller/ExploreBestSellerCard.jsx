@@ -1,8 +1,11 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlay } from "@fortawesome/free-solid-svg-icons";
 import { useRef, useState } from "react";
+import { Link } from "react-router-dom";
 
 export default function ExploreBestSellerCard({ product }) {
+
+  console.log( "rprodaeaslkmalsdncasdc lasdclasldc asnd asldasdn kasjd ", product)
   const videoRef = useRef(null);
   const [isHovered, setIsHovered] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
@@ -62,6 +65,10 @@ export default function ExploreBestSellerCard({ product }) {
             <FontAwesomeIcon icon={faPlay} size="lg" />
           </span>
         )}
+
+        <div className="hovered_btn button-light">
+          <Link to={product.link}>View Product</Link>
+        </div>
       </div>
     </div>
   );

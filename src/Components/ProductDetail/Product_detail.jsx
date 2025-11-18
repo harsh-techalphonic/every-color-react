@@ -65,6 +65,7 @@ export default function Product_detail({ singleProduct }) {
     ? productAmount.sale_price
     : singleProduct.product_discount_price, 
   quantity,
+
   variation:
     Object.keys(productVarSelected).length > 0 ? productVarSelected : null,
 };
@@ -111,9 +112,9 @@ const handleShare = (platform) => {
     case "facebook":
       shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(productUrl)}`;
       break;
-    case "twitter":
-      shareUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(productUrl)}&text=Check out this product!`;
-      break;
+    // case "twitter":
+    //   shareUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(productUrl)}&text=Check out this product!`;
+    //   break;
     case "whatsapp":
       shareUrl = `https://api.whatsapp.com/send?text=Check out this product: ${encodeURIComponent(productUrl)}`;
       break;
@@ -627,11 +628,11 @@ const sliderNavSettings = {
                 />
               ))}
 
-              <div className="cate-text mt-3">
+              {/* <div className="cate-text mt-3">
                 <span className="text-success fw-bold">
                   <b className="text-dark">Availability:</b> In Stock
                 </span>
-              </div>
+              </div> */}
 
               <div className="cate-text mt-3">
                 <span className="text-success fw-bold">
@@ -754,9 +755,9 @@ const sliderNavSettings = {
                     <li style={{ cursor: "pointer" }} onClick={() => handleShare("facebook")}>
                       <FontAwesomeIcon icon={faFacebook} />
                     </li>
-                    <li style={{ cursor: "pointer" }} onClick={() => handleShare("twitter")}>
+                    {/* <li style={{ cursor: "pointer" }} onClick={() => handleShare("twitter")}>
                       <FontAwesomeIcon icon={faXTwitter} />
-                    </li>
+                    </li> */}
                     <li style={{ cursor: "pointer" }} onClick={() => handleShare("whatsapp")}>
                       <FontAwesomeIcon icon={faWhatsapp} />
                     </li>

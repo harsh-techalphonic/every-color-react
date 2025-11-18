@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
+import { ImageUrl } from '../../Config/config';
 
 export default function ProductDescription({singleProduct}) {
-  // console.log(singleProduct)
+  console.log("singleProduct", singleProduct)
   const [activeTab, setActiveTab] = useState('Description');
 
   const handleTabClick = (tab) => setActiveTab(tab);
@@ -14,7 +15,6 @@ export default function ProductDescription({singleProduct}) {
             <div className="row">
               <div className="col-lg-6">
                 <div className="conte">
-                  {/* <h5>Description</h5> */}
                   <div dangerouslySetInnerHTML={{ __html: singleProduct.product_description}} />
                 </div>
               </div>
@@ -22,11 +22,14 @@ export default function ProductDescription({singleProduct}) {
                 <div className="conte">
                   <h5>Feature</h5>
                   <ul className="list-unstyled">
-                    <li className="d-flex align-items-center gap-3 mb-3"><img src="/Medal.png" alt="Medal" /> Free 1 Year Warranty</li>
-                    <li className="d-flex align-items-center gap-3 mb-3"><img src="/Truck.png" alt="Truck" /> Free Shipping & Fast Delivery</li>
+                    {singleProduct?.key_features?.map((item, index)=>(
+                      <li className="d-flex align-items-center gap-3 mb-3"><img src={`${ImageUrl}/${item.image}`} alt="Medal" /> {item.text}</li>
+
+                    ))}
+                    {/* <li className="d-flex align-items-center gap-3 mb-3"><img src="/Truck.png" alt="Truck" /> Free Shipping & Fast Delivery</li>
                     <li className="d-flex align-items-center gap-3 mb-3"><img src="/Handshake.png" alt="Handshake" /> 100% Money-back Guarantee</li>
                     <li className="d-flex align-items-center gap-3 mb-3"><img src="/Headphones.png" alt="Headphones" /> 24/7 Customer Support</li>
-                    <li className="d-flex align-items-center gap-3 mb-3"><img src="/CreditCard.png" alt="Credit Card" /> Secure Payment Method</li>
+                    <li className="d-flex align-items-center gap-3 mb-3"><img src="/CreditCard.png" alt="Credit Card" /> Secure Payment Method</li> */}
                   </ul>
                 </div>
               </div>
@@ -34,10 +37,12 @@ export default function ProductDescription({singleProduct}) {
                 <div className="conte">
                   <h5>Shipping Information</h5>
                   <ul className="list-unstyled">
-                    <li className="d-flex align-items-center gap-3 mb-3">Helps maintain blood sugar levels</li>
-                    <li className="d-flex align-items-center gap-3 mb-3">Meets protein and fibre requirements in patients with diabetes</li>
-                    <li className="d-flex align-items-center gap-3 mb-3">High in fibre and protein</li>
-                    <li className="d-flex align-items-center gap-3 mb-3">Low glycemic index and fat</li>
+                    <li className="d-flex align-items-center gap-3 mb-3">Fast & reliable nationwide delivery</li>
+                    <li className="d-flex align-items-center gap-3 mb-3">Secure and protective product packaging</li>
+                    <li className="d-flex align-items-center gap-3 mb-3">Real-time shipment tracking</li>
+                    <li className="d-flex align-items-center gap-3 mb-3">Easy return & exchange policy</li>
+                    <li className="d-flex align-items-center gap-3 mb-3">Delivery time depends on your location</li>
+                    <li className="d-flex align-items-center gap-3 mb-3">Customer support available 24/7</li>
                   </ul>
                 </div>
               </div>
@@ -139,12 +144,12 @@ export default function ProductDescription({singleProduct}) {
         </ul>
         <div className="tab-content mt-4">{tabContent()}</div>
       </div>
-      <div className="container mt-4">
+      {/* <div className="container mt-4">
         <div className="descipt-box">
           <h4>Product Description</h4>
           <div dangerouslySetInnerHTML={{ __html: singleProduct.product_description}} />
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }

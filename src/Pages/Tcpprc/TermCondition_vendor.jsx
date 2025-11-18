@@ -5,12 +5,12 @@ import TcpprcApi from '../../API/TcpprcApi'
 import { useSelector } from 'react-redux';
 import ScrollToTop from '../ScrollToTop';
 
-export default function TermCondition_vendor() {
+export default function TermCondition_vendor({ onHeaderHeight }) {
     const tcpprc = useSelector((store) => store.Tcpprc); 
   return (
     <>
     <ScrollToTop/>
-        <Header/>
+        <Header onHeight={onHeaderHeight}/>
         <TcpprcApi/>
 
         <div className='term-Conditons_sec my-5'>

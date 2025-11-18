@@ -10,7 +10,7 @@ import { TermsCondition } from "../../Config/config";
 import HelmetComponent from "../../Components/HelmetComponent/HelmetComponent";
 import logo from '../../assets/EveryColourLogo.png'
 
-export default function TermCondition() {
+export default function TermCondition({ onHeaderHeight }) {
   const tcpprc = useSelector((store) => store.Tcpprc);
 
   const [policy, setPolicy] = useState([]);
@@ -23,7 +23,7 @@ export default function TermCondition() {
   return (
     <>
       <ScrollToTop />
-      <Header />
+      <Header onHeight={onHeaderHeight} />
       <HelmetComponent
               title={policy?.meta_title}
               description={policy?.meta_description}

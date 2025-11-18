@@ -10,7 +10,7 @@ import config from "../../../Config/config.json";
 import { toast, ToastContainer } from 'react-toastify';
 import ScrollToTop from "../../ScrollToTop";
 
-export default function SignUp() {
+export default function SignUp({ onHeaderHeight }) {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [message, setMessage] = useState({ text: "", type: "" });
@@ -114,7 +114,7 @@ export default function SignUp() {
         <>
         <ScrollToTop/>
         <ToastContainer />
-            <Header />
+            <Header onHeight={onHeaderHeight}/>
             <section className="signup-sec">
                 <div className="container h-100">
                     <div className="row justify-content-center align-items-center h-100">

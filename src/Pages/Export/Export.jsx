@@ -8,7 +8,7 @@ import exportimg from "../../../public/export.jpg";
 import HelmetComponent from "../../Components/HelmetComponent/HelmetComponent";
 import logo from '../../assets/EveryColourLogo.png'
 
-export default function Export() {
+export default function Export({ onHeaderHeight }) {
   const [loading, setLoading] = useState(false);
   const [apiResponse, setApiResponse] = useState({ status: null, message: "" });
 
@@ -86,7 +86,7 @@ export default function Export() {
               keywords="export inquiry form, bulk order export, international shipping solutions, export business India, wholesale export inquiry, export pricing, global trade solutions, export contact form, export company India"
               image={logo}
             />
-      <Header />
+      <Header onHeight={onHeaderHeight}/>
 
       <section className="login-sec bulk_order">
         <div className="container h-100">

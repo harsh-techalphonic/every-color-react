@@ -1,5 +1,4 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable react-hooks/exhaustive-deps */
+
 import {
   faBarsStaggered,
   faEnvelope,
@@ -14,7 +13,7 @@ import "./Header.css";
 
 import logo from '../../../assets/EveryColourLogo.png'
 import Offcanvas from "react-bootstrap/Offcanvas";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import ProductsApi from "../../../API/ProductsApi";
 import WishlistMenu from "./WishlistMenu";
 import CartMenu from "./CartMenu";
@@ -23,13 +22,14 @@ import SearchBar from "./SearchBar";
 import CategoriesApi from "../../../API/CategoriesAPi";
 import {  useSelector } from "react-redux";
 
-export default function Header() {
+export default function Header({ onHeight = () => {} }) {
+  const { pathname } = useLocation();
   const categories = useSelector((store) => store.categories);
   // const dispatch = useDispatch();
   const [show, setShow] = useState(false);
   const [isSticky, setIsSticky] = useState(false);
   const [wishlistCount, setWishlistCount] = useState(0);
-
+console.log( "path naem ",  pathname)
   let detactWishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
   useEffect(() => {
     if (localStorage.getItem("wishlist")) {
@@ -86,6 +86,23 @@ export default function Header() {
 
   // all category code here start
 
+  const headerRef = useRef(null);
+
+useEffect(() => {
+    const measure = () => {
+      if (!headerRef.current) return;
+      const height = headerRef.current.offsetHeight;
+      if (typeof onHeight === "function") onHeight(height);
+    };
+
+    // measure on mount
+    measure();
+
+    const handleResize = () => measure();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [onHeight]);
+
   const [showCategoriesDropdown, setshowCategoriesDropdown] = useState(false);
   const dropdownCategoriesRef = useRef(null);
 
@@ -128,7 +145,8 @@ export default function Header() {
 
   return (
     <>
-      <section className={`Header ${isSticky ? "sticky" : ""}`}>
+      {/* <section className={`Header ${isSticky ? "sticky" : ""}`}> */}
+      <section  ref={headerRef} className={`Header ${isSticky ? "sticky" : "not-sticky"}`}>
         <ProductsApi />
         <CategoriesApi />
         {/* <OrderApi /> */}
@@ -180,7 +198,7 @@ export default function Header() {
         </div>
 
         <div className="container">
-          <div className="logo-serach d-flex align-items-center justify-content-between py-3">
+          <div className="logo-serach d-flex align-items-center justify-content-between ">
             <div className="brand-name">
               <Link to="/">
                 <img src={logo} alt="Logo" />
@@ -210,23 +228,23 @@ export default function Header() {
         <div className="menu-box desktop">
           <ul className="d-flex align-items-center list-unstyled justify-content-center mb-0">
             <li>
-              <Link to="/" className="active">
+              <Link to="/" className={pathname === `/` ? "active" : ""}>
                 Home
               </Link>
             </li>
             {categories.data?.map((category, index) => (
               <li key={index}>
-                <Link to={`/category/${category.slug}`}>{category.name}</Link>
+                <Link to={`/category/${category.slug}` }  className={pathname === `/category/${category.slug}` ? "active" : ""}>{category.name}</Link>
               </li>
             ))}
             <li>
-              <Link to="/bulk-order">Bulk Order</Link>
+              <Link to="/bulk-order" className={pathname === `/bulk-order` ? "active" : ""}>Bulk Order</Link>
             </li>
             <li>
-              <Link to="/export">Export</Link>
+              <Link to="/export" className={pathname === `/export` ? "active" : ""}>Export</Link>
             </li>
             <li>
-              <Link to="/track-order">Track Order</Link>
+              <Link to="/track-order" className={pathname === `/track-order` ? "active" : ""}>Track Order</Link>
             </li>
           </ul>
         </div>

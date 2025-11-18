@@ -108,8 +108,8 @@ export default function Addresses() {
                       <h4>Billing Address</h4>
                       <h5>{item?.name}</h5>
                       <p>
-                        {item?.full_address} {item?.landmark} {item?.state}{" "}
-                        {item?.country}
+                        {item?.full_address}, {item?.landmark}, {item?.area}, {item?.state}{" "}
+                        {item?.country} {item.zip}
                       </p>
 
                       <div className="address_actions">

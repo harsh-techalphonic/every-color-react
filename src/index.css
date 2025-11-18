@@ -9,6 +9,9 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+body{
+  scroll-behavior: smooth;
+}
 
 *{
   font-family: "Outfit", sans-serif;
@@ -87,6 +90,8 @@ button:hover {
 .slick-next:before {
   content: "\f105"; /* Right arrow for next */
 }
+
+    
 @media screen and (max-width:576px) {
   .slick-next {
     right: 2px !important;
@@ -282,8 +287,81 @@ button:hover {
 
 }
 }
+
+
+@media screen and (max-width:1280px) {
+  .Product_card .feature-card .card-img,.Best_selling .feature-card .card-img{
+    height: 136px !important;
+  }
+  .Product_card .feature-card h3 a,.Best_selling .feature-card .product-detail h3 a {
+    font-size: 15px !important;
+    height: 37px !important;
+  }
+  .Product_card .feature-card .product-detail .Pricing .price,.Best_selling .feature-card .product-detail .Pricing .price {
+      font-size: 18px !important;
+  }
+  .Product_card .feature-card .product-detail .Pricing .slashPrice, .Best_selling .feature-card .product-detail .Pricing .slashPrice {
+      font-size: 14px;
+  }
+  .Product_card .feature-card .product-detail .rating svg,.Best_selling .feature-card .product-detail .rating svg {
+      color: #FEB92D;
+      font-size: 13px;
+  }
+  .Product_card .cart-btn,.Best_selling .cart-btn {
+    padding: 4px 0 !important; 
+    font-size: 13px !important;
+}
+.Product_card .feature-card , .Best_selling .feature-card{
+    padding: 32px 8px 20px !important;
+}
+.home_hero .main-content-box .content-box h1
+ {
+    font-size: 44px;
+}
+   .Header .infobox ul li a {
+    font-size: 12px !important;
+}
+.Header .menu-box ul li a {
+    font-size: 12px !important;
+}
+.Header .menu-box {
+    padding: 6px !important;
+}
+.searchbar-category-barr .input-group .input-group-text,.Header .searchbar-category-barr .input-group input {
+  padding: 4px 16px !important;
+      font-size: 12px;
+}
+.Header .searchbar-category-barr button {
+    font-size: 12px !important;
+    padding: 5px 16px !important  ;
+}
+.Header .logo-serach .brand-name {
+    width: 100%;
+    max-width: 94px !important;
+}
+
+}
 @media screen and (min-width:991px) {
   .logo-cartbox{
     margin-left: 24px;
   }
+}
+
+
+
+.hovered_btn{
+  position: absolute;
+  bottom: -50%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.feature-card .card-img:hover .hovered_btn{
+  bottom: 5%;
+  left: 50%;
+  transform: translateX(-50%);
+
+}
+.hovered_btn a{
+  width: 100%;
+  white-space: nowrap;
 }

@@ -29,7 +29,7 @@ import HelmetComponent from "../../Components/HelmetComponent/HelmetComponent.js
 // import { bannersAction } from "../../store/HomesSection/bannerSlice";
 import logo from "../../assets/EveryColourLogo.png";
 
-export default function Home() {
+export default function Home({ onHeaderHeight }) {
   useEffect(() => {
     AOS.init({ duration: 1000 });
   }, []);
@@ -106,7 +106,7 @@ export default function Home() {
         keywords={banners.data[0]?.meta_keyword}
         image={logo}
       />
-      <Header />
+      <Header onHeight={onHeaderHeight}/>
       <Hero />
       <Gprscertified />
       {/* <Brands /> */}

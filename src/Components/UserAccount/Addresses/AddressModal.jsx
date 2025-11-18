@@ -19,6 +19,7 @@ const AddressModal = ({
   const [zipcode, setZipcode] = useState("");
   const [city, setCity] = useState("");
   const [landmark, setLandmark] = useState("");
+  const [area, setArea] = useState("");
   const [statedata, setStatedata] = useState([]);
   const [citydata, setCitydata] = useState([]);
 
@@ -46,6 +47,7 @@ const AddressModal = ({
       setCity(editVal.city || "");
       setZipcode(editVal.zip || "");
       setLandmark(editVal.landmark || "");
+      setArea(editVal.area || "");
     } else {
       // Reset form when adding new address
       setFullname("");
@@ -55,6 +57,7 @@ const AddressModal = ({
       setCity("");
       setZipcode("");
       setLandmark("");
+      setArea("");
     }
   }, [editVal, showModal]);
 
@@ -145,6 +148,7 @@ const AddressModal = ({
     state: state,
     zip: zipcode?.toString(),
     landmark: landmark,
+    area: area,
     name: fullname,
     latitude: geoCoords.lat,   // ✅ use fresh geoCoords
     longitude: geoCoords.lng,  // ✅ use fresh geoCoords
@@ -238,7 +242,7 @@ const AddressModal = ({
                 </div>
 
                 {/* Landmark */}
-                <div className="col-lg-8 mb-3">
+                <div className="col-lg-6 mb-3">
                   <label className="form-label">Landmark</label>
                   <input
                     type="text"
@@ -246,6 +250,18 @@ const AddressModal = ({
                     placeholder="Landmark"
                     value={landmark}
                     onChange={(e) => setLandmark(e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div className="col-lg-6 mb-3">
+                  <label className="form-label">Area</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Area"
+                    value={area}
+                    onChange={(e) => setArea(e.target.value)}
                     required
                   />
                 </div>

@@ -8,7 +8,7 @@ import exportimg from "../../../public/export.jpg";
 import HelmetComponent from "../../Components/HelmetComponent/HelmetComponent";
 import logo from '../../assets/EveryColourLogo.png'
 
-export default function BulkOrder() {
+export default function BulkOrder({ onHeaderHeight }) {
   const [loading, setLoading] = useState(false);
   const [apiResponse, setApiResponse] = useState({ status: null, message: "" });
 
@@ -84,7 +84,7 @@ export default function BulkOrder() {
                     keywords="bulk order, wholesale purchase, bulk buying India, large quantity order, wholesale deals, bulk pricing, order in bulk online, wholesale suppliers"
                     image={logo}
                   />
-      <Header />
+      <Header onHeight={onHeaderHeight} />
 
       <section className="login-sec bulk_order">
         <div className="container h-100">

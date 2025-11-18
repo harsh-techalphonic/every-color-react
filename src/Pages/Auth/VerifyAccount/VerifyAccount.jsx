@@ -7,7 +7,7 @@ import Header from '../../../Components/Partials/Header/Header';
 import Footer from '../../../Components/Partials/Footer/Footer';
 import ScrollToTop from '../../ScrollToTop';
 
-export default function VerifyAccount() {
+export default function VerifyAccount({ onHeaderHeight }) {
   const location = useLocation();
   const navigate = useNavigate();
   const { phone } = location.state || {};
@@ -122,7 +122,7 @@ export default function VerifyAccount() {
     <>
       <ScrollToTop />
       <ToastContainer />
-      <Header />
+      <Header onHeight={onHeaderHeight}/>
       <section className="login-sec verify_sec">
         <div className="container h-100">
           <div className="row justify-content-center align-items-center h-100">

@@ -10,7 +10,7 @@ import { PrivacyPolicyApi } from "../../Config/config";
 import HelmetComponent from "../../Components/HelmetComponent/HelmetComponent";
 import logo from '../../assets/EveryColourLogo.png'
 
-export default function PrivacyPolicy() {
+export default function PrivacyPolicy({ onHeaderHeight }) {
   const tcpprc = useSelector((store) => store.Tcpprc);
   const [policy, setPolicy] = useState([]);
   // console?.log("policy", policy);
@@ -22,7 +22,7 @@ export default function PrivacyPolicy() {
   return (
     <>
       <ScrollToTop />
-      <Header />
+      <Header onHeaderHeight={handleHeaderHeight} />
       <HelmetComponent
               title={policy?.meta_title}
               description={policy?.meta_description}

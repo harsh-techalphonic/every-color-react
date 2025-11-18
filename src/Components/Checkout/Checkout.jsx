@@ -260,7 +260,8 @@ export default function Checkout() {
   const handleRefreshAddresses = () => setRefreshAddresses(true);
 
 
-  const TAX_RATE = 5; // 5%
+  const TAX_RATE = 5 // 5%
+  // console.log( "tax rate", TAX_RATE)
   useEffect(() => {
   const calculatedTax =
     (checkoutDetail.subTotal - checkoutDetail.productDiscount - checkoutDetail.couponDiscount) *

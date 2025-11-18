@@ -10,7 +10,7 @@ import config from '../../../Config/config.json';
 import { toast, ToastContainer } from 'react-toastify';
 import ScrollToTop from '../../ScrollToTop';
 
-export default function ResetPassword() {
+export default function ResetPassword({ onHeaderHeight }) {
   const location = useLocation();
   const navigate = useNavigate();
   const { phone, otp } = location.state || {};
@@ -79,7 +79,7 @@ export default function ResetPassword() {
     <>
       <ScrollToTop />
       <ToastContainer />
-      <Header />
+      <Header onHeight={onHeaderHeight}/>
       <section className="reset_pass-sec">
         <div className="container h-100">
           <div className="row justify-content-center align-items-center h-100">

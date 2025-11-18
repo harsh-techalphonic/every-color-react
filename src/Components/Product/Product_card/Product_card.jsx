@@ -30,6 +30,10 @@ export default function Product_card({ products }) {
 
   const toggleCart = async (item) => {
     const token = localStorage.getItem("token");
+     if (!gettoken) {
+      navigate("/login");
+      return;
+    }
     try {
       const response = await fetch(`${API_URL}${AddOrRemoveCart}`, {
         method: "POST",

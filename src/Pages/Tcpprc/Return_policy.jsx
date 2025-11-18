@@ -9,7 +9,7 @@ import {ReturnCancelation } from "../../Config/config";
 import HelmetComponent from '../../Components/HelmetComponent/HelmetComponent';
 import logo from '../../assets/EveryColourLogo.png'
 
-export default function Return_policy() {
+export default function Return_policy({ onHeaderHeight }) {
   // const tcpprc = useSelector((store) => store.Tcpprc); 
   const tcpprc = useSelector((store) => store.Tcpprc);
 
@@ -23,7 +23,7 @@ export default function Return_policy() {
   return (
     <>
     <ScrollToTop/>
-          <Header />
+          <Header onHeight={onHeaderHeight}/>
           <HelmetComponent
               title={policy?.meta_title}
               description={policy?.meta_description}

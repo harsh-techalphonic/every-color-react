@@ -9,7 +9,7 @@ import NewsletterForm from "../../Components/Partials/Footer/NewsletterForm";
 import HelmetComponent from "../../Components/HelmetComponent/HelmetComponent";
 import logo from '../../assets/EveryColourLogo.png'
 
-export default function About() {
+export default function About({ onHeaderHeight }) {
   const About = useSelector((store) => store.About);
   const aboutArray = About?.data ? Object.values(About.data) : [];
 
@@ -26,7 +26,7 @@ export default function About() {
   return (
     <>
       <ScrollToTop />
-      <Header />
+      <Header onHeight={onHeaderHeight}/>
       <HelmetComponent
               title={aboutPageSections[0]?.meta_title}
               description={aboutPageSections[0]?.meta_description}

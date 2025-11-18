@@ -298,6 +298,7 @@
     .filterrange_box .price-input {
       flex-wrap: wrap;
     }
+    
   }
   @media screen and (max-width:991px) {
     .filter-contaienr{

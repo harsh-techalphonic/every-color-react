@@ -8,7 +8,7 @@ import logo from '../../assets/EveryColourLogo.png'
 import HelmetComponent from '../../Components/HelmetComponent/HelmetComponent';
 import { API_URL } from '../../Config/config';
 
-export default function Support() {
+export default function Support({ onHeaderHeight }) {
   const [supportData, setSupportData] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -48,7 +48,7 @@ export default function Support() {
     // console.log("banner", banner)
   return (
     <>
-      <Header />
+      <Header onHeight={onHeaderHeight} />
       <HelmetComponent
                     title={banner?.meta_title}
                     description={banner?.meta_description}

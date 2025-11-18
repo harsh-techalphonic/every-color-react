@@ -12,7 +12,7 @@ const product_one   = products[0];
 const product_two   = products[1];
 const product_three = products[2];
 
-// console.log("product one ", product_one);
+console.log("product one ", product_one);
 // console.log("product two ", product_two);
 // console.log("product three ", product_three);
   return (
@@ -38,7 +38,7 @@ const product_three = products[2];
                                     </div>
                                     <div className='col-lg-5  col-5'>
                                         <div className='banner-right-img'>
-                                            <img src={product_two.product.product_image} alt="" />
+                                            <img src={product_two.image} alt="" />
                                         </div>
                                     </div>
                                 </div>
@@ -60,7 +60,7 @@ const product_three = products[2];
                                     </div>
                                     <div className='col-lg-5 col-5'>
                                         <div className='banner-right-img'>
-                                            <img src={product_three.product.product_image} alt="" />
+                                            <img src={product_three.image} alt="" />
                                         </div>
                                     </div>
                                 </div>
@@ -87,7 +87,7 @@ const product_three = products[2];
                                 </div>
                                 <div className='col-lg-5  col-md-5 '>
                                     <div className='banner-left-img'>
-                                        <img src={product_one.product.product_image} alt="" />
+                                        <img src={product_one.image} alt="" />
                                     </div>
                                 </div>
                             </div>

@@ -8,12 +8,12 @@ import logo from '../../assets/EveryColourLogo.png'
 import HelmetComponent from '../../Components/HelmetComponent/HelmetComponent';
 
 
-export default function Privacy_policy_vendor() {
+export default function Privacy_policy_vendor({ onHeaderHeight }) {
   const tcpprc = useSelector((store) => store.Tcpprc); 
   return (
     <>
     <ScrollToTop/>
-      <Header/>
+      <Header onHeight={onHeaderHeight}/>
       {/* <HelmetComponent
               title={banner?.meta_title}
               description={banner?.meta_description}

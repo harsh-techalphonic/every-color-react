@@ -36,7 +36,8 @@ const ProductLoader = () => {
 };
 
 
-export default function ProductDetail() {
+
+export default function ProductDetail({ onHeaderHeight }) {
   const fetch_singleProduct = useSelector((store) => store.singleProduct);
   const [singleProduct, setSingleProduct] = useState(false);
   const { slug } = useParams();
@@ -88,7 +89,7 @@ const token = localStorage.getItem('token');
   return (
     <>
       <ScrollToTop />
-      <Header />
+      <Header onHeight={onHeaderHeight}/>
       <HelmetComponent
                     title={singleProduct?.meta_title}
                     description={singleProduct?.meta_description}

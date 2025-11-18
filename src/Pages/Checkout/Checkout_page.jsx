@@ -7,11 +7,11 @@ import { faHouse } from "@fortawesome/free-solid-svg-icons";
 import Checkout from "../../Components/Checkout/Checkout";
 import ScrollToTop from "../ScrollToTop";
 
-export default function Checkout_page() {
+export default function Checkout_page({ onHeaderHeight }) {
   return (
     <>
       <ScrollToTop />
-      <Header />
+      <Header onHeight={onHeaderHeight} />
 
       <div className="breadcrum_box mt-2">
         <nav aria-label="breadcrumb">

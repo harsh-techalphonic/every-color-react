@@ -10,7 +10,7 @@ import CategoryCard from "../../Components/Home/Categories/CategoryCard";
 import HelmetComponent from "../../Components/HelmetComponent/HelmetComponent";
 import logo from '../../assets/EveryColourLogo.png'
 
-export default function Category() {
+export default function Category({ onHeaderHeight }) {
   const { category } = useParams();
   const navigate = useNavigate(); 
   const [subCategories, setSubCategories] = useState([]);
@@ -61,10 +61,10 @@ export default function Category() {
   const Uri= "category/:${currentCategory.name}/:${subCatSlug}"
   return (
     <>
-      <Header />
+      <Header onHeight={onHeaderHeight}/>
 
       <HelmetComponent
-        title={banner?.meta_title}
+        title={banner?.meta_title}  
         description={banner?.meta_description}
         keywords={banner?.meta_keyword}
         image={logo}

@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import HelmetComponent from '../../Components/HelmetComponent/HelmetComponent';
 import logo from '../../assets/EveryColourLogo.png'
 
-export default function TrackOrder() {
+export default function TrackOrder({ onHeaderHeight }) {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [apiResponse, setApiResponse] = useState({ status: null, message: "" });
@@ -67,7 +67,7 @@ export default function TrackOrder() {
               keywords="track order, order status, track shipment, delivery tracking, online order tracking, shipping updates, package tracking, real-time order status"
               image={logo}
             />
-      <Header />
+      <Header onHeight={onHeaderHeight} />
 
       <section className="login-sec bulk_order my-5">
         <div className="container h-100">

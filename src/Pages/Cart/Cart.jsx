@@ -110,7 +110,7 @@ const CartItem = ({ item, onRemove, onQuantityChange }) => {
   );
 };
 
-export default function Cart() {
+export default function Cart({ onHeaderHeight }) {
   const [products, setProducts] = useState([]);
   const [checkCart, setCheckCart] = useState(false);
   const [checkoutDetail, setCheckoutDetail] = useState({
@@ -238,7 +238,7 @@ export default function Cart() {
 
   return (
     <>
-      <Header />
+      <Header onHeight={onHeaderHeight}/>
       <div className="breadcrum_box mt-2">
         <nav aria-label="breadcrumb">
           <div className="container">

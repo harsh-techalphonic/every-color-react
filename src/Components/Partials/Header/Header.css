@@ -169,10 +169,13 @@
     .Header .searchbar-category-barr .input-group input {
         font-size: 12px;
         padding: 7px 8px;
-        width: calc(100% - 30px);
+        width: calc(100% - 44px);
+    }
+    .searchbar-category-barr{
+      padding-top: 4px;
     }
         .searchbar-category-barr .input-group .input-group-text {
-        padding: 7px 8px;
+        padding: 7px 8px !important;
         width: 30px;
         font-size: 12px;
     }
@@ -186,7 +189,7 @@
       }
     .mobsideMenu .brand-name {
       width: 100%;
-        max-width: 50px;
+        max-width: 80px !important;
     }
     .searchbar-category-barr{
         gap: 8px;

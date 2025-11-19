@@ -65,7 +65,6 @@ export default function ExploreBestSellerCard({ product }) {
             <FontAwesomeIcon icon={faPlay} size="lg" />
           </span>
         )}
-
         <div className="hovered_btn button-light">
           <Link to={product.link}>View Product</Link>
         </div>

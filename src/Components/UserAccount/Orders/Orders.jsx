@@ -246,14 +246,14 @@ export default function ReturnRefund() {
     });
   };
   // const shipmentId = filteredOrders.shiprocket_shipment_id
-  const downloadInvoice = async (shipmentId) => {
+  const downloadInvoice = async (id) => {
+    // console.log( "shipmentId", id)
     try {
-      if (!shipmentId) throw new Error("Shipment ID not found");
-
+      if (!id) throw new Error("Shipment ID not found");
       const formData = new FormData();
-      formData.append("ids", `[${shipmentId}]`); 
+      formData.append("id", `${id}`); 
 
-      const response = await fetch(`${API_URL}/download-invoice`, {
+      const response = await fetch(`${API_URL}/order/invoice `, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -374,7 +374,7 @@ export default function ReturnRefund() {
                     className="btn RETURN"
                     onClick={(e) => {
                       e.stopPropagation();
-                      downloadInvoice(order.shiprocket_order_id);
+                      downloadInvoice(order.id);
                     }}
                   >
                     Download Invoice

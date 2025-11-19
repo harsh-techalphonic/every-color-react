@@ -53,6 +53,12 @@ export default function Product_detail({ singleProduct }) {
 
  const handleBuyNow = () => {
   // build the product payload
+ if (!gettoken) {
+      navigate("/login");
+      return;
+    }
+
+
   const buyProduct = {
   id: singleProduct.id,
   product_name: singleProduct.product_name,

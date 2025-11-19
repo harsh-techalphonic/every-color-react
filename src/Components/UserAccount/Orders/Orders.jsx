@@ -246,12 +246,13 @@ export default function ReturnRefund() {
     });
   };
   // const shipmentId = filteredOrders.shiprocket_shipment_id
+
   const downloadInvoice = async (id) => {
     // console.log( "shipmentId", id)
     try {
-      if (!id) throw new Error("Shipment ID not found");
+      if (!id) throw new Error("Unable to Found Product Id");
       const formData = new FormData();
-      formData.append("id", `${id}`); 
+        formData.append("id", `${id}`); 
 
       const response = await fetch(`${API_URL}/order/invoice `, {
         method: "POST",

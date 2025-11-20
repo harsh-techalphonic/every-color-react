@@ -57,7 +57,7 @@ export default function Product_detail({ singleProduct }) {
       navigate("/login");
       return;
     }
-
+console.log("console signle product data", singleProduct)
 
   const buyProduct = {
   id: singleProduct.id,
@@ -71,7 +71,7 @@ export default function Product_detail({ singleProduct }) {
     ? productAmount.sale_price
     : singleProduct.product_discount_price, 
   quantity,
-
+  tax: singleProduct.gst_rate ,
   variation:
     Object.keys(productVarSelected).length > 0 ? productVarSelected : null,
 };

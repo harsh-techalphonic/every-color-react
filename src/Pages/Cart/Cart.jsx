@@ -137,12 +137,12 @@ export default function Cart({ onHeaderHeight }) {
       });
 
       const result = await res.json();
+      console.log( "conslor aesult for cart data", result)
 
       if (result.status && result.data.length > 0) {
         const cartData = result.data.map((cartItem) => {
           const product = cartItem.product;
-          const variation = cartItem.variation || {};
-
+          const variation = cartItem.variation || {}; 
           return {
             ...product,
             cart_id: cartItem.id,
@@ -152,6 +152,7 @@ export default function Cart({ onHeaderHeight }) {
             product_inventory_details: product?.variations
               ? [product?.variations]
               : [],
+              tax: product.gst_rate ,
             price: Number(product?.product_price),
             discount_price: Number(product?.product_discount_price),
           };
@@ -302,10 +303,6 @@ export default function Cart({ onHeaderHeight }) {
                     <div className="list-box d-flex justify-content-between mb-2">
                       <span>Discount</span>
                       <span>- ₹{checkoutDetail.productDiscount.toFixed(2)}</span>
-                    </div>
-                    <div className="list-box d-flex justify-content-between mb-3">
-                      <span>Tax (18%)</span>
-                      <span>₹0</span>
                     </div>
                     <hr />
                     <div className="list-box d-flex justify-content-between mb-4">

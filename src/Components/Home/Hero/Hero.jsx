@@ -76,7 +76,7 @@ export default function Hero() {
         <Slider {...settings}>
           {banners.data.map((item) => (
             <div key={item.id}>
-              <div className="main-content-box py-4">
+              <div className="main-content-box ">
                 <div className="container">
                   <div className="row justify-content-between align-items-center">
                     <div className="col-lg-5  my-4">

@@ -89,19 +89,17 @@ console.log( "path naem ",  pathname)
   const headerRef = useRef(null);
 
 useEffect(() => {
-    const measure = () => {
-      if (!headerRef.current) return;
-      const height = headerRef.current.offsetHeight;
-      if (typeof onHeight === "function") onHeight(height);
-    };
+  if (!headerRef.current) return;
 
-    // measure on mount
-    measure();
+  const observer = new ResizeObserver(() => {
+    const height = headerRef.current.offsetHeight;
+    if (typeof onHeight === "function") onHeight(height);
+  });
 
-    const handleResize = () => measure();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, [onHeight]);
+  observer.observe(headerRef.current);
+
+  return () => observer.disconnect();
+}, [onHeight]);
 
   const [showCategoriesDropdown, setshowCategoriesDropdown] = useState(false);
   const dropdownCategoriesRef = useRef(null);

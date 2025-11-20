@@ -45,7 +45,7 @@ function App() {
     console.log("Dynamic Header Height:", height);
     setHeaderHeight(height);
   };
-  console.log( "header heiight =", headerHeight)
+  console.log( "header height =", headerHeight)
   const router = createBrowserRouter([
     {
       path: "/",
@@ -165,7 +165,7 @@ function App() {
     },
     {
       path: "*",
-      element: <Home onHeaderHeight={handleHeaderHeight} />,
+      element: <Home />,
     },
   ]);
   return (

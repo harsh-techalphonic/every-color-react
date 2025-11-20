@@ -289,7 +289,7 @@ button:hover {
 }
 
 
-@media screen and (max-width:1280px) {
+@media screen and (max-width:1304px) {
   .Product_card .feature-card .card-img,.Best_selling .feature-card .card-img{
     height: 136px !important;
   }
@@ -338,6 +338,23 @@ button:hover {
 .Header .logo-serach .brand-name {
     width: 100%;
     max-width: 94px !important;
+}
+.product-galler-slide .slider-for .slick-slide img {
+    height: 300px !important;
+}
+.Pricing{
+  font-size: 16px !important;
+}
+.discount {
+    font-size: 11px;
+}
+.product-detail-slider-content button.btn.btn-outline-secondary {
+    padding: 4px 8px;
+    font-size: 12px;
+}
+.product-detail-slider-content h5
+ {
+    font-size: 20px !important;
 }
 
 }

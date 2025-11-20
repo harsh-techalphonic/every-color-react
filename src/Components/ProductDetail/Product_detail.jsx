@@ -503,7 +503,7 @@ const sliderNavSettings = {
   };
 
   return (
-    <div className="product-detail-slider-content my-5">
+    <div className="product-detail-slider-content my-xl-5 my-lg-4 my-3 ">
           <ToastContainer />
       <div className="container">
         <div className="row">
@@ -536,7 +536,7 @@ const sliderNavSettings = {
             <form action={submitAction} className="product-description">
               <h5>{singleProduct.product_name}</h5>
 
-              <div className="my-3">
+              <div className="my-xl-3 my-lg-2 my-2">
                 <div className="rating d-flex align-items-center">
                   {/* <div className="d-flex align-items-center"> */}
                   {renderStars(averageRating)}
@@ -559,7 +559,7 @@ const sliderNavSettings = {
                   <span className="fw-bold fs-4 Pricing">
                     ₹{productAmount.sale_price}
                   </span>
-                  <span className="text-decoration-line-through text-muted ms-2">
+                  <span className="text-decoration-line-through text-muted ms-2 Pricing">
                     ₹{productAmount.reguler_price}
                   </span>
                   <span className="discount ms-2">
@@ -577,7 +577,7 @@ const sliderNavSettings = {
                   <span className="fw-bold fs-4 Pricing">
                     ₹{singleProduct.product_discount_price}
                   </span>
-                  <span className="text-decoration-line-through text-muted ms-2">
+                  <span className="text-decoration-line-through text-muted ms-2 Pricing">
                     ₹{singleProduct.product_price}
                   </span>
                   <span className="discount ms-2">
@@ -652,7 +652,7 @@ const sliderNavSettings = {
                 </span>
               </div>
 
-              <hr className="my-5" />
+              <hr className="my-xl-5 my-lg-4 my-3" />
 
               {/* Purchase buttons */}
               <div className="purchase-btns mt-4 d-flex gap-3 align-items-center  w-100">

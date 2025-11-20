@@ -316,7 +316,7 @@ button:hover {
 }
 .home_hero .main-content-box .content-box h1
  {
-    font-size: 44px;
+    font-size: 44px !important;
 }
    .Header .infobox ul li a {
     font-size: 12px !important;

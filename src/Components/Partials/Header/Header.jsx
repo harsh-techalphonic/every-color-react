@@ -150,7 +150,7 @@ useEffect(() => {
         {/* <OrderApi /> */}
         <div className="infobox">
           <div className="container">
-            <ul className="list-unstyled d-flex align-items-center justify-content-end mb-0">
+            <ul className="list-unstyled d-flex align-items-center justify-content-between mb-0">
               <li className="d-flex align-items-center flex-wrap gap-lg-5 gap-md-4 gap-2">
                 <Link to="#!">
                   <i className="me-2">

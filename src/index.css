@@ -372,6 +372,10 @@ button:hover {
     .product-galler-slide .slider-for .slick-slide img {
         height: 230px !important;
     }
+    .purchase-btns button{
+      font-size: 14px;
+      white-space: nowrap;
+    }
 }
 
 

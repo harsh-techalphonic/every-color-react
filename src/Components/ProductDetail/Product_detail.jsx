@@ -667,7 +667,7 @@ const sliderNavSettings = {
                   <input
                     type="number"
                     className="form-control text-center mx-2"
-                    style={{ width: "50px" }}
+                    style={{ width: "60px" }}
                     value={quantity}
                     name="quantity"
                     readOnly

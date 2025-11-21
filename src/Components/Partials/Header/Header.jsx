@@ -151,7 +151,7 @@ useEffect(() => {
         <div className="infobox">
           <div className="container">
             <ul className="list-unstyled d-flex align-items-center justify-content-between mb-0">
-              <li className="d-flex align-items-center flex-wrap gap-lg-5 gap-md-4 gap-2">
+              {/* <li className="d-flex align-items-center flex-wrap gap-lg-5 gap-md-4 gap-2">
                 <Link to="#!">
                   <i className="me-2">
                     <FontAwesomeIcon icon={faEnvelope} />
@@ -164,7 +164,7 @@ useEffect(() => {
                   </i>{" "}
                   +91 95974 95674
                 </Link>
-              </li>
+              </li> */}
               <li className="d-flex align-items-center flex-wrap gap-lg-5 gap-md-4 gap-2 text-lg-start text-end">
                 {/* <Link to="#!"><i className='me-2'><FontAwesomeIcon icon={faUser}/></i> My account</Link> */}
                 <div className="account-dropdown position-relative">

@@ -416,26 +416,33 @@ export default function ReturnRefund() {
                           )}
                         </div>
 
-                        {order?.order_status === "delivered" && (
-                          <div className="Rerun_ref_btn">
-                            <button
-                              className="RETURN mb-2"
-                              onClick={() =>
-                                handleShowModal("Replace", product, order)
-                              }
-                            >
-                              Replace
-                            </button>
-                            <button
-                              className="Refund"
-                              onClick={() =>
-                                handleShowModal("REFUND", product, order)
-                              }
-                            >
-                              REFUND
-                            </button>
-                          </div>
-                        )}
+                        {/* {order?.order_status === "delivered"   && ( */}
+                        {order?.order_status === "delivered" &&
+                          order?.products?.map((item, index) => (
+                            <div key={index} className="Rerun_ref_btn">
+
+                              {/* RETURNABLE → Refund */}
+                              {item?.product?.return_type?.includes("returnable") && (
+                                <button
+                                  className="Refund mb-2"
+                                  onClick={() => handleShowModal("REFUND", item, order)}
+                                >
+                                  REFUND
+                                </button>
+                              )}
+
+                              {/* REPLACEABLE → Replace */}
+                              {item?.product?.return_type?.includes("replaceable") && (
+                                <button
+                                  className="RETURN mb-2"
+                                  onClick={() => handleShowModal("Replace", item, order)}
+                                >
+                                  Replace
+                                </button>
+                              )}
+
+                            </div>
+                          ))}
 
                         {order?.order_status === "pending" && (
                           <div className="Rerun_ref_btn">

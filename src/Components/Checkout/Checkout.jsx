@@ -59,9 +59,15 @@
       tax:0,
       total: Total?.total || 0,
     });
+     const subTotalBeforeGST =
+  checkoutDetail.subTotal -
+  checkoutDetail.productDiscount -
+  checkoutDetail.couponDiscount;
+  
+  const shippingCharge = subTotalBeforeGST > 500 ? 0 : 59;
 
     const [finalTotal, setFinalTotal] = useState(
-      checkoutDetail.subTotal - checkoutDetail.productDiscount + checkoutDetail.tax
+      checkoutDetail.subTotal - checkoutDetail.productDiscount + checkoutDetail.tax + shippingCharge
     );
 
     // Update finalTotal whenever checkoutDetail changes
@@ -70,7 +76,7 @@
         checkoutDetail.subTotal -
           checkoutDetail.productDiscount -
           checkoutDetail.couponDiscount +
-          checkoutDetail.tax
+          checkoutDetail.tax + shippingCharge
       );
     }, [checkoutDetail]);
 
@@ -289,17 +295,29 @@
 
 
 
-  const TOTAL_TAX =
-    derivedCartData?.reduce((sum, item) => {
-      const price = Number(item.discount_price) || 0;
-      console.log("item price ", price)
-      const taxPercent = Number(item.tax) || 0;
+  // const TOTAL_TAX =
+  //   derivedCartData?.reduce((sum, item) => {
+  //     const price = Number(item.discount_price) || 0;
+  //     console.log("item price ", price)
+  //     const taxPercent = Number(item.tax) || 0;
 
-      const productTax = (price * taxPercent) / 100;
-      return sum + productTax;
-    }, 0) || 0;
+  //     const productTax = (price * taxPercent) / 100;
+  //     return sum + productTax;
+  //   }, 0) || 0;
 
-  console.log("total product-wise tax:", TOTAL_TAX);
+  // console.log("total product-wise tax:", TOTAL_TAX);
+  const TOTAL_TAX = derivedCartData?.reduce((sum, item) => {
+  const price = Number(item.discount_price) || 0;
+  const qty = Number(item.quantity) || 1;
+  const taxPercent = Number(item.tax) || 0;
+
+  // GST = (price * qty) * tax%
+  const productTax = (price * qty * taxPercent) / 100;
+
+  return sum + productTax;
+}, 0) || 0;
+
+console.log("Total Tax (GST):", TOTAL_TAX);
 
   useEffect(() => {
     const calculatedBaseAmount =
@@ -319,11 +337,7 @@
     checkoutDetail.couponDiscount,
   ]);
 
-
-  const subTotalBeforeGST =
-  checkoutDetail.subTotal -
-  checkoutDetail.productDiscount -
-  checkoutDetail.couponDiscount;
+ 
 
     return (
       <div className="container checkout-container my-5">
@@ -392,22 +406,26 @@
                 <div className="pay-opt-box">
                   <div className={`card p-3 shadow-sm ${!selectedAddress ? "bg-light text-muted" : ""}`}>
                     <div className="d-flex gap-4">
-                      <div className="form-check d-flex align-items-center">
-                        <input
-                          type="radio"
-                          name="payment_method"
-                          id="cod"
-                          value="cod"
-                          checked={paymentMethod === "cod"}
-                          onChange={(e) => setPaymentMethod(e.target.value)}
-                          disabled={!selectedAddress}
-                          className="form-check-input"
-                        />
-                        <label htmlFor="cod" className="form-check-label ms-2 d-flex align-items-center">
-                          <img src="/paypal.png" alt="COD Icon" style={{ width: "40px", marginRight: "10px" }} />
-                          Cash on Delivery
-                        </label>
-                      </div>
+                     {derivedCartData?.length > 0 &&
+                        derivedCartData.every(item => item.cod === "yes") && (
+                          <div className="form-check d-flex align-items-center">
+                            <input
+                              type="radio"
+                              name="payment_method"
+                              id="cod"
+                              value="cod"
+                              checked={paymentMethod === "cod"}
+                              onChange={(e) => setPaymentMethod(e.target.value)}
+                              disabled={!selectedAddress}
+                              className="form-check-input"
+                            />
+                            <label htmlFor="cod" className="form-check-label ms-2 d-flex align-items-center">
+                              <img src="/paypal.png" alt="COD Icon" style={{ width: "40px", marginRight: "10px" }} />
+                              Cash on Delivery
+                            </label>
+                          </div>
+                      )}
+
                       <div className="form-check d-flex align-items-center">
                         <input
                           type="radio"
@@ -485,10 +503,6 @@
                       <td className="text-end">₹{checkoutDetail.subTotal.toFixed(2)}</td>
                     </tr>
                     <tr>
-                      <td>Shipping</td>
-                      <td className="text-end">Free</td>
-                    </tr>
-                    <tr>
                       <td>Discount</td>
                       <td className="text-end">- ₹{checkoutDetail.productDiscount.toFixed(2)}</td>
                     </tr>
@@ -506,6 +520,13 @@
                       <td>Sub Total</td>
                       <td className="text-end">₹{subTotalBeforeGST.toFixed(2)}</td>
                     </tr>
+                    <tr>
+                      <td>Shipping</td>
+                      {/* <td className="text-end">Free</td> */}
+                    <td className="text-end">
+  {shippingCharge === 0 ? "Free" : `₹${shippingCharge}`}
+</td>
+                      </tr>
                     <tr>
                       <td>Tax</td>
                       <td className="text-end"> (GST) ₹{checkoutDetail.tax.toFixed(2)}</td>

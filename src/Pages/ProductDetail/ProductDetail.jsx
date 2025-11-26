@@ -42,7 +42,7 @@ export default function ProductDetail({ onHeaderHeight }) {
   const [singleProduct, setSingleProduct] = useState(false);
   const { slug } = useParams();
 
-  console.log("single product data" , singleProduct)
+  // console.log("single product data" , singleProduct)
 
 const token = localStorage.getItem('token');
   useEffect(() => {

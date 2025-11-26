@@ -45,6 +45,7 @@ export default function Product_detail({ singleProduct }) {
   
   const fetch_products = useSelector((store) => store.wishlist);  
   const [gettoken, setGettoken] = useState(null);
+  console.log("console signle product data", singleProduct)
   
   // IMAGE URL FUNCTION
   const getVariationImage = (filename) =>
@@ -57,7 +58,6 @@ export default function Product_detail({ singleProduct }) {
       navigate("/login");
       return;
     }
-console.log("console signle product data", singleProduct)
 
   const buyProduct = {
   id: singleProduct.id,
@@ -72,6 +72,7 @@ console.log("console signle product data", singleProduct)
     : singleProduct.product_discount_price, 
   quantity,
   tax: singleProduct.gst_rate ,
+  cod: singleProduct.cod ,
   variation:
     Object.keys(productVarSelected).length > 0 ? productVarSelected : null,
 };

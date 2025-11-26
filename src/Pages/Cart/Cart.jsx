@@ -153,6 +153,7 @@ export default function Cart({ onHeaderHeight }) {
               ? [product?.variations]
               : [],
               tax: product.gst_rate ,
+              cod:product.cod,
             price: Number(product?.product_price),
             discount_price: Number(product?.product_discount_price),
           };

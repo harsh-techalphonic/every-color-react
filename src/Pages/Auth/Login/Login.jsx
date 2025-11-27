@@ -20,6 +20,11 @@ export default function Login({ onHeaderHeight }) {
   const [loading, setLoading] = useState(false);
   const [otpTimer, setOtpTimer] = useState(0);
 
+  const [showBusinessModal, setShowBusinessModal] = useState(false);
+const [isBusinessOwner, setIsBusinessOwner] = useState(null);
+const [gstNumber, setGstNumber] = useState("");
+const [businessSubmitting, setBusinessSubmitting] = useState(false);
+
   const [validUser, setValidUser] = useState(0); // 0=not checked, 1=exists, 2=new user
   const [loginWithPassword, setloginWithPassword] = useState(true);
   const [registerForm, setRegisterForm] = useState(false);
@@ -116,6 +121,7 @@ export default function Login({ onHeaderHeight }) {
         if (token) localStorage.setItem("token", token);
         if (user) localStorage.setItem("user", JSON.stringify(user));
         toast.success("Login successful!");
+        setShowBusinessModal(true);
         setTimeout(() => navigate("/"), 1000);
       } else {
         toast.error(login?.data?.message || "Login failed");
@@ -126,6 +132,35 @@ export default function Login({ onHeaderHeight }) {
       setLoading(false);
     }
   };
+  const submitGstNumber = async () => {
+  if (!gstNumber) {
+    toast.error("Enter GST number");
+    return;
+  }
+
+  try {
+    setBusinessSubmitting(true);
+    const token = localStorage.getItem("token");
+
+    const response = await axios.post(
+      `${config.API_URL}/gst`,
+      { gst_no: gstNumber },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    if (response?.data?.status === true) {
+      toast.success("GST number saved");
+      setShowBusinessModal(false);
+      navigate("/");
+    } else {
+      toast.error(response?.data?.message || "Failed to save GST");
+    }
+  } catch (error) {
+    toast.error(error.response?.data?.message || "Error saving GST");
+  } finally {
+    setBusinessSubmitting(false);
+  }
+};
 
   const handleRegister = async () => {
     if (formData.password !== formData.cpassword) {
@@ -400,6 +435,74 @@ export default function Login({ onHeaderHeight }) {
           </div>
         </div>
       </section>
+
+
+
+      {showBusinessModal && (
+  <div className="modal-backdrop-custom">
+    <div className="modal-box-custom">
+      {isBusinessOwner === null && (
+        <>
+          <h4>Are you a business owner?</h4>
+
+          <div className="d-flex gap-3 mt-4">
+            <button
+              className="btn btn-primary"
+              onClick={() => setIsBusinessOwner(true)}
+            >
+              Yes
+            </button>
+
+            <button
+              className="btn btn-secondary"
+              onClick={() => {
+                setShowBusinessModal(false);
+                navigate("/");
+              }}
+            >
+              No
+            </button>
+          </div>
+        </>
+      )}
+
+      {isBusinessOwner === true && (
+        <>
+          <h4>Enter your GST Number</h4>
+
+          <input
+            type="text"
+            className="form-control mt-3"
+            placeholder="GST Number"
+            value={gstNumber}
+            onChange={(e) => setGstNumber(e.target.value.toUpperCase())}
+          />
+
+          <div className="d-flex justify-content-end mt-4 gap-3">
+            <button
+              className="btn btn-light"
+              onClick={() => {
+                setShowBusinessModal(false);
+                navigate("/");
+              }}
+            >
+              Cancel
+            </button>
+
+            <button
+              className="btn btn-success"
+              onClick={submitGstNumber}
+              disabled={businessSubmitting}
+            >
+              {businessSubmitting ? "Saving..." : "Submit"}
+            </button>
+          </div>
+        </>
+      )}
+    </div>
+  </div>
+)}
+
 
       <Footer />
     </>

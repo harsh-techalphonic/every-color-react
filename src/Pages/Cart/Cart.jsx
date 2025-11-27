@@ -142,6 +142,7 @@ export default function Cart({ onHeaderHeight }) {
       if (result.status && result.data.length > 0) {
         const cartData = result.data.map((cartItem) => {
           const product = cartItem.product;
+          console.log("product cart ", product)
           const variation = cartItem.variation || {}; 
           return {
             ...product,
@@ -153,7 +154,7 @@ export default function Cart({ onHeaderHeight }) {
               ? [product?.variations]
               : [],
               tax: product.gst_rate ,
-              cod:product.cod,
+              cod:cartItem.product.cod,
             price: Number(product?.product_price),
             discount_price: Number(product?.product_discount_price),
           };

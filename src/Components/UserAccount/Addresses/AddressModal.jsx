@@ -260,7 +260,7 @@ const AddressModal = ({
                     className="form-control"
                     value={state}
                     onChange={(e) => setState(e.target.value)}
-                    required
+                    required disabled
                   />
                 </div>
 
@@ -272,12 +272,24 @@ const AddressModal = ({
                     className="form-control"
                     value={city}
                     onChange={(e) => setCity(e.target.value)}
-                    required
+                    required disabled
+                  />
+                </div>
+
+
+                 <div className="col-lg-4 mb-3">
+                  <label className="form-label">Area/Locality</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    value={area}
+                    onChange={(e) => setArea(e.target.value)}
+                    required 
                   />
                 </div>
 
                 {/* Area/Locality */}
-                <div className="col-lg-6 mb-3">
+                {/* <div className="col-lg-6 mb-3">
                   <label className="form-label">Area/Locality</label>
                   <select
                     className="form-select"
@@ -292,7 +304,7 @@ const AddressModal = ({
                       </option>
                     ))}
                   </select>
-                </div>
+                </div> */}
                 <div className="col-lg-6 mb-3">
                   <label className="form-label">Landmark</label>
                   <input

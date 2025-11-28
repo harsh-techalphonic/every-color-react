@@ -97,41 +97,55 @@ const [businessSubmitting, setBusinessSubmitting] = useState(false);
   };
 
   const handleLogin = async () => {
-    if (!isValidPhone(phone)) {
-      toast.error("Please enter a valid 10-digit phone number");
-      return;
-    }
-    if (loginWithPassword && !password) {
-      toast.error("Password is required");
-      return;
-    }
-    if (!loginWithPassword && !otp) {
-      toast.error("OTP is required");
-      return;
-    }
+  if (!isValidPhone(phone)) {
+    toast.error("Please enter a valid 10-digit phone number");
+    return;
+  }
+  if (loginWithPassword && !password) {
+    toast.error("Password is required");
+    return;
+  }
+  if (!loginWithPassword && !otp) {
+    toast.error("OTP is required");
+    return;
+  }
 
-    try {
-      setLoading(true);
-      const payload = loginWithPassword ? { phone, password } : { phone, otp };
-      const login = await axios.post(`${config.API_URL}/auth/login`, payload);
+  try {
+    setLoading(true);
+    const payload = loginWithPassword ? { phone, password } : { phone, otp };
+    const login = await axios.post(`${config.API_URL}/auth/login`, payload);
 
-      if (login?.data?.status === true) {
-        const { token, user } = login.data;
-        dispatch(AuthCheckAction.addauth({ status: true }));
-        if (token) localStorage.setItem("token", token);
-        if (user) localStorage.setItem("user", JSON.stringify(user));
-        toast.success("Login successful!");
-        setShowBusinessModal(true);
-        setTimeout(() => navigate("/"), 1000);
+    if (login?.data?.status === true) {
+      const { token, user } = login.data;
+
+      dispatch(AuthCheckAction.addauth({ status: true }));
+
+      if (token) localStorage.setItem("token", token);
+      if (user) localStorage.setItem("user", JSON.stringify(user));
+
+      toast.success("Login successful!");
+
+      // 🔥 CHECK IF USER IS ALREADY A BUSINESS OWNER
+      const savedUser = JSON.parse(localStorage.getItem("user"));
+
+      if (savedUser?.business_owner === "yes") {
+        // No popup, direct redirect
+        navigate("/");
       } else {
-        toast.error(login?.data?.message || "Login failed");
+        // Show popup for new users
+        setShowBusinessModal(true);
       }
-    } catch (err) {
-      toast.error(err.response?.data?.message || "Login failed");
-    } finally {
-      setLoading(false);
+
+    } else {
+      toast.error(login?.data?.message || "Login failed");
     }
-  };
+  } catch (err) {
+    toast.error(err.response?.data?.message || "Login failed");
+  } finally {
+    setLoading(false);
+  }
+};
+
   const submitGstNumber = async () => {
   if (!gstNumber) {
     toast.error("Enter GST number");
@@ -143,14 +157,18 @@ const [businessSubmitting, setBusinessSubmitting] = useState(false);
     const token = localStorage.getItem("token");
 
     const response = await axios.post(
-      `${config.API_URL}/gst`,
+      `${config.API_URL}/user/gst-register`,
       { gst_no: gstNumber },
-      { headers: { Authorization: `Bearer ${token}` } }
+      { headers: { Authorization: `Bearer ${token}`}}
     );
+    console.log("first responce consoler", response)
 
-    if (response?.data?.status === true) {
-      toast.success("GST number saved");
+    if (response?.data?.success === true) {
+      toast.success(response?.data?.message);
       setShowBusinessModal(false);
+      const {user } = response.data;
+      console.log("user gst data",user)
+      if (user) localStorage.setItem("user", JSON.stringify(user));
       navigate("/");
     } else {
       toast.error(response?.data?.message || "Failed to save GST");
@@ -438,73 +456,74 @@ const [businessSubmitting, setBusinessSubmitting] = useState(false);
 
 
 
-      {showBusinessModal && (
-  <div className="modal-backdrop-custom">
-    <div className="modal-box-custom">
-      {isBusinessOwner === null && (
-        <>
-          <h4>Are you a business owner?</h4>
-
-          <div className="d-flex gap-3 mt-4">
-            <button
-              className="btn btn-primary"
-              onClick={() => setIsBusinessOwner(true)}
-            >
-              Yes
-            </button>
-
-            <button
-              className="btn btn-secondary"
-              onClick={() => {
-                setShowBusinessModal(false);
-                navigate("/");
-              }}
-            >
-              No
-            </button>
-          </div>
-        </>
-      )}
-
-      {isBusinessOwner === true && (
-        <>
-          <h4>Enter your GST Number</h4>
-
-          <input
-            type="text"
-            className="form-control mt-3"
-            placeholder="GST Number"
-            value={gstNumber}
-            onChange={(e) => setGstNumber(e.target.value.toUpperCase())}
-          />
-
-          <div className="d-flex justify-content-end mt-4 gap-3">
-            <button
-              className="btn btn-light"
-              onClick={() => {
-                setShowBusinessModal(false);
-                navigate("/");
-              }}
-            >
-              Cancel
-            </button>
-
-            <button
-              className="btn btn-success"
-              onClick={submitGstNumber}
-              disabled={businessSubmitting}
-            >
-              {businessSubmitting ? "Saving..." : "Submit"}
-            </button>
-          </div>
-        </>
-      )}
-    </div>
-  </div>
-)}
 
 
       <Footer />
+      
+      {showBusinessModal && (
+      <div className=" modal-backdrop-custom">
+        <div className="modal-box-custom">
+          {isBusinessOwner === null && (
+            <>
+              <h4>Are you a business owner?</h4>
+
+              <div className="d-flex gap-3 mt-4">
+                <button
+                  className="btn btn-primary"
+                  onClick={() => setIsBusinessOwner(true)}
+                >
+                  Yes
+                </button>
+
+                <button
+                  className="btn btn-secondary"
+                  onClick={() => {
+                    setShowBusinessModal(false);
+                    navigate("/");
+                  }}
+                >
+                  No
+                </button>
+              </div>
+            </>
+          )}
+
+          {isBusinessOwner === true && (
+            <>
+              <h4>Enter your GST Number</h4>
+
+              <input
+                type="text"
+                className="form-control mt-3"
+                placeholder="GST Number"
+                value={gstNumber}
+                onChange={(e) => setGstNumber(e.target.value.toUpperCase())}
+              />
+
+              <div className="d-flex justify-content-end mt-4 gap-3">
+                <button
+                  className="btn btn-light"
+                  onClick={() => {
+                    setShowBusinessModal(false);
+                    navigate("/");
+                  }}
+                >
+                  Cancel
+                </button>
+
+                <button
+                  className="btn btn-success"
+                  onClick={submitGstNumber}
+                  disabled={businessSubmitting}
+                >
+                  {businessSubmitting ? "Saving..." : "Submit"}
+                </button>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+    )}
     </>
   );
 }

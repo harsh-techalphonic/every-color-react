@@ -77,7 +77,7 @@
 //           <div className="container">
 //             <ol className="breadcrumb mb-0">
 //               <li className="breadcrumb-item">
-//                 <Link to="/home" className="d-flex align-items-center gap-2">
+//                 <Link to="" className="d-flex align-items-center gap-2">
 //                   <FontAwesomeIcon
 //                     icon={faHouse}
 //                     style={{ fontSize: "14px", marginTop: "-4px" }}
@@ -315,7 +315,7 @@ export default function Wishlist({ onHeaderHeight }) {
           <div className="container">
             <ol className="breadcrumb mb-0">
               <li className="breadcrumb-item">
-                <Link to="/home" className="d-flex align-items-center gap-2">
+                <Link to="/" className="d-flex align-items-center gap-2">
                   <FontAwesomeIcon
                     icon={faHouse}
                     style={{ fontSize: "14px", marginTop: "-4px" }}

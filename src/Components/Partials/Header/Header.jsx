@@ -303,7 +303,7 @@ useEffect(() => {
       </section>
 
       {/* pop up  code is here  start */}
-      <div className={`modal ${Advshow ? "d-block" : "d-none"}`} tabIndex="-1">
+      {/* <div className={`modal ${Advshow ? "d-block" : "d-none"}`} tabIndex="-1">
         <div className="modal-dialog modal-dialog-centered modal-lg">
           <div className="modal-content">
             <button
@@ -315,7 +315,7 @@ useEffect(() => {
           </div>
         </div>
       </div>
-      {Advshow && <div className="modal-backdrop fade show"></div>}
+      {Advshow && <div className="modal-backdrop fade show"></div>} */}
       {/* pop up  code is here  end */}
     </>
   );

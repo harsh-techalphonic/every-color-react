@@ -199,7 +199,7 @@ export default function AccountDetails() {
             <ul className="list-group list-group-flush">
               <li className="list-group-item">Your Profile</li>
             </ul>
-            <div className="row gap-3">
+            <div className="row">
               {/* Avatar Upload */}
               <div className="col-lg-3">
                 <div className="col-lg-12 mb-3">
@@ -231,7 +231,7 @@ export default function AccountDetails() {
 
               {/* Profile Form */}
               <div className="col-lg-9">
-                <div className="card-body px-5">
+                <div className="card-body px-5 ms-3">
                   <div className="row">
                     <div className="col-lg-6 mb-3">
                       <label className="form-label">First Name</label>

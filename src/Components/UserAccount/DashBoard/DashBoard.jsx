@@ -9,6 +9,7 @@ export default function DashBoard({ setActiveTab }) {
   const [userProfileDta, setUserProfileDta] = useState([]);
   const [orderStats, setOrderStats] = useState([]);
 
+  console.log( "user profile", userProfileDta)
   useEffect(() => {
     const getUserProfile = async () => {
       try {
@@ -67,6 +68,21 @@ export default function DashBoard({ setActiveTab }) {
                 <p className="pphone mb-0">
                   <Link to="#!">{userProfileDta?.phone}</Link>
                 </p>
+                <div className="row ajsdfasd">
+                  <div className="col-lg-6">
+                    <p className="mb-0">
+                      <b>GST Number:</b>{" "}{userProfileDta?.gst_no}
+                    </p>
+                    <p className="mb-0">
+                      <b>Trade Name:</b>{" "}{userProfileDta?.gst_response?.taxpayerInfo?.tradeNam}
+                    </p>
+                  </div>
+                  <div className="col-lg-6">
+                    <p className="mb-0">
+                      <b>Status:</b>{" "}{userProfileDta?.gst_response?.taxpayerInfo?.sts}
+                    </p>
+                  </div>
+                </div>
               </div>
               <Link
                 onClick={(e) => {

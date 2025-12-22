@@ -29,7 +29,7 @@ export default function Header({ onHeight = () => {} }) {
   const [show, setShow] = useState(false);
   const [isSticky, setIsSticky] = useState(false);
   const [wishlistCount, setWishlistCount] = useState(0);
-console.log( "path naem ",  pathname)
+// console.log( "path naem ",  pathname)
   let detactWishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
   useEffect(() => {
     if (localStorage.getItem("wishlist")) {

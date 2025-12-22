@@ -8,7 +8,7 @@ import config from "../../../Config/config.json"
 import axios from "axios"
 import { fetchUserDataApi } from "../../../API/AllApiCode"
 import { toast } from "react-toastify"
-import GstVerify from "../../../Pages/Auth/Login/gstVerify"
+import GstVerify from "../../../Pages/Auth/Login/GstVerify"
 
 export default function AccountDetails() {
   const [userProfileDta, setUserProfileDta] = useState({})

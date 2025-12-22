@@ -11,7 +11,7 @@
   import ScrollToTop from "../../ScrollToTop";
   import { useDispatch } from "react-redux";
   import { AuthCheckAction } from "../../../store/Auth/AuthCheckSlice";
-  import GstVerify from "./gstVerify.jsx";
+  import GstVerify from "/GstVerify";
 
   export default function Login({ onHeaderHeight }) {
     const [passwordVisible, setPasswordVisible] = useState(false);

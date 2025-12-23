@@ -1,5 +1,7 @@
+"use client";
+
 // IMPORTS
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Slider from "react-slick";
 import "./ProductDetail.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -10,26 +12,21 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { faCopy } from "@fortawesome/free-regular-svg-icons";
 import { toast, ToastContainer } from "react-toastify";
-import {
-  faFacebook,
-  faPinterest,
-  faWhatsapp,
-  faXTwitter,
-} from "@fortawesome/free-brands-svg-icons";
+import { faFacebook, faWhatsapp } from "@fortawesome/free-brands-svg-icons";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { cartAction } from "../../store/Products/cartSlice";
 import { useDispatch, useSelector } from "react-redux";
 import {
   AddOrDeleteWishlist,
   AddOrRemoveCart,
-  API_URL,ImageUrl
+  API_URL,
+  ImageUrl,
 } from "../../Config/config";
 
 import { wishlistAction } from "../../store/Products/wishlistSlice";
 
 import { faHeart as faRegularHeart } from "@fortawesome/free-regular-svg-icons";
 import { faHeart as faSolidHeart } from "@fortawesome/free-solid-svg-icons";
-
 
 // MAIN COMPONENT
 export default function Product_detail({ singleProduct }) {
@@ -42,97 +39,121 @@ export default function Product_detail({ singleProduct }) {
   const dispatch = useDispatch();
   const [mainSlider, setMainSlider] = useState(null);
   const [navSlider, setNavSlider] = useState(null);
-  
-  const fetch_products = useSelector((store) => store.wishlist);  
+
+  const fetch_products = useSelector((store) => store.wishlist);
   const [gettoken, setGettoken] = useState(null);
-  console.log("console signle product data", singleProduct)
-  
+  const [zoomStyle, setZoomStyle] = useState({});
+  const [isZooming, setIsZooming] = useState(false);
+
+  console.log("console signle product data", singleProduct);
+
   // IMAGE URL FUNCTION
-  const getVariationImage = (filename) =>
-    `${ImageUrl}${filename}`;
+  const getVariationImage = (filename) => `${ImageUrl}${filename}`;
   const navigate = useNavigate();
 
- const handleBuyNow = () => {
-  // build the product payload
- if (!gettoken) {
+  const handleMouseMove = (e) => {
+    const { left, top, width, height } =
+      e.currentTarget.getBoundingClientRect();
+    const x = ((e.clientX - left) / width) * 100;
+    const y = ((e.clientY - top) / height) * 100;
+
+    setZoomStyle({
+      transformOrigin: `${x}% ${y}%`,
+      transform: "scale(2.8)",
+    });
+  };
+
+  const handleMouseEnter = () => {
+    setIsZooming(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsZooming(false);
+    setZoomStyle({});
+  };
+
+  const handleBuyNow = () => {
+    // build the product payload
+    if (!gettoken) {
       navigate("/login");
       return;
     }
 
-  const buyProduct = {
-  id: singleProduct.id,
-  product_name: singleProduct.product_name,
-  customization: singleProduct.customization,
-  product_image: singleProduct.galleries?.[0]?.image || "",
-  price: productAmount
-    ? productAmount.reguler_price
-    : singleProduct.product_price,
-  discount_price: productAmount
-    ? productAmount.sale_price
-    : singleProduct.product_discount_price, 
-  quantity,
-  tax: singleProduct.gst_rate ,
-  cod: singleProduct.cod ,
-  variation:
-    Object.keys(productVarSelected).length > 0 ? productVarSelected : null,
-};
+    const buyProduct = {
+      id: singleProduct.id,
+      product_name: singleProduct.product_name,
+      customization: singleProduct.customization,
+      product_image: singleProduct.galleries?.[0]?.image || "",
+      price: productAmount
+        ? productAmount.reguler_price
+        : singleProduct.product_price,
+      discount_price: productAmount
+        ? productAmount.sale_price
+        : singleProduct.product_discount_price,
+      quantity,
+      tax: singleProduct.gst_rate,
+      cod: singleProduct.cod,
+      variation:
+        Object.keys(productVarSelected).length > 0 ? productVarSelected : null,
+    };
 
+    // navigate to checkout with this single product
+    navigate("/checkout", { state: { product: buyProduct, quantity } });
+  };
 
-  // navigate to checkout with this single product
-  navigate("/checkout", { state: { product: buyProduct, quantity } });
-};
+  // SHARE HANDLERS
+  const { slug } = useParams();
+  const productUrl = `${window.location.origin}/product/${slug}`;
 
-// SHARE HANDLERS
-const { slug } = useParams();
-const productUrl = `${window.location.origin}/product/${slug}`;
+  const handleCopyLink = () => {
+    if (navigator.clipboard && window.isSecureContext) {
+      // Modern secure way
+      navigator.clipboard
+        .writeText(productUrl)
+        .then(() => toast.success("Product link copied to clipboard!"))
+        .catch(() => toast.error("Failed to copy link."));
+    } else {
+      // Fallback for insecure context or unsupported browsers
+      const textArea = document.createElement("textarea");
+      textArea.value = productUrl;
+      textArea.style.position = "fixed"; // avoid scrolling to bottom
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
 
-const handleCopyLink = () => {
-  if (navigator.clipboard && window.isSecureContext) {
-    // Modern secure way
-    navigator.clipboard.writeText(productUrl)
-      .then(() => toast.success("Product link copied to clipboard!"))
-      .catch(() => toast.error("Failed to copy link."));
-  } else {
-    // Fallback for insecure context or unsupported browsers
-    const textArea = document.createElement("textarea");
-    textArea.value = productUrl;
-    textArea.style.position = "fixed"; // avoid scrolling to bottom
-    document.body.appendChild(textArea);
-    textArea.focus();
-    textArea.select();
-
-    try {
-      document.execCommand("copy");
-      toast.success("Product link copied to clipboard!");
-    } catch (err) {
-      toast.error("Failed to copy link.");
+      try {
+        document.execCommand("copy");
+        toast.success("Product link copied to clipboard!");
+      } catch (err) {
+        toast.error("Failed to copy link.");
+      }
+      document.body.removeChild(textArea);
     }
-    document.body.removeChild(textArea);
-  }
-};
+  };
 
+  const handleShare = (platform) => {
+    let shareUrl = "";
 
-const handleShare = (platform) => {
-  let shareUrl = "";
+    switch (platform) {
+      case "facebook":
+        shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+          productUrl
+        )}`;
+        break;
+      // case "twitter":
+      //   shareUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(productUrl)}&text=Check out this product!`;
+      //   break;
+      case "whatsapp":
+        shareUrl = `https://api.whatsapp.com/send?text=Check out this product: ${encodeURIComponent(
+          productUrl
+        )}`;
+        break;
+      default:
+        return;
+    }
 
-  switch (platform) {
-    case "facebook":
-      shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(productUrl)}`;
-      break;
-    // case "twitter":
-    //   shareUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(productUrl)}&text=Check out this product!`;
-    //   break;
-    case "whatsapp":
-      shareUrl = `https://api.whatsapp.com/send?text=Check out this product: ${encodeURIComponent(productUrl)}`;
-      break;
-    default:
-      return;
-  }
-
-  window.open(shareUrl, "_blank", "noopener,noreferrer");
-};
-
-
+    window.open(shareUrl, "_blank", "noopener,noreferrer");
+  };
 
   const increaseQuantity = () => setQuantity((q) => q + 1);
   const decreaseQuantity = () => setQuantity((q) => (q > 1 ? q - 1 : 1));
@@ -309,50 +330,80 @@ const handleShare = (platform) => {
   };
 
   // Build image slides based on selected variation (color or matched variation image), otherwise galleries
-  const getImageSlides = () => {
-    let variationArray = [];
-    if (singleProduct?.variations?.variation_json) {
-      try {
-        variationArray = JSON.parse(singleProduct.variations.variation_json);
-      } catch {}
-    }
+ const getImageSlides = (enableZoom = false) => {
+  let variationArray = [];
 
-    // If color selected and that variation has image -> show only that image
-    if (productVarSelected.color) {
-      const matchedColorVariation = variationArray.find(
-        (v) => v.color === productVarSelected.color && v.image
+  if (singleProduct?.variations?.variation_json) {
+    try {
+      variationArray = JSON.parse(singleProduct.variations.variation_json);
+    } catch {
+      variationArray = [];
+    }
+  }
+
+  const renderImage = (src, key) => (
+    <div key={key} className="image-zoom-container">
+      <img
+        src={getVariationImage(src)}
+        alt="Product"
+        className="zoom-image"
+        style={enableZoom && isZooming ? zoomStyle : {}}
+        onMouseMove={enableZoom ? handleMouseMove : undefined}
+        onMouseEnter={enableZoom ? handleMouseEnter : undefined}
+        onMouseLeave={enableZoom ? handleMouseLeave : undefined}
+      />
+    </div>
+  );
+
+  /* ===============================
+     1️⃣ FULL VARIATION SELECTED
+     (size + colour)
+  =============================== */
+  if (productAmount?.image && Array.isArray(productAmount.image)) {
+    return productAmount.image.map((img, i) =>
+      renderImage(img, `variation-${i}`)
+    );
+  }
+
+  /* ===============================
+     2️⃣ ONLY COLOUR SELECTED
+  =============================== */
+  if (productVarSelected?.colour) {
+    const colourMatch = variationArray.find(
+      (v) =>
+        v.colour === productVarSelected.colour &&
+        Array.isArray(v.image)
+    );
+
+    if (colourMatch) {
+      return colourMatch.image.map((img, i) =>
+        renderImage(img, `colour-${i}`)
       );
-      if (matchedColorVariation) {
-        return [
-          <div key="color-variation-image">
-            <img
-              src={getVariationImage(matchedColorVariation.image)}
-              alt="Color Variation"
-            />
-          </div>,
-        ];
-      }
     }
+  }
 
-    // If full matched variation has image -> show that image
-    if (productAmount?.image) {
-      return [
-        <div key="variation-image">
-          <img
-            src={getVariationImage(productAmount.image)}
-            alt="Selected Variation"
-          />
-        </div>,
-      ];
-    }
+  /* ===============================
+     3️⃣ DEFAULT (NO SELECTION)
+     SHOW GALLERY IMAGES
+  =============================== */
+  if (singleProduct?.galleries?.length) {
+    return singleProduct.galleries.map((item, i) =>
+      renderImage(item.image, `gallery-${i}`)
+    );
+  }
 
-    // Default to product galleries
-    return (singleProduct?.galleries || []).map((item, index) => (
-      <div key={index}>
-        <img src={item.image} alt={`Product ${index}`} />
-      </div>
-    ));
-  };
+  /* ===============================
+     4️⃣ LAST FALLBACK
+     PRODUCT MAIN IMAGE
+  =============================== */
+  if (singleProduct?.product_image) {
+    return [renderImage(singleProduct.product_image, "main")];
+  }
+
+  return [];
+};
+
+
   const sliderSettings = {
     slidesToShow: 1,
     slidesToScroll: 1,
@@ -360,18 +411,18 @@ const handleShare = (platform) => {
     fade: true,
     asNavFor: navSlider,
   };
-const sliderNavSettings = {
-  slidesToShow: 6,
-  slidesToScroll: 1,
-  asNavFor: mainSlider,
-  focusOnSelect: true,
-  arrows: true,
-  dots: false,
-  infinite: getImageSlides.length > 1,
-  swipeToSlide: getImageSlides.length > 1,
-  centerMode: getImageSlides.length < 1,
-  centerPadding: getImageSlides.length < 6 ? "0px" : "0px", 
-};
+  const sliderNavSettings = {
+    slidesToShow: 6,
+    slidesToScroll: 1,
+    asNavFor: mainSlider,
+    focusOnSelect: true,
+    arrows: true,
+    dots: false,
+    infinite: getImageSlides.length > 1,
+    swipeToSlide: getImageSlides.length > 1,
+    centerMode: getImageSlides.length < 1,
+    centerPadding: getImageSlides.length < 6 ? "0px" : "0px",
+  };
 
   const renderStars = (rating) => {
     const stars = [];
@@ -430,7 +481,7 @@ const sliderNavSettings = {
     const variation = {};
     let quantity = null;
     let action_type = null;
-    for (let [key, value] of formData.entries()) {
+    for (const [key, value] of formData.entries()) {
       if (key.startsWith("variation")) {
         const match = key.match(/\[\](\[(.*?)\])/);
         if (match && match[2]) {
@@ -505,7 +556,7 @@ const sliderNavSettings = {
 
   return (
     <div className="product-detail-slider-content my-xl-5 my-lg-4 my-3 ">
-          <ToastContainer />
+      <ToastContainer />
       <div className="container">
         <div className="row">
           {/* Left: Image sliders */}
@@ -516,7 +567,7 @@ const sliderNavSettings = {
                 ref={(slider) => setMainSlider(slider)}
                 className="slider slider-for"
               >
-                {getImageSlides()}
+                {getImageSlides(true)}
               </Slider>
 
               {/* Hide the thumbnail slider when color is selected (as in your original) */}
@@ -696,7 +747,7 @@ const sliderNavSettings = {
                       : "Add to Cart"}
                     <FontAwesomeIcon icon={faCartShopping} className="ms-2" />
                   </button>
-                )} 
+                )}
 
                 <button
                   type="button"
@@ -759,18 +810,23 @@ const sliderNavSettings = {
                     <li style={{ cursor: "pointer" }} onClick={handleCopyLink}>
                       <FontAwesomeIcon icon={faCopy} />
                     </li>
-                    <li style={{ cursor: "pointer" }} onClick={() => handleShare("facebook")}>
+                    <li
+                      style={{ cursor: "pointer" }}
+                      onClick={() => handleShare("facebook")}
+                    >
                       <FontAwesomeIcon icon={faFacebook} />
                     </li>
                     {/* <li style={{ cursor: "pointer" }} onClick={() => handleShare("twitter")}>
                       <FontAwesomeIcon icon={faXTwitter} />
                     </li> */}
-                    <li style={{ cursor: "pointer" }} onClick={() => handleShare("whatsapp")}>
+                    <li
+                      style={{ cursor: "pointer" }}
+                      onClick={() => handleShare("whatsapp")}
+                    >
                       <FontAwesomeIcon icon={faWhatsapp} />
                     </li>
                   </ul>
                 </div>
-
               </div>
 
               <div className="mt-3 Guarantee_Checkout border p-4 bg-light">

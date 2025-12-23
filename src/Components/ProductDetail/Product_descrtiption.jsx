@@ -26,10 +26,7 @@ export default function ProductDescription({singleProduct}) {
                       <li className="d-flex align-items-center gap-3 mb-3" key={index}><img src={`${ImageUrl}/${item.image}`} alt="Medal" /> {item.text}</li>
 
                     ))}
-                    {/* <li className="d-flex align-items-center gap-3 mb-3"><img src="/Truck.png" alt="Truck" /> Free Shipping & Fast Delivery</li>
-                    <li className="d-flex align-items-center gap-3 mb-3"><img src="/Handshake.png" alt="Handshake" /> 100% Money-back Guarantee</li>
-                    <li className="d-flex align-items-center gap-3 mb-3"><img src="/Headphones.png" alt="Headphones" /> 24/7 Customer Support</li>
-                    <li className="d-flex align-items-center gap-3 mb-3"><img src="/CreditCard.png" alt="Credit Card" /> Secure Payment Method</li> */}
+                    
                   </ul>
                 </div>
               </div>

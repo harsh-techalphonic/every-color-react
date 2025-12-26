@@ -1,6 +1,5 @@
 "use client";
 
-// IMPORTS
 import { useEffect, useState } from "react";
 import Slider from "react-slick";
 import "./ProductDetail.css";
@@ -39,6 +38,7 @@ export default function Product_detail({ singleProduct }) {
   const dispatch = useDispatch();
   const [mainSlider, setMainSlider] = useState(null);
   const [navSlider, setNavSlider] = useState(null);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const fetch_products = useSelector((store) => store.wishlist);
   const [gettoken, setGettoken] = useState(null);
@@ -59,7 +59,7 @@ export default function Product_detail({ singleProduct }) {
 
     setZoomStyle({
       transformOrigin: `${x}% ${y}%`,
-      transform: "scale(2.8)",
+      transform: "scale(2)",
     });
   };
 
@@ -330,84 +330,89 @@ export default function Product_detail({ singleProduct }) {
   };
 
   // Build image slides based on selected variation (color or matched variation image), otherwise galleries
- const getImageSlides = (enableZoom = false) => {
-  let variationArray = [];
+  const getImageSlides = (enableZoom = false, allowExpand  = false) => {
+    let variationArray = [];
 
-  if (singleProduct?.variations?.variation_json) {
-    try {
-      variationArray = JSON.parse(singleProduct.variations.variation_json);
-    } catch {
-      variationArray = [];
+    if (singleProduct?.variations?.variation_json) {
+      try {
+        variationArray = JSON.parse(singleProduct.variations.variation_json);
+      } catch {
+        variationArray = [];
+      }
     }
-  }
 
-  const renderImage = (src, key) => (
-    <div key={key} className="image-zoom-container">
-      <img
-        src={getVariationImage(src)}
-        alt="Product"
-        className="zoom-image"
-        style={enableZoom && isZooming ? zoomStyle : {}}
-        onMouseMove={enableZoom ? handleMouseMove : undefined}
-        onMouseEnter={enableZoom ? handleMouseEnter : undefined}
-        onMouseLeave={enableZoom ? handleMouseLeave : undefined}
-      />
-    </div>
-  );
+    const renderImage = (src, key) => (
+      <div
+        key={key}
+        className="image-zoom-container"
+         onClick={(e) => {
+      if (allowExpand) {
+        setIsExpanded(true);
+      }
+    }}
+      >
+        <img
+          src={getVariationImage(src)}
+          alt="Product"
+          className="zoom-image"
+          style={enableZoom && isZooming ? zoomStyle : {}}
+          onMouseMove={enableZoom ? handleMouseMove : undefined}
+          onMouseEnter={enableZoom ? handleMouseEnter : undefined}
+          onMouseLeave={enableZoom ? handleMouseLeave : undefined}
+        />
+      </div>
+    );
 
-  /* ===============================
+    /* ===============================
      1️⃣ FULL VARIATION SELECTED
      (size + colour)
   =============================== */
-  if (productAmount?.image && Array.isArray(productAmount.image)) {
-    return productAmount.image.map((img, i) =>
-      renderImage(img, `variation-${i}`)
-    );
-  }
-
-  /* ===============================
-     2️⃣ ONLY COLOUR SELECTED
-  =============================== */
-  if (productVarSelected?.colour) {
-    const colourMatch = variationArray.find(
-      (v) =>
-        v.colour === productVarSelected.colour &&
-        Array.isArray(v.image)
-    );
-
-    if (colourMatch) {
-      return colourMatch.image.map((img, i) =>
-        renderImage(img, `colour-${i}`)
+    if (productAmount?.image && Array.isArray(productAmount.image)) {
+      return productAmount.image.map((img, i) =>
+        renderImage(img, `variation-${i}`)
       );
     }
-  }
 
-  /* ===============================
+    /* ===============================
+     2️⃣ ONLY COLOUR SELECTED
+  =============================== */
+    if (productVarSelected?.colour) {
+      const colourMatch = variationArray.find(
+        (v) => v.colour === productVarSelected.colour && Array.isArray(v.image)
+      );
+
+      if (colourMatch) {
+        return colourMatch.image.map((img, i) =>
+          renderImage(img, `colour-${i}`)
+        );
+      }
+    }
+
+    /* ===============================
      3️⃣ DEFAULT (NO SELECTION)
      SHOW GALLERY IMAGES
   =============================== */
-  if (singleProduct?.galleries?.length) {
-    return singleProduct.galleries.map((item, i) =>
-      renderImage(item.image, `gallery-${i}`)
-    );
-  }
+    if (singleProduct?.galleries?.length) {
+      return singleProduct.galleries.map((item, i) =>
+        renderImage(item.image, `gallery-${i}`)
+      );
+    }
 
-  /* ===============================
+    /* ===============================
      4️⃣ LAST FALLBACK
      PRODUCT MAIN IMAGE
   =============================== */
-  if (singleProduct?.product_image) {
-    return [renderImage(singleProduct.product_image, "main")];
-  }
+    if (singleProduct?.product_image) {
+      return [renderImage(singleProduct.product_image, "main")];
+    }
 
-  return [];
-};
-
+    return [];
+  };
 
   const sliderSettings = {
     slidesToShow: 1,
     slidesToScroll: 1,
-    arrows: false,
+    arrows: true,
     fade: true,
     asNavFor: navSlider,
   };
@@ -418,6 +423,20 @@ export default function Product_detail({ singleProduct }) {
     focusOnSelect: true,
     arrows: true,
     dots: false,
+    infinite: getImageSlides.length > 1,
+    swipeToSlide: getImageSlides.length > 1,
+    centerMode: getImageSlides.length < 1,
+    centerPadding: getImageSlides.length < 6 ? "0px" : "0px",
+  };
+  const sliderNavTwoSettings = {
+    slidesToShow: 6,
+    slidesToScroll: 1,
+    asNavFor: mainSlider,
+    focusOnSelect: true,
+    arrows: true,
+    dots: false,
+    vertical: true,
+    verticalSwiping: true,
     infinite: getImageSlides.length > 1,
     swipeToSlide: getImageSlides.length > 1,
     centerMode: getImageSlides.length < 1,
@@ -561,21 +580,48 @@ export default function Product_detail({ singleProduct }) {
         <div className="row">
           {/* Left: Image sliders */}
           <div className="col-lg-6">
-            <div className="product-galler-slide">
+            {/* addedClass */}
+            <div
+              className={`product-galler-slide ${
+                isExpanded ? "addedClass" : ""
+              }`}
+            >
               <Slider
                 {...sliderSettings}
                 ref={(slider) => setMainSlider(slider)}
                 className="slider slider-for"
               >
-                {getImageSlides(true)}
+                {getImageSlides(true,true)}
               </Slider>
 
-              {/* Hide the thumbnail slider when color is selected (as in your original) */}
+              {/* CLOSE / REMOVE BUTTON */}
+              {isExpanded && (
+                <button
+                  type="button"
+                  className="remove-expanded-btn"
+                  onClick={(e) => {
+                    e.stopPropagation(); // ⛔ STOP bubbling
+                    setIsExpanded(false);
+                  }}
+                >
+                  ✕
+                </button>
+              )}
+
               {!productVarSelected.color && (
                 <Slider
                   {...sliderNavSettings}
                   ref={(slider) => setNavSlider(slider)}
-                  className="slider slider-nav"
+                  className="slider horizontal slider-nav"
+                >
+                  {getImageSlides()}
+                </Slider>
+              )}
+              {!productVarSelected.color && (
+                <Slider
+                  {...sliderNavTwoSettings}
+                  ref={(slider) => setNavSlider(slider)}
+                  className="slider vertiacl slider-nav"
                 >
                   {getImageSlides()}
                 </Slider>

@@ -351,6 +351,10 @@ height: 24px;
 .slider-nav .image-zoom-container:hover .zoom-image {
   cursor: pointer !important;
 }
+:focus-visible {
+    outline: -webkit-focus-ring-color auto 0px;
+}
+
 
 /* Ensure smooth zoom transitions */
 .slider-for .slick-slide {
@@ -364,3 +368,78 @@ height: 24px;
   transform: none !important;
   cursor: pointer;
 }
+
+
+.addedClass.product-galler-slide{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: #ffffff;
+  z-index: 9999;
+}
+.addedClass.product-galler-slide .vertiacl.slider-nav {
+    position: absolute;
+    top: 8px;
+    left: 12px;
+    width: 150px;
+}
+.addedClass.product-galler-slide .slider-for .slick-slide img{
+  height: calc(100vh - 36px) !important;
+  width: inherit;
+  margin: inherit;
+
+}
+.vertiacl.slider-nav{
+  display: none;
+}
+.addedClass.product-galler-slide .vertiacl.slider-nav{
+  display: inherit;
+}
+.addedClass.product-galler-slide .horizontal.slider-nav{
+  display: none;
+}
+.remove-expanded-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: #ffbfbf;
+  color: #000000;
+  border: none;
+  font-size: 18px;
+  padding: 6px 12px;
+  cursor: pointer;
+  z-index: 10000;}
+
+
+  .product-galler-slide .slick-arrow.slick-next,.product-galler-slide .slick-arrow.slick-prev{
+    display: none !important;
+  }
+  .addedClass.product-galler-slide .slick-arrow.slick-next,.addedClass.product-galler-slide .slick-arrow.slick-prev{
+    display: block !important;
+  }
+  .addedClass.product-galler-slide .slick-arrow.slick-next{
+    right: 12px;
+  }
+  .addedClass.product-galler-slide .slick-arrow.slick-prev{
+    left: 12px;
+  }
+  
+  @media screen and (max-width:768px) {
+    .vertiacl.slider-nav{
+  display: none;
+}
+.addedClass.product-galler-slide .vertiacl.slider-nav{
+  display: none;
+}
+.addedClass.product-galler-slide .horizontal.slider-nav{
+  display: inherit;
+}
+.addedClass.product-galler-slide .horizontal.slider-nav {
+    position: absolute !important;
+    bottom: 12px !important;
+    left: 12px;
+    width: 100%;
+} 
+  }

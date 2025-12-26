@@ -383,7 +383,7 @@ height: 24px;
     position: absolute;
     top: 8px;
     left: 12px;
-    width: 150px;
+    width: 80px;
 }
 .addedClass.product-galler-slide .slider-for .slick-slide img{
   height: calc(100vh - 36px) !important;

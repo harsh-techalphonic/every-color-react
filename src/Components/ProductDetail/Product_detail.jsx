@@ -330,84 +330,76 @@ export default function Product_detail({ singleProduct }) {
   };
 
   // Build image slides based on selected variation (color or matched variation image), otherwise galleries
-  const getImageSlides = (enableZoom = false, allowExpand  = false) => {
-    let variationArray = [];
+ const getImageSlides = (enableZoom = false, allowExpand = false) => {
+  let variations = [];
 
-    if (singleProduct?.variations?.variation_json) {
-      try {
-        variationArray = JSON.parse(singleProduct.variations.variation_json);
-      } catch {
-        variationArray = [];
-      }
+  if (singleProduct?.variations?.variation_json) {
+    try {
+      variations = JSON.parse(singleProduct.variations.variation_json);
+    } catch {
+      variations = [];
     }
+  }
 
-    const renderImage = (src, key) => (
-      <div
-        key={key}
-        className="image-zoom-container"
-         onClick={(e) => {
-      if (allowExpand) {
-        setIsExpanded(true);
-      }
-    }}
-      >
-        <img
-          src={getVariationImage(src)}
-          alt="Product"
-          className="zoom-image"
-          style={enableZoom && isZooming ? zoomStyle : {}}
-          onMouseMove={enableZoom ? handleMouseMove : undefined}
-          onMouseEnter={enableZoom ? handleMouseEnter : undefined}
-          onMouseLeave={enableZoom ? handleMouseLeave : undefined}
-        />
-      </div>
+  const renderImage = (src, key) => (
+    <div
+      key={key}
+      className="image-zoom-container"
+      onClick={() => allowExpand && setIsExpanded(true)}
+    >
+      <img
+        src={getVariationImage(src)}
+        alt="Product"
+        className="zoom-image"
+        style={enableZoom && isZooming ? zoomStyle : {}}
+        onMouseMove={enableZoom ? handleMouseMove : undefined}
+        onMouseEnter={enableZoom ? handleMouseEnter : undefined}
+        onMouseLeave={enableZoom ? handleMouseLeave : undefined}
+      />
+    </div>
+  );
+
+  /* =====================================
+     1️⃣ FULL / PARTIAL VARIATION MATCH
+     (DYNAMIC KEYS)
+  ===================================== */
+  if (Object.keys(productVarSelected).length && variations.length) {
+  const matchedVariation = variations.find((v) =>
+    Object.entries(productVarSelected).every(
+      ([key, val]) => v[key] === val
+    )
+  );
+
+  if (matchedVariation?.image) {
+    const imagesArray = Array.isArray(matchedVariation.image)
+      ? matchedVariation.image
+      : [matchedVariation.image]; // 👈 normalize
+
+    return imagesArray.map((img, i) =>
+      renderImage(img, `var-${i}`)
     );
+  }
+}
 
-    /* ===============================
-     1️⃣ FULL VARIATION SELECTED
-     (size + colour)
-  =============================== */
-    if (productAmount?.image && Array.isArray(productAmount.image)) {
-      return productAmount.image.map((img, i) =>
-        renderImage(img, `variation-${i}`)
-      );
-    }
+  /* =====================================
+     2️⃣ DEFAULT GALLERY
+  ===================================== */
+  if (singleProduct?.galleries?.length) {
+    return singleProduct.galleries.map((item, i) =>
+      renderImage(item.image, `gallery-${i}`)
+    );
+  }
 
-    /* ===============================
-     2️⃣ ONLY COLOUR SELECTED
-  =============================== */
-    if (productVarSelected?.colour) {
-      const colourMatch = variationArray.find(
-        (v) => v.colour === productVarSelected.colour && Array.isArray(v.image)
-      );
+  /* =====================================
+     3️⃣ FALLBACK MAIN IMAGE
+  ===================================== */
+  if (singleProduct?.product_image) {
+    return [renderImage(singleProduct.product_image, "main")];
+  }
 
-      if (colourMatch) {
-        return colourMatch.image.map((img, i) =>
-          renderImage(img, `colour-${i}`)
-        );
-      }
-    }
+  return [];
+};
 
-    /* ===============================
-     3️⃣ DEFAULT (NO SELECTION)
-     SHOW GALLERY IMAGES
-  =============================== */
-    if (singleProduct?.galleries?.length) {
-      return singleProduct.galleries.map((item, i) =>
-        renderImage(item.image, `gallery-${i}`)
-      );
-    }
-
-    /* ===============================
-     4️⃣ LAST FALLBACK
-     PRODUCT MAIN IMAGE
-  =============================== */
-    if (singleProduct?.product_image) {
-      return [renderImage(singleProduct.product_image, "main")];
-    }
-
-    return [];
-  };
 
   const sliderSettings = {
     slidesToShow: 1,
@@ -425,23 +417,23 @@ export default function Product_detail({ singleProduct }) {
     dots: false,
     infinite: getImageSlides.length > 1,
     swipeToSlide: getImageSlides.length > 1,
-    centerMode: getImageSlides.length < 1,
+    // centerMode: getImageSlides.length < 1,
     centerPadding: getImageSlides.length < 6 ? "0px" : "0px",
   };
   const sliderNavTwoSettings = {
-    slidesToShow: 6,
-    slidesToScroll: 1,
-    asNavFor: mainSlider,
-    focusOnSelect: true,
-    arrows: true,
-    dots: false,
-    vertical: true,
-    verticalSwiping: true,
-    infinite: getImageSlides.length > 1,
-    swipeToSlide: getImageSlides.length > 1,
-    centerMode: getImageSlides.length < 1,
-    centerPadding: getImageSlides.length < 6 ? "0px" : "0px",
-  };
+  slidesToShow: 5,         
+  slidesToScroll: 1,
+  asNavFor: mainSlider,
+  focusOnSelect: true,
+  arrows: false,
+  dots: false,
+  vertical: true,
+  verticalSwiping: true,
+  infinite: getImageSlides.length > 1,
+  swipeToSlide: getImageSlides.length > 1,
+  centerMode: false,
+  centerPadding: "0px",
+};
 
   const renderStars = (rating) => {
     const stars = [];

@@ -443,3 +443,15 @@ height: 24px;
     width: 100%;
 } 
   }
+
+
+  .image-zoom-container {
+  overflow: hidden;
+  touch-action: none; /* 🔥 REQUIRED for pinch */
+}
+
+.zoom-image {
+  width: 100%;
+  height: auto;
+  user-select: none;
+}

@@ -5,6 +5,7 @@ import { faPenToSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import config from "../../../Config/config.json";
 import AddressModal from "./AddressModal";
+import { fetchUserDataApi } from "../../../API/AllApiCode";
 
 export default function Addresses() {
   const [showModal, setShowModal] = useState(false);
@@ -12,6 +13,8 @@ export default function Addresses() {
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
   const [editVal, setEditVal] = useState(null);
+  const [userDataDta, setUserProfileDta] = useState([]);
+  console.log( "user gst data", userDataDta)
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
@@ -23,6 +26,23 @@ export default function Addresses() {
       fetchData();
     }
   }, [token]);
+
+ 
+  
+    useEffect(() => {
+      const getUserProfile = async () => {
+        try {
+          const userResponse = await fetchUserDataApi();
+  
+          if (userResponse) {
+            setUserProfileDta(userResponse?.user);
+          }
+        } catch (err) {
+          console.error("Error loading user profile:", err);
+        }
+      };
+      getUserProfile();
+    }, []);
 
   const fetchData = async () => {
     try {
@@ -105,7 +125,7 @@ export default function Addresses() {
                 {data?.data?.map((item, index) => (
                   <div className="col-lg-4 mb-3" key={index}>
                     <div className="AddressBox_one">
-                      <h4>Billing Address</h4>
+                      <h4>Address </h4>
                       <h5>{item?.name}</h5>
                       <p>
                         {item?.full_address}, {item?.landmark}, {item?.area}, {item?.state}{" "}
@@ -129,6 +149,25 @@ export default function Addresses() {
                     </div>
                   </div>
                 ))}
+                <div className="col-lg-4 mb-3">
+                    <div className="AddressBox_one">
+                      <h4>Billing Address</h4>
+                      <h5>{userDataDta?.gst_response?.taxpayerInfo?.tradeNam}</h5>
+                      <p>
+  {[
+    userDataDta?.gst_response?.taxpayerInfo?.pradr?.addr?.flno,
+    userDataDta?.gst_response?.taxpayerInfo?.pradr?.addr?.bno,
+    userDataDta?.gst_response?.taxpayerInfo?.pradr?.addr?.st,
+    userDataDta?.gst_response?.taxpayerInfo?.pradr?.addr?.loc,
+    userDataDta?.gst_response?.taxpayerInfo?.pradr?.addr?.dst,
+    userDataDta?.gst_response?.taxpayerInfo?.pradr?.addr?.stcd,
+    userDataDta?.gst_response?.taxpayerInfo?.pradr?.addr?.pncd,
+  ]
+    .filter(Boolean)
+    .join(", ")}
+</p>
+                    </div>
+                  </div>
               </div>
             </div>
           </div>

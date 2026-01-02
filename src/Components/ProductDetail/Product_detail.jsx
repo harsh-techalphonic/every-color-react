@@ -44,6 +44,19 @@ export default function Product_detail({ singleProduct }) {
   const [gettoken, setGettoken] = useState(null);
   const [zoomStyle, setZoomStyle] = useState({});
   const [isZooming, setIsZooming] = useState(false);
+  // 🔹 MOBILE TOUCH ZOOM STATES
+const [isTouchDevice, setIsTouchDevice] = useState(false);
+const [scale, setScale] = useState(1);
+const isImageZoomed = isExpanded && isTouchDevice && scale > 1;
+const [lastScale, setLastScale] = useState(1);
+const [position, setPosition] = useState({ x: 0, y: 0 });
+const [lastPosition, setLastPosition] = useState({ x: 0, y: 0 });
+const [initialDistance, setInitialDistance] = useState(null);
+// const [scale, setScale] = useState(1);
+const [translate, setTranslate] = useState({ x: 0, y: 0 });
+const [lastDistance, setLastDistance] = useState(null);
+const [lastTouch, setLastTouch] = useState(null);
+
 
   console.log("console signle product data", singleProduct);
 
@@ -71,6 +84,70 @@ export default function Product_detail({ singleProduct }) {
     setIsZooming(false);
     setZoomStyle({});
   };
+
+
+  useEffect(() => {
+  setIsTouchDevice(
+    "ontouchstart" in window || navigator.maxTouchPoints > 0
+  );
+}, []);
+
+const getDistance = (touches) => {
+  const [t1, t2] = touches;
+  const dx = t1.clientX - t2.clientX;
+  const dy = t1.clientY - t2.clientY;
+  return Math.sqrt(dx * dx + dy * dy);
+};
+const handleTouchStart = (e) => {
+  if (!isExpanded || !isTouchDevice) return;
+
+  if (e.touches.length === 2) {
+    setLastDistance(getDistance(e.touches));
+  } else if (e.touches.length === 1) {
+    setLastTouch({
+      x: e.touches[0].clientX - translate.x,
+      y: e.touches[0].clientY - translate.y,
+    });
+  }
+};
+
+const handleTouchMove = (e) => {
+  if (!isExpanded || !isTouchDevice) return;
+
+  e.preventDefault(); // ⛔ stop page zoom
+
+  // 👉 PINCH ZOOM
+  if (e.touches.length === 2 && lastDistance) {
+    const newDistance = getDistance(e.touches);
+    const zoomFactor = newDistance / lastDistance;
+
+    setScale((prev) => Math.min(Math.max(prev * zoomFactor, 1), 4));
+    setLastDistance(newDistance);
+  }
+
+  // 👉 PAN (only after zoom)
+  if (e.touches.length === 1 && lastTouch && scale > 1) {
+    setTranslate({
+      x: e.touches[0].clientX - lastTouch.x,
+      y: e.touches[0].clientY - lastTouch.y,
+    });
+  }
+};
+
+
+
+const handleTouchEnd = () => {
+  setLastDistance(null);
+  setLastTouch(null);
+
+  // ✅ Ensure reset if zoom ended at normal scale
+  if (scale <= 1) {
+    setScale(1);
+    setTranslate({ x: 0, y: 0 });
+  }
+};
+
+
 
   const handleBuyNow = () => {
     // build the product payload
@@ -347,7 +424,7 @@ export default function Product_detail({ singleProduct }) {
       className="image-zoom-container"
       onClick={() => allowExpand && setIsExpanded(true)}
     >
-      <img
+      {/* <img
         src={getVariationImage(src)}
         alt="Product"
         className="zoom-image"
@@ -355,7 +432,51 @@ export default function Product_detail({ singleProduct }) {
         onMouseMove={enableZoom ? handleMouseMove : undefined}
         onMouseEnter={enableZoom ? handleMouseEnter : undefined}
         onMouseLeave={enableZoom ? handleMouseLeave : undefined}
-      />
+      /> */}
+
+
+      {/* <img
+  src={getVariationImage(src)}
+  alt="Product"
+  className="zoom-image"
+  style={
+    isTouchDevice
+      ? {
+          transform: `translate(${position.x}px, ${position.y}px) scale(${scale})`,
+          transition: "none",
+        }
+      : enableZoom && isZooming
+      ? zoomStyle
+      : {}
+  }
+  onMouseMove={!isTouchDevice && enableZoom ? handleMouseMove : undefined}
+  onMouseEnter={!isTouchDevice && enableZoom ? handleMouseEnter : undefined}
+  onMouseLeave={!isTouchDevice && enableZoom ? handleMouseLeave : undefined}
+  onTouchStart={isTouchDevice ? handleTouchStart : undefined}
+  onTouchMove={isTouchDevice ? handleTouchMove : undefined}
+  onTouchEnd={isTouchDevice ? handleTouchEnd : undefined}
+/> */}
+<img
+  src={getVariationImage(src)}
+  alt="Product"
+  className="zoom-image"
+  style={{
+    ...(enableZoom && !isTouchDevice && isZooming ? zoomStyle : {}),
+    ...(isExpanded && isTouchDevice
+      ? {
+          transform: `scale(${scale}) translate(${translate.x / scale}px, ${translate.y / scale}px)`,
+          touchAction: "none",
+        }
+      : {}),
+  }}
+  onMouseMove={!isTouchDevice && enableZoom ? handleMouseMove : undefined}
+  onMouseEnter={!isTouchDevice && enableZoom ? handleMouseEnter : undefined}
+  onMouseLeave={!isTouchDevice && enableZoom ? handleMouseLeave : undefined}
+  onTouchStart={handleTouchStart}
+  onTouchMove={handleTouchMove}
+  onTouchEnd={handleTouchEnd}
+/>
+
     </div>
   );
 
@@ -407,6 +528,10 @@ export default function Product_detail({ singleProduct }) {
     arrows: true,
     fade: true,
     asNavFor: navSlider,
+
+     swipe: !isImageZoomed,
+  draggable: !isImageZoomed,
+  touchMove: !isImageZoomed,
   };
   const sliderNavSettings = {
     slidesToShow: 6,
@@ -464,6 +589,12 @@ export default function Product_detail({ singleProduct }) {
   };
   const toggleCart = async (item) => {
     const token = localStorage.getItem("token");
+    if (!gettoken) {
+      navigate("/login");
+      return;
+    }
+
+
     try {
       const response = await fetch(`${API_URL}${AddOrRemoveCart}`, {
         method: "POST",
@@ -523,10 +654,7 @@ export default function Product_detail({ singleProduct }) {
     : "0.0";
 
   const toggleWishlist = async (item) => {
-    if (!gettoken) {
-      navigate("/login");
-      return;
-    }
+  
 
     try {
       const response = await fetch(`${API_URL}${AddOrDeleteWishlist}`, {
@@ -592,8 +720,10 @@ export default function Product_detail({ singleProduct }) {
                   type="button"
                   className="remove-expanded-btn"
                   onClick={(e) => {
-                    e.stopPropagation(); // ⛔ STOP bubbling
+                    e.stopPropagation();
                     setIsExpanded(false);
+                    setScale(1);
+                    setTranslate({ x: 0, y: 0 });
                   }}
                 >
                   ✕

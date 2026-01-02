@@ -352,6 +352,10 @@ button:hover {
     padding: 4px 8px;
     font-size: 12px;
 }
+.product-detail-slider-content button.btn.btn-danger {
+    padding: 4px 8px;
+    font-size: 12px;
+}
 .product-detail-slider-content h5
  {
     font-size: 20px !important;

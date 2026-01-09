@@ -9,7 +9,7 @@ export default function SimilarProducts({ singleProduct }) {
 
   const fetch_products = useSelector((store) => store.products) || { data: [], status: false };
 
-  // Filter products: same category, exclude the current product
+  
   const products = fetch_products.data?.filter(
     (product) =>
       product.product_cat_id === singleProduct?.product_cat_id &&

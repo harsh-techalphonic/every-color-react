@@ -29,22 +29,44 @@ export default function DealsOfDay() {
     }
   }, [fetch_singleProduct, slug]);
 
-  var settings = {
+  // var settings = {
+  //   dots: false,
+  //   infinite: true,
+  //   speed: 500,
+  //   slidesToShow: 5,
+  //   slidesToScroll: 1,
+  //   swipeToSlide: true,
+  //   arrows: false,
+  //   autoplay: true,
+  //   autoplaySpeed: 3000,
+  //   responsive: [
+  //     { breakpoint: 1200, settings: { slidesToShow: 4 } },
+  //     { breakpoint: 992, settings: { slidesToShow: 3 } },
+  //     { breakpoint: 768, settings: { slidesToShow: 2 } },
+  //     { breakpoint: 576, settings: { slidesToShow: 2 } },
+  //     { breakpoint: 360, settings: { slidesToShow: 1 } },
+  //   ],
+  // };
+
+
+    var settings = {
     dots: false,
-    infinite: true,
+    infinite: products.length > 1,
     speed: 500,
     slidesToShow: 5,
     slidesToScroll: 1,
-    swipeToSlide: true,
-    arrows: false,
-    autoplay: true,
+    swipeToSlide: products.length > 1,
+    arrows: products.length > 1,
+    autoplay: products.length > 1,
     autoplaySpeed: 3000,
+    centerMode: products.length < 5, 
+     centerPadding: products.length < 5 ? "0px" : "0px", 
     responsive: [
-      { breakpoint: 1200, settings: { slidesToShow: 4 } },
-      { breakpoint: 992, settings: { slidesToShow: 3 } },
-      { breakpoint: 768, settings: { slidesToShow: 2 } },
-      { breakpoint: 576, settings: { slidesToShow: 2 } },
-      { breakpoint: 360, settings: { slidesToShow: 1 } },
+      { breakpoint: 1200, settings: { slidesToShow: 4, centerMode: products.length < 4 } },
+      { breakpoint: 992, settings: { slidesToShow: 3, centerMode: products.length < 3 } },
+      { breakpoint: 768, settings: { slidesToShow: 2, centerMode: products.length < 2 } },
+      { breakpoint: 576, settings: { slidesToShow: 2, centerMode: products.length < 2 } },
+      { breakpoint: 360, settings: { slidesToShow: 1, centerMode: false } },
     ],
   };
 

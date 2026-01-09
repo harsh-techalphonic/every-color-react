@@ -310,7 +310,7 @@ const AddressModal = ({
                   <input
                     type="text"
                     className="form-control"
-                    value={landmark} required
+                    value={landmark} 
                     onChange={(e) => setLandmark(e.target.value)}
                   />
                 </div>

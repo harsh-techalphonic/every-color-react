@@ -11,6 +11,7 @@ import config from "../../Config/config.json";
 import { deleteCartItem } from "../../API/AllApiCode";
 import { RemoveCart } from "../../Config/config";
 import { updateCartItemQuantity } from "./CartValUpdateApi";
+import { Badge } from "react-bootstrap";
 
 // Utility to calculate prices
 const getPriceDetails = (item) => {
@@ -50,7 +51,7 @@ const getPriceDetails = (item) => {
 
 const CartItem = ({ item, onRemove, onQuantityChange }) => {
   const [priceData, setPriceData] = useState(null);
-
+console.log("cart items", item)
   useEffect(() => {
     setPriceData(getPriceDetails(item));
   }, [item]);
@@ -63,15 +64,17 @@ const CartItem = ({ item, onRemove, onQuantityChange }) => {
   return (
     <div className="card mb-3 p-3">
       <div className="d-flex align-items-center gap-4">
-        <div className="cartitem_img">
+        {/* <div > */}
+          <Link to={`/product/${item.product_slug}`} className="cartitem_img" >
           <img
             src={item.product_image}
             alt={item.product_name}
             className="img-fluid"
           />
-        </div>
+          </Link>
+        {/* </div> */}
         <div className="cartitem_content">
-          <h5>{item.product_name}</h5>
+          <h5><Link to={`/product/${item.product_slug}`}>{item.product_name}</Link></h5>
           {priceData && (
             <div className="price_ing d-flex align-items-center">
               <h5>₹{priceData.total.toFixed(2)}</h5>
@@ -318,6 +321,7 @@ export default function Cart({ onHeaderHeight }) {
                     >
                       PROCEED TO CHECKOUT →
                     </Link>
+                    <p className="mt-3 align-items-center justify-content-center gap-2" style={{fontSize:'12px'}}><span class="badge border border-info text-info bg-transparent" style={{fontSize:'13px'}}> Note: </span> You can add your GST number by going in your profile.</p>
                   </div>
                 </div>
               </>

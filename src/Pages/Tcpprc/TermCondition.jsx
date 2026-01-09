@@ -13,7 +13,7 @@ import logo from '../../assets/EveryColourLogo.png'
 export default function TermCondition({ onHeaderHeight }) {
   const tcpprc = useSelector((store) => store.Tcpprc);
 
-  const [policy, setPolicy] = useState([]);
+  const [policy, setPolicy] = useState([]); 
   console?.log("policy", policy);
 
   useEffect(() => {

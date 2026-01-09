@@ -154,18 +154,18 @@ export default function Addresses() {
                       <h4>Billing Address</h4>
                       <h5>{userDataDta?.gst_response?.taxpayerInfo?.tradeNam}</h5>
                       <p>
-  {[
-    userDataDta?.gst_response?.taxpayerInfo?.pradr?.addr?.flno,
-    userDataDta?.gst_response?.taxpayerInfo?.pradr?.addr?.bno,
-    userDataDta?.gst_response?.taxpayerInfo?.pradr?.addr?.st,
-    userDataDta?.gst_response?.taxpayerInfo?.pradr?.addr?.loc,
-    userDataDta?.gst_response?.taxpayerInfo?.pradr?.addr?.dst,
-    userDataDta?.gst_response?.taxpayerInfo?.pradr?.addr?.stcd,
-    userDataDta?.gst_response?.taxpayerInfo?.pradr?.addr?.pncd,
-  ]
-    .filter(Boolean)
-    .join(", ")}
-</p>
+                          {[
+                            userDataDta?.gst_response?.taxpayerInfo?.pradr?.addr?.flno,
+                            userDataDta?.gst_response?.taxpayerInfo?.pradr?.addr?.bno,
+                            userDataDta?.gst_response?.taxpayerInfo?.pradr?.addr?.st,
+                            userDataDta?.gst_response?.taxpayerInfo?.pradr?.addr?.loc,
+                            userDataDta?.gst_response?.taxpayerInfo?.pradr?.addr?.dst,
+                            userDataDta?.gst_response?.taxpayerInfo?.pradr?.addr?.stcd,
+                            userDataDta?.gst_response?.taxpayerInfo?.pradr?.addr?.pncd,
+                          ]
+                            .filter(Boolean)
+                            .join(", ")}
+                        </p>
                     </div>
                   </div>
               </div>

@@ -22,7 +22,7 @@ export default function PrivacyPolicy({ onHeaderHeight }) {
   return (
     <>
       <ScrollToTop />
-      <Header onHeaderHeight={handleHeaderHeight} />
+       <Header onHeight={onHeaderHeight} />
       <HelmetComponent
               title={policy?.meta_title}
               description={policy?.meta_description}

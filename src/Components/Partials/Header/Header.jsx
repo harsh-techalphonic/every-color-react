@@ -235,9 +235,9 @@ useEffect(() => {
                 <Link to={`/category/${category.slug}` }  className={pathname === `/category/${category.slug}` ? "active" : ""}>{category.name}</Link>
               </li>
             ))}
-            <li>
+            {/* <li>
               <Link to="/bulk-order" className={pathname === `/bulk-order` ? "active" : ""}>Bulk Order</Link>
-            </li>
+            </li> */}
             <li>
               <Link to="/export" className={pathname === `/export` ? "active" : ""}>Export</Link>
             </li>
@@ -266,30 +266,20 @@ useEffect(() => {
                     Home
                   </Link>
                 </li>
-                <li>
-                  <Link to="/product">Kids</Link>
-                </li>
-                <li>
-                  <Link to="/product">Men</Link>
-                </li>
-                <li>
-                  <Link to="/product">Women</Link>
-                </li>
-                <li>
-                  <Link to="/product">Home Decor</Link>
-                </li>
-                <li>
-                  <Link to="/product">Electronics</Link>
-                </li>
+                {categories.data?.map((category, index) => (
+                  <li key={index}>
+                    <Link to={`/category/${category.slug}` }  className={pathname === `/category/${category.slug}` ? "active" : ""}>{category.name}</Link>
+                  </li>
+                ))}
                 <li>
                   <Link to="/about">About Us</Link>
                 </li>
                 <li>
                   <Link to="/contact-us">Contact Us</Link>
                 </li>
-                <li>
+                {/* <li>
                   <Link to="/bulk-order">Bulk Order</Link>
-                </li>
+                </li> */}
                 <li>
                   <Link to="/export">Export</Link>
                 </li>

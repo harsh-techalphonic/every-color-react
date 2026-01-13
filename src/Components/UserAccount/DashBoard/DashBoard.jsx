@@ -68,6 +68,7 @@ export default function DashBoard({ setActiveTab }) {
                 <p className="pphone mb-0">
                   <Link to="#!">{userProfileDta?.phone}</Link>
                 </p>
+                {userProfileDta.business_owner === "yes" ? (
                 <div className="row ajsdfasd">
                   <div className="col-lg-6">
                     <p className="mb-0">
@@ -83,6 +84,9 @@ export default function DashBoard({ setActiveTab }) {
                     </p>
                   </div>
                 </div>
+                ) : null}
+              {/* </div>
+            </div> */}
               </div>
               <Link
                 onClick={(e) => {

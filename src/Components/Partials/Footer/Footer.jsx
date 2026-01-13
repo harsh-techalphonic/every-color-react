@@ -80,13 +80,13 @@ export default function Footer() {
                 </p>
                 <p className="mb-0">
                   Email us at:{" "}
-                  <Link to="mailto:-customercare@uppercase.co.in">
-                    customercare@uppercase.co.in
+                  <Link to="mailto:- info@everycolouruniverse.com">
+                    info@everycolouruniverse.com
                   </Link>
                 </p>
                 <p className="mb-0">
                   Phone Number:{" "}
-                  <Link to="tele:-+91 8691 800 800">+91 8691 800 800</Link>
+                  <Link to="tel:- 9810767165">+91 9810767165</Link>
                 </p>
 
                 <h3 className="mt-4">Follow our </h3>
@@ -97,7 +97,7 @@ export default function Footer() {
                 <div className="social-links mt-3">
                   <ul className="list-unstyled d-flex gap-3">
                     <li>
-                      <Link to="#!"  target="_blank">
+                      <Link to="https://www.facebook.com/share/16aLhLPK5A/"  target="_blank">
                         <FontAwesomeIcon icon={faFacebookF} />
                       </Link>
                     </li>

@@ -344,10 +344,14 @@ export default function ReturnRefund() {
                 style={{ cursor: "default" }} // removed pointer here
               >
                 <div>
-                  <p>
-                    <b>Order ID:</b> {order.shiprocket_order_id}{" "}
-                  </p>
+                  {order.shiprocket_order_id !== null && (
+                    <p>
+                      <b>Order ID:</b> {order.shiprocket_order_id}
+                    </p>
+                  )}
+                    {order.shiprocket_shipment_id !== null && (
                   <p><b>Shipment ID:</b> {order.shiprocket_shipment_id} </p>
+                    )}
                   <p>
                     <b>Status:</b> {order.order_status}
                   </p>

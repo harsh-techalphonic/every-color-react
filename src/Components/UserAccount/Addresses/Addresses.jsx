@@ -116,7 +116,7 @@ export default function Addresses() {
                         <img src="/plus_icon.png" alt="Add Address" />
                       </div>
                       <div className="Add_address_btn mt-3">
-                        <button type="button">Add Address</button>
+                        <button type="button">Add Shipping Address</button>
                       </div>
                     </a>
                   </div>
@@ -125,7 +125,7 @@ export default function Addresses() {
                 {data?.data?.map((item, index) => (
                   <div className="col-lg-4 mb-3" key={index}>
                     <div className="AddressBox_one">
-                      <h4>Address </h4>
+                      <h4>Shipping Address </h4>
                       <h5>{item?.name}</h5>
                       <p>
                         {item?.full_address}, {item?.landmark}, {item?.area}, {item?.state}{" "}
@@ -149,6 +149,7 @@ export default function Addresses() {
                     </div>
                   </div>
                 ))}
+                {userDataDta.business_owner === "yes" ? (
                 <div className="col-lg-4 mb-3">
                     <div className="AddressBox_one">
                       <h4>Billing Address</h4>
@@ -168,6 +169,7 @@ export default function Addresses() {
                         </p>
                     </div>
                   </div>
+                  ) : null}
               </div>
             </div>
           </div>

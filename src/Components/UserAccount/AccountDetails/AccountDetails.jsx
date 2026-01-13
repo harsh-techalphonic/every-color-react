@@ -295,6 +295,49 @@ export default function AccountDetails() {
     }
   }
 
+
+
+  const handleDeleteGst = async () => {
+  if (!formData.gst_no) return;
+
+  const confirmDelete = window.confirm(
+    "Are you sure you want to delete GST details?"
+  );
+  if (!confirmDelete) return;
+const token = localStorage.getItem("token")
+// console.log("first user ProfileDta.id", userProfileDta.id);
+  try {
+    const res = await fetch("https://dhanbet9.co/api/user/gst-update", {
+      method: "POST", 
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`, 
+      },
+      body: JSON.stringify({
+        verify_user_id: userProfileDta.id,
+      }),
+    });
+
+    const data = await res.json();
+
+    if (data.status === "success") {
+      alert("GST deleted successfully");
+
+      setFormData((prev) => ({
+        ...prev,
+        gst_no: "",
+        tradeNam: "",
+      }));
+    } else {
+      alert(data.message || "Failed to delete GST");
+    }
+  } catch (error) {
+    console.error("Delete GST error:", error);
+    alert("Something went wrong");
+  }
+};
+
+
   return (
     <div className="AccountDetails">
       <div className="row">
@@ -375,17 +418,49 @@ export default function AccountDetails() {
 
                     {/* GST SECTION */}
                     {formData.business_owner === "yes" ? (
-                      <>
-                        <div className="col-lg-6 mb-3">
-                          <label>GST Number</label>
-                          <input className="form-control" value={formData.gst_no} disabled />
-                        </div>
+                      // <>
+                      //   <div className="col-lg-6 mb-3">
+                      //     <label>GST Number</label>
+                      //     <input className="form-control" value={formData.gst_no} disabled />
+                      //   </div>
 
-                        <div className="col-lg-6 mb-3">
-                          <label>Tax Payer</label>
-                          <input className="form-control" value={formData.tradeNam} disabled />
-                        </div>
-                      </>
+                      //   <div className="col-lg-6 mb-3">
+                      //     <label>Tax Payer</label>
+                      //     <input className="form-control" value={formData.tradeNam} disabled />
+                      //   </div>                        
+                      // </>
+
+                      <>
+  <div className="col-lg-6 mb-3">
+    <label>GST Number</label>
+    <input
+      className="form-control"
+      value={formData.gst_no}
+      disabled
+    />
+  </div>
+
+  <div className="col-lg-6 mb-3">
+    <label>Tax Payer</label>
+    <input
+      className="form-control"
+      value={formData.tradeNam}
+      disabled
+    />
+  </div>
+
+  <div className="col-12 mb-3">
+    <button
+      type="button"
+      className="btn btn-danger"
+      onClick={handleDeleteGst}
+      disabled={!formData.gst_no}
+    >
+      Delete GST
+    </button>
+  </div>
+</>
+
                     ) : (
                       <>
                         <div className="col-lg-6 mb-3">

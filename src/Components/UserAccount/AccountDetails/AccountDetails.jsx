@@ -240,7 +240,7 @@ export default function AccountDetails() {
       })
 
       if (res?.status === 200 || res.data?.status === true) {
-        console.log("gst api response", res)
+      
         setGstDetails(res.data)
         setShowGstPopup(true)
       } else {
@@ -305,9 +305,8 @@ export default function AccountDetails() {
   );
   if (!confirmDelete) return;
 const token = localStorage.getItem("token")
-// console.log("first user ProfileDta.id", userProfileDta.id);
   try {
-    const res = await fetch("https://dhanbet9.co/api/user/gst-update", {
+    const res = await fetch("https://dashboard.everycolouruniverse.com/api/user/gst-update", {
       method: "POST", 
       headers: {
         "Content-Type": "application/json",

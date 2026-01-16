@@ -27,7 +27,7 @@ export default function NewsletterForm({ simple = false }) {
           body: JSON.stringify({ email }),
         }
       );
-      console.log("NewsletterForm", response)
+     
 
       const result = await response.json();
       if (response.ok) {

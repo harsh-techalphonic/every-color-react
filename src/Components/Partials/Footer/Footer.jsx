@@ -203,8 +203,11 @@ export default function Footer() {
         <div className="container">
           <div className="d-flex justify-content-between">
             <div className="copytext">
+              {/* <p className="mb-0">
+                Copyright © 2026 everycolouruniverse.All Rights Reserved.
+              </p> */}
               <p className="mb-0">
-                Copyright © 2025 Tech Alphonic.All Rights Reserved.
+                Copyright © 2026 Every Colour Universe. All Rights Reserved. | Designed by <Link to="https://www.techalphonic.com/">Tech Alphonic</Link>
               </p>
             </div>
             <div className="Payemt-img">

@@ -57,7 +57,7 @@ export default function ChangePassword() {
       );
 
       toast.success("Password changed successfully!");
-      // console.log("Password changed successfully:", response.data);
+    
 
       // Reset fields
       setCurrentPassword('');

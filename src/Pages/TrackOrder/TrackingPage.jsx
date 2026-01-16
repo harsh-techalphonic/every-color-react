@@ -23,7 +23,6 @@ const TrackingCard = ({ onHeaderHeight }) => {
     navigate('/track-order');
     return null;
   }
-  console.log("trackingData", order)
 
 
 

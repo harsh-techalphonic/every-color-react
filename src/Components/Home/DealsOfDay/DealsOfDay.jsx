@@ -11,7 +11,7 @@ export default function DealsOfDay() {
     (store) => store.singleProduct?.data || []
   );
   const products = useSelector((store) => store.recentView?.products || []);
-  // console.log("dael of the day", products)
+ 
   const dispatch = useDispatch();
   const [singleProduct, setSingleProduct] = useState(null);
   const { slug } = useParams();
@@ -21,9 +21,10 @@ export default function DealsOfDay() {
       return;
 
     const existingProduct = fetch_singleProduct.find(
+      // console.log('slug',slug)
       (product) => product?.product_slug === slug
     );
-
+console.log('slug',slug)
     if (existingProduct) {
       setSingleProduct(existingProduct);
     }

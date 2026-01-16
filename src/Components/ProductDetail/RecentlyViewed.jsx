@@ -20,7 +20,7 @@ export default function RecentlyViewed() {
   const products = useSelector((store) => store.recentView?.products || []);
 const dispatch = useDispatch(); 
   const [singleProduct, setSingleProduct] = useState(null);
-  // console.log("recently viewed", products)
+  
   const { slug } = useParams();
 
   useEffect(() => {

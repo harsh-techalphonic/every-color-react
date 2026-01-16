@@ -2,7 +2,7 @@
 
 export default function GstVerify({ gstDetails, onClose, onVerify }) {
   
-console.log("gst gstDetails", gstDetails)
+
   if (!gstDetails) return null;
 
   return (

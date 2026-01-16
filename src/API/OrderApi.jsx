@@ -17,7 +17,6 @@ export default function OrderApi(dispatch, token) {
       },
     })
     .then((res) => {
-      // console.log("Orders API Response: ----------?>>>>>>>>", res);
       if (Array.isArray(res.data)) {
         dispatch(setOrders(res.data));
       } else {

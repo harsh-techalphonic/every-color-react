@@ -41,7 +41,6 @@ export default function Export({ onHeaderHeight }) {
     setLoading(true);
 
     try {
-      // console.log("Submitting Bulk Order:", formData);
 
       // ✅ API call
       const response = await axios.post(
@@ -53,7 +52,6 @@ export default function Export({ onHeaderHeight }) {
         status: response.data.status,
         message: response.data.message,
       });
-      // console.log("API Response:", response.data);
 
       // alert("Order submitted successfully!");
       setFormData({

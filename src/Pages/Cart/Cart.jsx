@@ -51,7 +51,7 @@ const getPriceDetails = (item) => {
 
 const CartItem = ({ item, onRemove, onQuantityChange }) => {
   const [priceData, setPriceData] = useState(null);
-console.log("cart items", item)
+
   useEffect(() => {
     setPriceData(getPriceDetails(item));
   }, [item]);
@@ -140,12 +140,10 @@ export default function Cart({ onHeaderHeight }) {
       });
 
       const result = await res.json();
-      console.log( "conslor aesult for cart data", result)
 
       if (result.status && result.data.length > 0) {
         const cartData = result.data.map((cartItem) => {
           const product = cartItem.product;
-          console.log("product cart ", product)
           const variation = cartItem.variation || {}; 
           return {
             ...product,

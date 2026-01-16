@@ -45,7 +45,6 @@ export default function Support({ onHeaderHeight }) {
 
   const banner = supportData.banner?.[0];
   const contacts = supportData.contact || [];
-    // console.log("banner", banner)
   return (
     <>
       <Header onHeight={onHeaderHeight} />

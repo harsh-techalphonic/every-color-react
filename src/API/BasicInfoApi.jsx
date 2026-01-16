@@ -13,7 +13,6 @@ export default function BasicInfoApi() {
     axios
       .get(`${config.API_URL}/web/section/home-banner-bottom`)
       .then(function (response) {
-        // console.log("basicInfo", response)
         dispatch(basicInfoAction.getInfo(response.data));
       })
       .catch(function (error) {

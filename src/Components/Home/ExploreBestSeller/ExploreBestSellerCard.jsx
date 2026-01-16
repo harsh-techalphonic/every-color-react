@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 
 export default function ExploreBestSellerCard({ product }) {
 
-  console.log( "rprodaeaslkmalsdncasdc lasdclasldc asnd asldasdn kasjd ", product)
+ 
   const videoRef = useRef(null);
   const [isHovered, setIsHovered] = useState(false);
   const [isClicked, setIsClicked] = useState(false);

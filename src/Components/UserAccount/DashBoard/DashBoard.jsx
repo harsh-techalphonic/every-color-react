@@ -9,7 +9,7 @@ export default function DashBoard({ setActiveTab }) {
   const [userProfileDta, setUserProfileDta] = useState([]);
   const [orderStats, setOrderStats] = useState([]);
 
-  console.log( "user profile", userProfileDta)
+  
   useEffect(() => {
     const getUserProfile = async () => {
       try {

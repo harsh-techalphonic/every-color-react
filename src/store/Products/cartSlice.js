@@ -12,6 +12,7 @@ export const cartSlice = createSlice({
     setCart: (store, action) => {
       localStorage.setItem("cart", JSON.stringify(action.payload));
       return action.payload;
+     
     },
     removeCart: (store, action) => {
       const updatedCart = store.filter(

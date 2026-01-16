@@ -10,7 +10,6 @@ export const allCategoriesSlice = createSlice({
   },
   reducers: {
     getCategory: (store, action) => {
-      // console.log(action.payload)
       return {
         status: true,
         data: [...action.payload],

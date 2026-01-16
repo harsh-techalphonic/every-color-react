@@ -26,16 +26,18 @@ export default function Checkout() {
 
   const token = localStorage.getItem("token");
 
+  
   // Derived CartData (handle Buy Now or Cart)
   const derivedCartData = product
-    ? [
-        {
-          ...product,
-          quantity: quantity || 1,
-        },
-      ]
-    : CartData;
-  console.log("derivedCartData", derivedCartData);
+  ? [
+    {
+      ...product,
+      quantity: quantity || 1,
+    },
+  ]
+  : CartData;
+  
+  console.log(" cart data", derivedCartData);
 
   // ✅ Calculate total product discount dynamically
   const totalProductDiscount = derivedCartData.reduce((acc, item) => {
@@ -102,7 +104,7 @@ export default function Checkout() {
             "Content-Type": "application/json",
           },
         });
-        console.log("get address api data", response);
+       
 
         setAddresses(response.data?.data || []);
         setRefreshAddresses(false);
@@ -286,56 +288,20 @@ export default function Checkout() {
   };
   const handleRefreshAddresses = () => setRefreshAddresses(true);
 
-  // const TAX_RATE =
-  //   derivedCartData && derivedCartData.length > 0
-  //     ? (
-  //         derivedCartData.reduce(
-  //           (sum, item) =>
-  //             sum + ((Number(item.price) || 0) * (Number(item.tax) || 0)) / 100,
-  //           0
-  //         ) /
-  //         derivedCartData.reduce((sum, item) => sum + (Number(item.price) || 0), 0)
-  //       ) * 100
-  //     : 0;
 
-  //   // const TAX_RATE = 5 // 5%
-  //   // const TAX_RATE = derivedCartData?.[0]?.tax
-  //   console.log( "tax rate", TAX_RATE)
-  //   useEffect(() => {
-  //   const calculatedTax =
-  //     (checkoutDetail.subTotal - checkoutDetail.productDiscount - checkoutDetail.couponDiscount) *
-  //     TAX_RATE/100;
-
-  //   setCheckoutDetail((prev) => ({
-  //     ...prev,
-  //     tax: calculatedTax,
-  //   }));
-  // }, [checkoutDetail.subTotal, checkoutDetail.productDiscount, checkoutDetail.couponDiscount]);
-
-  // const TOTAL_TAX =
-  //   derivedCartData?.reduce((sum, item) => {
-  //     const price = Number(item.discount_price) || 0;
-  //     console.log("item price ", price)
-  //     const taxPercent = Number(item.tax) || 0;
-
-  //     const productTax = (price * taxPercent) / 100;
-  //     return sum + productTax;
-  //   }, 0) || 0;
-
-  // console.log("total product-wise tax:", TOTAL_TAX);
   const TOTAL_TAX =
     derivedCartData?.reduce((sum, item) => {
       const price = Number(item.discount_price) || 0;
       const qty = Number(item.quantity) || 1;
       const taxPercent = Number(item.tax) || 0;
 
-      // GST = (price * qty) * tax%
+     
       const productTax = (price * qty * taxPercent) / 100;
 
       return sum + productTax;
     }, 0) || 0;
 
-  console.log("Total Tax (GST):", TOTAL_TAX);
+
 
   useEffect(() => {
     const calculatedBaseAmount =

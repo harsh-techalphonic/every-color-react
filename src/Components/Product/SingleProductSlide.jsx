@@ -28,7 +28,7 @@ export default function SingleProductSlide({ product }) {
   const [addTocart, setaddTocart] = useState([]);
   const [gettoken, setGettoken] = useState(null);
   const fetch_products = useSelector((store) => store.wishlist);
-  // console.log(product)
+  
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -38,7 +38,7 @@ export default function SingleProductSlide({ product }) {
     setGettoken(token);
   }, []);
 
-  // console.log("product recently viewed" ,product)
+ 
   useEffect(() => {
     if (localStorage.getItem("wishlist")) {
       setWishlist([...JSON.parse(localStorage.getItem("wishlist"))]);
@@ -49,7 +49,7 @@ export default function SingleProductSlide({ product }) {
   }, []);
 
   const toggleCart = async (item) => {
-    // ✅ Check if user is logged in
+    
     if (!gettoken) {
       navigate("/login");
       return;
@@ -104,7 +104,7 @@ export default function SingleProductSlide({ product }) {
       if (!response.ok) throw new Error("Failed to update wishlist.");
 
       const data = await response.json();
-      // console.log("Wishlist API response:", data);
+     
 
       const id = item.id;
 

@@ -7,9 +7,7 @@ import { useSelector } from "react-redux";
 
 const TestimonialSlider = () => {
   const testimonials = useSelector((store) => store.testimonials);
-  // console.log("Redux testimonials:", testimonials);
-
-  // Convert testimonials object to array if data exists
+  
   const testimonialsArray = testimonials?.data
     ? Object.values(testimonials.data)
     : [];

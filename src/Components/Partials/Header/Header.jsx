@@ -25,11 +25,11 @@ import {  useSelector } from "react-redux";
 export default function Header({ onHeight = () => {} }) {
   const { pathname } = useLocation();
   const categories = useSelector((store) => store.categories);
-  // const dispatch = useDispatch();
+ 
   const [show, setShow] = useState(false);
   const [isSticky, setIsSticky] = useState(false);
   const [wishlistCount, setWishlistCount] = useState(0);
-// console.log( "path naem ",  pathname)
+
   let detactWishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
   useEffect(() => {
     if (localStorage.getItem("wishlist")) {
@@ -44,7 +44,7 @@ export default function Header({ onHeight = () => {} }) {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    console.log("toekn", token);
+   
     setIsLoggedIn(!!token);
   }, []);
 

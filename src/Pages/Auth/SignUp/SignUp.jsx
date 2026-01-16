@@ -86,7 +86,6 @@ export default function SignUp({ onHeaderHeight }) {
                     );
     
                     const { email, otp } = otpResponse.data;
-                    // console.log("OTP sent to email:", email, "OTP:", otp);
     
                     navigate("/verify", {
                         state: { email, otp },

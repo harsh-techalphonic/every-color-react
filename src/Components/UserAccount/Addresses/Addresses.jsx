@@ -14,7 +14,7 @@ export default function Addresses() {
   const [error, setError] = useState(null);
   const [editVal, setEditVal] = useState(null);
   const [userDataDta, setUserProfileDta] = useState([]);
-  console.log( "user gst data", userDataDta)
+  
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");

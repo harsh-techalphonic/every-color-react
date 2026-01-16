@@ -70,7 +70,7 @@
         );
         if (sendOtp?.data?.status === true) {
           toast.success(sendOtp?.data?.message || "OTP sent");
-          console.log("otp", sendOtp?.data);
+          // console.log("otp", sendOtp?.data);
           setOtpTimer(60);
         } else {
           toast.error(sendOtp?.data?.message || "Failed to send OTP");
@@ -219,7 +219,7 @@
     );
     
     if (res?.status === 200 || res.status === true) {
-      console.log("gst api responce", res)
+      
       setGstDetails(res.data);
       setShowGstPopup(true);  
     } else {

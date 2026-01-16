@@ -42,7 +42,7 @@ export default function BulkOrder({ onHeaderHeight }) {
         formData
       );
 
-      // console.log("API Response:", response.data);
+    
 
       setApiResponse({
         status: response.data.status,

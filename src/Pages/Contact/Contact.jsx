@@ -14,7 +14,7 @@ import logo from '../../assets/EveryColourLogo.png'
 
 export default function Contact({ onHeaderHeight }) {
   const Contact = useSelector((store) => store.Contact);
-  console.log( "contact meta", Contact)
+ 
 
   const [formData, setFormData] = useState({
     full_name: "",

@@ -66,8 +66,7 @@ export const fetchUserDataApi = async () => {
 };
 export const deleteCartItem = async (id, apiPath) => {
   const token = localStorage.getItem("token");
-  // console.log("`${API_URL}${RemoveCart}`", `${API_URL}${apiPath}`);
-  // console.log("handleDelete ---->>", id);
+ 
 
   try {
     const response = await axios.post(
@@ -76,7 +75,6 @@ export const deleteCartItem = async (id, apiPath) => {
       { headers: { Authorization: `Bearer ${token}` } }
     );
 
-    console.log("handleDelete 1111", response?.data);
     return response?.data?.status === true; // Return true/false
   } catch (error) {
     console.error("Network Error:", error.message);

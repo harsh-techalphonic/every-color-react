@@ -8,7 +8,7 @@ import CategoriesApi from '../../../API/CategoriesAPi';
 
 export default function AllCatergory_Filter() {
     const categories = useSelector((store) => store.categories);
-    // console.log("allCategories data", categories)
+    
     const [showCategoriesDropdown, setshowCategoriesDropdown] = useState(false);
     const dropdownCategoriesRef = useRef(null);
     const location = useLocation(); 

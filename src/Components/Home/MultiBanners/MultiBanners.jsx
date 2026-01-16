@@ -7,16 +7,14 @@ import { faArrowRightLong } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 export default function MultiBanners() {
   const maxDicountProduct = useSelector((store) => store.maxDicountProduct);
-  // console.log("Multi banner", maxDicountProduct )
+
   const products = maxDicountProduct?.data?.data || [];
 
   const product_one = products[0];
   const product_two = products[1];
   const product_three = products[2];
 
-  console.log("product one ", product_one);
-  // console.log("product two ", product_two);
-  // console.log("product three ", product_three);
+
   return (
     <section className="multibanner Best_selling">
       <MaxDicountProductAPi />

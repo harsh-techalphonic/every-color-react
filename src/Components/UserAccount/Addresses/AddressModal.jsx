@@ -73,15 +73,15 @@ const AddressModal = ({
       }
 
       const response = await axios.get(
-        `https://dhanbet9.co/api/get-cities?postcode=${zipcode.trim()}`
+        `https://dashboard.everycolouruniverse.com/api/get-cities?postcode=${zipcode.trim()}`
       );
 
-      console.log("zipcode api response ", response);
+     
 
       const data = response?.data?.data?.postcode_details;
       setLocalitydata(data?.locality);
 
-      console.log("zipcode api response city ", data);
+     
       if (!data) {
         return;
       }

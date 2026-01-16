@@ -1,6 +1,6 @@
-export const API_URL = "https://dhanbet9.co/api";
-export const ImageUrl = "https://dhanbet9.co/uploads/";
-export const API_URL_POST = "https://dhanbet9.co/api";
+export const API_URL = "https://dashboard.everycolouruniverse.com/api";
+export const ImageUrl = "https://dashboard.everycolouruniverse.com/uploads/";
+export const API_URL_POST = "https://dashboard.everycolouruniverse.com/api";
 // export const City_State_URL = "https://fantasycricketid.co.in/api/";
 
 // Address

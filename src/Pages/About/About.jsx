@@ -20,7 +20,7 @@ export default function About({ onHeaderHeight }) {
     (item) => item.type === "about-page"
   );
 
-  console.log( "about meta", aboutPageSections)
+
 
 
   return (

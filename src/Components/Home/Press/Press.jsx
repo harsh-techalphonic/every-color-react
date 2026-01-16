@@ -7,13 +7,11 @@ import { useSelector } from 'react-redux';
 export default function Press() {
 
 const press = useSelector((store) => store.press);
-  // console.log("Redux testimonials:", press);
-
-  // Convert testimonials object to array if data exists
+  
   const pressData = press?.data
     ? Object.values(press.data)
     : [];
-    // console.log("pressData", pressData)
+  
 
 
     const settings = {

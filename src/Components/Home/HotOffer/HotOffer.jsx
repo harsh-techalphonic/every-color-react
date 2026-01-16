@@ -6,7 +6,7 @@ import { Link, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 export default function HotOffer({uri,onSectionDataChange  }) {
-  // console.log("data nad uri",  uri )
+  
   const bannersStore = useSelector((store) => store.banners);
   const categoriesStore = useSelector((store) => store.categories);
   const { category } = useParams();
@@ -55,7 +55,7 @@ export default function HotOffer({uri,onSectionDataChange  }) {
     setSectionData({});
   }, [bannersStore, categoryItems, category]);
 
-  console.log( "section data ", sectionData)
+ 
 
   return (
     <section className="Hot_offers py-5">

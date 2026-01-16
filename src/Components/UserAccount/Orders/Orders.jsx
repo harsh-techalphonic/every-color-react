@@ -199,7 +199,7 @@ export default function ReturnRefund() {
         formData.append(`images[]`, image);
       });
 
-      // console.log(prod)
+      
       const response = await sendRefundAndReplaceApi(formData);
       if (response?.success) {
         setSuccessMessage(
@@ -248,7 +248,7 @@ export default function ReturnRefund() {
   // const shipmentId = filteredOrders.shiprocket_shipment_id
 
   const downloadInvoice = async (id) => {
-    // console.log( "shipmentId", id)
+    
     try {
       if (!id) throw new Error("Unable to Found Product Id");
       const formData = new FormData();
@@ -284,7 +284,7 @@ export default function ReturnRefund() {
       const url = order.shiprocket_shipment_id 
     ? `${API_URL}/track-order?shipment_id=${order.shiprocket_shipment_id}` 
     : `${API_URL}/track-order?awb=${order.shiprocket_awb}`;
-    console.log("track url", url)
+  
 
       const response = await fetch(url, {
         method: "GET",
@@ -294,7 +294,7 @@ export default function ReturnRefund() {
       });
 
       const data = await response.json();
-      console.log( "fata fagta" , data)
+    
 
       if (data.status) {
         // Redirect to TrackOrderDetail page with data
@@ -338,7 +338,7 @@ export default function ReturnRefund() {
               expandedOrders[order.id] ? "border rounded p-3" : ""
             }`}>
 
-   {/* { console.log( "product order",order)} */}
+
               <div
                 className="order-summary d-flex justify-content-between align-items-center p-3 border rounded"
                 style={{ cursor: "default" }} // removed pointer here

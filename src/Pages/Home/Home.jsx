@@ -49,6 +49,7 @@ export default function Home({ onHeaderHeight }) {
 
         const result = await res.json();
 
+        // console.log("this is react",result)
         if (result.status && result.data.length > 0) {
           const cartData = result.data.map((cartItem) => {
             const product = cartItem.product;
@@ -77,7 +78,7 @@ export default function Home({ onHeaderHeight }) {
     const getUserProfile = async () => {
       try {
         const userResponse = await fetchUserDataApi();
-        console?.log("userResponse -------->>>>", userResponse);
+        // console?.log("userResponse -------->>>>", userResponse);
 
         if (userResponse && userResponse) {
           dispatch(userAction.setUserProfile(userResponse));
@@ -96,7 +97,6 @@ export default function Home({ onHeaderHeight }) {
   }, []);
   const banners = useSelector((store) => store?.banners);
   const dispatch = useDispatch();
-  console.log("Home Meta Title", banners);
   return (
     <>
       <ScrollToTop />

@@ -14,10 +14,9 @@ export const PlaceOrderApis = async (payload) => {
     });
 
     const result = await response.json();
-    console.log("Place Order Response:", result);
+    
     return result;
   } catch (error) {
-    console.log("Error placing order:", error);
     return null;
   }
 };

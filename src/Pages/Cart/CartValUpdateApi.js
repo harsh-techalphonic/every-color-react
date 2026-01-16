@@ -19,7 +19,6 @@ export const updateCartItemQuantity = async (prd_id, quantity) => {
     });
 
     const result = await response.json();
-    // console.log("Update Cart Response:", result);
 
     return result.status ? result : null;
   } catch (error) {

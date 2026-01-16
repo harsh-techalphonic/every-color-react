@@ -1,7 +1,7 @@
 {
-  "API_URL": "https://dhanbet9.co/api",
-  "API_URL_POST": "https://dhanbet9.co/api",
+  "API_URL": "https://dashboard.everycolouruniverse.com/api",
+  "API_URL_POST": "https://dashboard.everycolouruniverse.com/api",
 
-  "City_State_URL": "https://dhanbet9.co/api/",
+  "City_State_URL": "https://dashboard.everycolouruniverse.com/api/",
   "GetCartList": "/bag/get-cart"
 }

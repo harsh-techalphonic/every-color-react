@@ -13,14 +13,14 @@ export default function ExploreBestSeller() {
     fetch(`${config.API_URL}/web/section/our-client`)
       .then((res) => res.json())
       .then((data) => {
-        // console.log("fatch dataw", data)
+      
         if (data && data) {
           setProducts(data);
         }
       })
       .catch((err) => console.error('Error fetching data:', err));
   }, []);
-// console.log("first product", products)
+
   var settings = {
     dots: false,
     infinite: true,

@@ -57,7 +57,7 @@ export default function Addresses() {
   const fetchStates = async () => {
     try {
       const response = await axios.get(`${API_URL}/states`);
-      console.log(" state response", response)
+      
       setStatedata(response.data.state || []);
     } catch (err) {
       setError(err.message);

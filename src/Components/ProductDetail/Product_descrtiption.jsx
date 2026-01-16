@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { ImageUrl } from '../../Config/config';
 
 export default function ProductDescription({singleProduct}) {
-  console.log("singleProduct", singleProduct)
+ 
   const [activeTab, setActiveTab] = useState('Description');
 
   const handleTabClick = (tab) => setActiveTab(tab);
